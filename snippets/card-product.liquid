@@ -1,0 +1,456 @@
+{%- liquid
+  assign product_type = product.type | default: product.metafields.custom.category
+  assign first_variant = product.selected_or_first_available_variant
+-%}
+
+<style>
+.neu-card,
+.neu-card * {
+  box-sizing: border-box;
+}
+
+.neu-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+  background: var(--neu-bg);
+  border-radius: 28px;
+  padding: 18px 18px 22px;
+  box-shadow: var(--shadow-neu-card);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+/* ── HOVER uses YOUR shadow variable ── */
+.neu-card:hover {
+  box-shadow: var(--neu-shadow-strong);
+  transform: translateY(-2px);
+}
+
+.neu-card__image-link {
+  display: block;
+  text-decoration: none;
+}
+
+.neu-card__image-frame {
+  border-radius: 22px;
+  box-shadow: var(--shadow-neu-card-inset);
+  padding: 14px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--neu-bg);
+}
+
+.neu-card__image,
+.neu-card .placeholder-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+.neu-card__image {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.neu-card__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 0 6px;
+  margin-top: 4px;
+}
+
+.neu-card__info-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.neu-card__type {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--neu-text-muted);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.neu-card__title {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+/* ── SINGLE-LINE TRUNCATION on all sizes ── */
+.neu-card__title a {
+  color: var(--neu-text);
+  text-decoration: none;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.neu-card__price {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--neu-text);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
+  line-height: 1.1;
+}
+
+.neu-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.neu-card__actions > * {
+  min-width: 0;
+}
+
+.neu-card__view-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--neu-bg);
+  box-shadow: var(--shadow-neu-out-sm);
+  color: var(--neu-text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.neu-card__view-btn:hover {
+  color: var(--neu-accent);
+}
+
+.neu-card__view-btn:active {
+  box-shadow: var(--shadow-neu-in);
+}
+
+.neu-card__form {
+  margin: 0;
+  display: block;
+  flex-shrink: 0;
+}
+
+.neu-card__add-btn {
+  width: 48px;
+  min-width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--neu-accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-neu-accent);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.neu-card__add-btn:hover:not([disabled]) {
+  transform: translateY(-1px);
+}
+
+.neu-card__add-btn:active:not([disabled]) {
+  box-shadow: var(--shadow-neu-btn-inset-lg);
+}
+
+.neu-card__add-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.neu-card__add-btn.is-loading .neu-card__add-icon {
+  opacity: 0;
+}
+
+.neu-card__add-spinner {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.neu-card__add-btn.is-loading .neu-card__add-spinner {
+  display: flex;
+}
+
+.neu-card__add-spinner svg {
+  width: 22px;
+  height: 22px;
+  animation: neuSpin 0.9s linear infinite;
+}
+
+.neu-card__add-spinner .path {
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-dasharray: 90, 150;
+  stroke-dashoffset: 0;
+  animation: neuDash 1.3s ease-in-out infinite;
+}
+
+@keyframes neuSpin {
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes neuDash {
+  0%   { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+}
+
+.neu-card__add-btn.is-success {
+  background: #3ea968;
+  box-shadow: var(--shadow-neu-success);
+}
+
+.catalogue-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--neu-text-muted);
+}
+
+/* ── TABLET ── */
+@media (max-width: 768px) {
+  .neu-card {
+    border-radius: 24px;
+    padding: 16px 16px 20px;
+    gap: 12px;
+  }
+
+  .neu-card__image-frame {
+    border-radius: 20px;
+    padding: 12px;
+  }
+
+  .neu-card__image,
+  .neu-card .placeholder-svg {
+    border-radius: 13px;
+  }
+
+  .neu-card__info {
+    padding: 0 4px;
+    gap: 10px;
+  }
+
+  .neu-card__type {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .neu-card__title,
+  .neu-card__price {
+    font-size: 19px;
+  }
+
+  .neu-card__view-btn {
+    height: 46px;
+    font-size: 14px;
+  }
+
+  .neu-card__add-btn {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+  }
+}
+
+/* ── MOBILE ── */
+@media (max-width: 550px) {
+  .neu-card {
+    border-radius: 20px;
+    padding: 12px 12px 16px;
+    gap: 10px;
+  }
+
+  .neu-card__image-frame {
+    border-radius: 18px;
+    padding: 10px;
+  }
+
+  .neu-card__image,
+  .neu-card .placeholder-svg {
+    border-radius: 12px;
+  }
+
+  .neu-card__info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 0 2px;
+  }
+
+  .neu-card__type {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .neu-card__title,
+  .neu-card__price {
+    font-size: 17px;
+  }
+
+  .neu-card__price {
+    text-align: left;
+  }
+
+  .neu-card__actions {
+    gap: 10px;
+  }
+
+  .neu-card__view-btn {
+    height: 44px;
+    font-size: 13.5px;
+    padding: 0 14px;
+  }
+
+  .neu-card__add-btn {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+  }
+}
+
+/* ── SMALL PHONES ── */
+@media (max-width: 380px) {
+  .neu-card__title,
+  .neu-card__price {
+    font-size: 16px;
+  }
+
+  .neu-card__view-btn {
+    font-size: 13px;
+  }
+
+  .neu-card__actions {
+    gap: 8px;
+  }
+}
+
+/* ── TOUCH DEVICES: no hover lift ── */
+@media (hover: none) and (pointer: coarse) {
+  .neu-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-neu-card);
+  }
+
+  .neu-card__add-btn:hover:not([disabled]) {
+    transform: none;
+  }
+}
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  .neu-card,
+  .neu-card__view-btn,
+  .neu-card__add-btn,
+  .neu-card__add-spinner svg,
+  .neu-card__add-spinner .path {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .neu-card:hover {
+    transform: none;
+  }
+}
+</style>
+
+<div class="neu-card" data-product-card>
+  <a href="{{ product.url }}" class="neu-card__image-link">
+    <div class="neu-card__image-frame">
+      {%- if product.featured_image -%}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          loading="lazy"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          class="neu-card__image"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'neu-card__image placeholder-svg' }}
+      {%- endif -%}
+    </div>
+  </a>
+
+  <div class="neu-card__info">
+    <div class="neu-card__info-text">
+      {%- if product_type != blank -%}
+        <p class="neu-card__type">{{ product_type | upcase }}</p>
+      {%- endif -%}
+      <h3 class="neu-card__title">
+        <a href="{{ product.url }}">{{ product.title | upcase }}</a>
+      </h3>
+    </div>
+
+    <div class="neu-card__price">
+      {{ product.price | money }}
+    </div>
+  </div>
+
+  <div class="neu-card__actions">
+    <a href="{{ product.url }}" class="neu-card__view-btn">View</a>
+
+    <form
+      method="post"
+      action="{{ routes.cart_add_url }}"
+      class="neu-card__form"
+      data-neu-add-form
+      enctype="multipart/form-data"
+      novalidate
+    >
+      <input type="hidden" name="form_type" value="product">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="id" value="{{ first_variant.id }}">
+      <input type="hidden" name="quantity" value="1">
+
+      <button
+        type="submit"
+        name="add"
+        class="neu-card__add-btn"
+        {% if first_variant.available == false %}disabled{% endif %}
+        aria-label="Add {{ product.title | escape }} to cart"
+      >
+        <span class="neu-card__add-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </span>
+
+        <span class="neu-card__add-spinner" aria-hidden="true">
+          <svg viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+          </svg>
+        </span>
+      </button>
+    </form>
+  </div>
+</div>

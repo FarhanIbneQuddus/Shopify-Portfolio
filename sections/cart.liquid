@@ -1,0 +1,587 @@
+{% render 'neu-settings', section: section %}
+
+<style>
+  #shopify-section-{{ section.id }} .neu {
+    background: var(--neu-bg);
+    padding: {{ section.settings.padding_top }}px 5px {{ section.settings.padding_bottom }}px;
+    color: var(--neu-text);
+    font-family: inherit;
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} .neu {
+      padding: {{ section.settings.padding_top }}px 40px {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #shopify-section-{{ section.id }} .neu__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  /* ---------- Header bar ---------- */
+  #shopify-section-{{ section.id }} .neu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 32px;
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  #shopify-section-{{ section.id }} .neu-header__title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--neu-text);
+  }
+
+  #shopify-section-{{ section.id }} .neu-continue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: var(--neu-bg);
+    box-shadow: var(--neu-shadow-strong);
+    color: var(--neu-accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+
+  #shopify-section-{{ section.id }} .neu-continue:hover {
+    transform: translateY(-1px);
+  }
+
+  #shopify-section-{{ section.id }} .neu-continue:active {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(0);
+  }
+
+  /* ---------- Cart panel ---------- */
+  #shopify-section-{{ section.id }} .neu-panel {
+    padding: 32px;
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  #shopify-section-{{ section.id }} .neu-columns {
+    display: grid;
+    grid-template-columns: 1fr 520px 160px;
+    align-items: center;
+    padding: 8px 16px 20px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-columns span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--neu-text-muted);
+    text-transform: uppercase;
+  }
+
+  #shopify-section-{{ section.id }} .neu-columns .col-qty {
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .neu-columns .col-total {
+    text-align: right;
+  }
+
+  #shopify-section-{{ section.id }} .neu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ---------- Cart item card ---------- */
+  #shopify-section-{{ section.id }} .neu-item {
+    display: grid;
+    grid-template-columns: 1fr 520px 160px;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 22px;
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__product {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__image {
+    flex: 0 0 auto;
+    width: 96px;
+    height: 96px;
+    padding: 10px;
+    border-radius: var(--neu-radius);
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__info {
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__title {
+    margin: 0 0 6px;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--neu-text);
+    text-decoration: none;
+    line-height: 1.25;
+  }
+
+  #shopify-section-{{ section.id }} a.neu-item__title:hover {
+    color: var(--neu-accent);
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__price {
+    font-size: 0.78rem;
+    color: var(--neu-accent);
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__price em {
+    font-style: normal;
+    color: var(--neu-text-muted);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__options {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__options li {
+    font-size: 0.75rem;
+    color: var(--neu-text-muted);
+    font-weight: 600;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__options li strong {
+    color: var(--neu-text);
+    font-weight: 800;
+    margin-left: 4px;
+  }
+
+  /* ---------- Quantity + remove ---------- */
+  #shopify-section-{{ section.id }} .neu-item__qty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty__btn {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: var(--neu-text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: var(--neu-shadow-strong);
+    transition: box-shadow 0.15s ease, transform 0.15s ease, color 0.15s ease;
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty__btn:hover {
+    color: var(--neu-accent);
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty__btn:active {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: scale(0.97);
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty__btn svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .neu-qty__value {
+    min-width: 42px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--neu-text);
+    user-select: none;
+  }
+
+  #shopify-section-{{ section.id }} .neu-remove {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: var(--neu-bg);
+    box-shadow: var(--neu-shadow-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neu-text);
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease, color 0.15s ease;
+  }
+
+  #shopify-section-{{ section.id }} .neu-remove:hover {
+    color: var(--neu-accent);
+    transform: translateY(-1px);
+  }
+
+  #shopify-section-{{ section.id }} .neu-remove:active {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(0);
+  }
+
+  #shopify-section-{{ section.id }} .neu-remove svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__total {
+    text-align: right;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--neu-text);
+  }
+
+  #shopify-section-{{ section.id }} .neu-item__total em {
+    font-style: normal;
+    color: var(--neu-text-muted);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+
+  /* ---------- Footer / checkout ---------- */
+  #shopify-section-{{ section.id }} .neu-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 24px;
+    padding: 8px 4px 4px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-subtotal {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--neu-text-muted);
+  }
+
+  #shopify-section-{{ section.id }} .neu-subtotal strong {
+    color: var(--neu-text);
+    font-weight: 800;
+    margin-left: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .neu-checkout {
+    padding: 16px 32px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--neu-accent);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: var(--shadow-neu-btn-inset-lg);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  #shopify-section-{{ section.id }} .neu-checkout:hover {
+    transform: translateY(-1px);
+  }
+
+  #shopify-section-{{ section.id }} .neu-checkout:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  /* ---------- Empty state ---------- */
+  #shopify-section-{{ section.id }} .neu-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--neu-text-muted);
+    font-weight: 600;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 990px) {
+    #shopify-section-{{ section.id }} .neu-columns,
+    #shopify-section-{{ section.id }} .neu-item {
+      grid-template-columns: 1fr 380px 120px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} .neu {
+      padding: 20px 14px;
+    }
+
+    #shopify-section-{{ section.id }} .neu-header,
+    #shopify-section-{{ section.id }} .neu-panel {
+      padding: 20px;
+      border-radius: calc(var(--neu-radius) * 0.75);
+    }
+
+    #shopify-section-{{ section.id }} .neu-columns {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .neu-item {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    #shopify-section-{{ section.id }} .neu-item__qty {
+      justify-content: flex-start;
+    }
+
+    #shopify-section-{{ section.id }} .neu-item__total {
+      text-align: left;
+    }
+
+    #shopify-section-{{ section.id }} .neu-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    #shopify-section-{{ section.id }} .neu-checkout {
+      width: 100%;
+    }
+  }
+</style>
+
+<section class="neu">
+  <div class="neu__inner">
+
+    {%- comment -%} Header bar {%- endcomment -%}
+    <div class="neu-header">
+      <h1 class="neu-header__title">{{ 'cart.title' | t | default: 'Your cart' }}</h1>
+      <a href="{{ routes.all_products_collection_url }}" class="neu-continue">
+        Continue shopping
+      </a>
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <form action="{{ routes.cart_url }}" method="post" novalidate id="neu-cart-form-{{ section.id }}">
+        <div class="neu-panel">
+
+          <div class="neu-columns">
+            <span class="col-product">Product</span>
+            <span class="col-qty">Quantity</span>
+            <span class="col-total">Total</span>
+          </div>
+
+          <ul class="neu-items">
+            {%- for item in cart.items -%}
+              <li class="neu-item" data-line="{{ forloop.index }}">
+                <div class="neu-item__product">
+                  <div class="neu-item__image">
+                    {%- if item.image -%}
+                      <a href="{{ item.url }}">
+                        <img
+                          src="{{ item.image | image_url: width: 200 }}"
+                          alt="{{ item.image.alt | escape }}"
+                          loading="lazy"
+                          width="96"
+                          height="96"
+                        >
+                      </a>
+                    {%- endif -%}
+                  </div>
+
+                  <div class="neu-item__info">
+                    <a href="{{ item.url }}" class="neu-item__title">{{ item.product.title }}</a>
+                    <p class="neu-item__price">
+                      <em>Tk</em>{{ item.final_price | money_without_currency }}
+                    </p>
+
+                    {%- if item.product.has_only_default_variant == false or item.properties.size > 0 -%}
+                      <ul class="neu-item__options">
+                        {%- unless item.product.has_only_default_variant -%}
+                          {%- for option in item.options_with_values -%}
+                            <li>{{ option.name }}: <strong>{{ option.value }}</strong></li>
+                          {%- endfor -%}
+                        {%- endunless -%}
+
+                        {%- for property in item.properties -%}
+                          {%- assign prop_name = property.first -%}
+                          {%- assign prop_value = property.last -%}
+                          {%- unless prop_name contains '_' or prop_value == blank -%}
+                            <li>{{ prop_name }}: <strong>{{ prop_value }}</strong></li>
+                          {%- endunless -%}
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                </div>
+
+                <div class="neu-item__qty">
+                  <div class="neu-qty" data-qty-wrap>
+                    <button type="button" class="neu-qty__btn" data-qty-minus aria-label="Decrease quantity">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                    </button>
+                    <span class="neu-qty__value" data-qty-value>{{ item.quantity }}</span>
+                    <button type="button" class="neu-qty__btn" data-qty-plus aria-label="Increase quantity">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                    </button>
+                    <input
+                      type="hidden"
+                      name="updates[]"
+                      value="{{ item.quantity }}"
+                      data-qty-input
+                    >
+                  </div>
+
+                  <a
+                    href="{{ item.url_to_remove }}"
+                    class="neu-remove"
+                    aria-label="{{ 'cart.remove' | t | default: 'Remove' }}"
+                    title="{{ 'cart.remove' | t | default: 'Remove' }}"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/>
+                      <path d="M14 11v6"/>
+                      <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </a>
+                </div>
+
+                <div class="neu-item__total">
+                  <em>Tk</em>{{ item.final_line_price | money_without_currency }}
+                </div>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </form>
+    {%- else -%}
+      <div class="neu-panel">
+        <p class="neu-empty">Your cart is empty.</p>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    var form = document.getElementById('neu-cart-form-{{ section.id }}');
+    if (!form) return;
+
+    form.querySelectorAll('[data-qty-wrap]').forEach(function (wrap) {
+      var minus = wrap.querySelector('[data-qty-minus]');
+      var plus = wrap.querySelector('[data-qty-plus]');
+      var valueEl = wrap.querySelector('[data-qty-value]');
+      var input = wrap.querySelector('[data-qty-input]');
+
+      function setValue(next) {
+        if (next < 0) next = 0;
+        valueEl.textContent = next;
+        input.value = next;
+      }
+
+      minus.addEventListener('click', function () {
+        var current = parseInt(input.value, 10) || 0;
+        setValue(current - 1);
+        form.submit();
+      });
+
+      plus.addEventListener('click', function () {
+        var current = parseInt(input.value, 10) || 0;
+        setValue(current + 1);
+        form.submit();
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "t:general.cart",
+  "tag": "section",
+  "class": "section-neu-cart",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "padding_top", "label": "Padding Top", "min": 0, "max": 150, "step": 2, "default": 40, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom", "min": 0, "max": 150, "step": 2, "default": 40, "unit": "px" },
+    { "type": "header", "content": "Neumorphic Colors" },
+    { "type": "color", "id": "neu_bg", "label": "Background", "default": "#e6e9ee" },
+    { "type": "color", "id": "neu_shadow_dark", "label": "Shadow Dark", "default": "#4f4e4e" },
+    { "type": "color", "id": "neu_shadow_light", "label": "Shadow Light", "default": "#ffffff" },
+    { "type": "color", "id": "neu_text", "label": "Text Color", "default": "#2c3e50" },
+    { "type": "color", "id": "neu_text_muted", "label": "Muted Text", "default": "#8b95a3" },
+    { "type": "color", "id": "neu_accent", "label": "Accent", "default": "#7d3fbf" },
+    { "type": "header", "content": "Shape" },
+    { "type": "range", "id": "neu_radius", "label": "Border Radius", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 24 }
+  ]
+}
+{% endschema %}

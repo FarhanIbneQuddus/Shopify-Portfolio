@@ -1,0 +1,443 @@
+{% render 'neu-settings', section: section %}
+
+{{ 'hero-slider.css' | asset_url | stylesheet_tag }}
+
+<section class="hero-slider" id="hero-slider-{{ section.id }}" data-autoplay-speed="{{ section.settings.autoplay_speed | times: 1000 }}">
+  <div class="hero-slider__container">
+    <div class="hero-slider__track">
+      {% for block in section.blocks %}
+        <div class="hero-slider__slide {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="hero-slider__inner">
+            <!-- Left Content -->
+            <div class="hero-slider__content">
+              {% if block.settings.badge_text != blank %}
+                <div class="hero-slider__badge">
+                  <span class="hero-slider__badge-dot"></span>
+                  <span class="hero-slider__badge-text">{{ block.settings.badge_text }}</span>
+                </div>
+              {% endif %}
+
+              {% if block.settings.heading != blank %}
+                <h1 class="hero-slider__heading">
+                  {{ block.settings.heading }}
+                </h1>
+              {% endif %}
+
+              {% if block.settings.description != blank %}
+                <p class="hero-slider__description">{{ block.settings.description }}</p>
+              {% endif %}
+
+              <div class="hero-slider__buttons">
+                {% if block.settings.button_text_1 != blank %}
+                  <a href="{{ block.settings.button_url_1 }}" class="hero-slider__btn hero-slider__btn--primary">
+                    <span>{{ block.settings.button_text_1 }}</span>
+                    <span class="hero-slider__btn-arrow">
+                      <svg width="12" height="12" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 1.5H12.5M12.5 1.5V10M12.5 1.5L1.5 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </a>
+                {% endif %}
+                {% if block.settings.button_text_2 != blank %}
+                  <a href="{{ block.settings.button_url_2 }}" class="hero-slider__btn hero-slider__btn--secondary">
+                    <span>{{ block.settings.button_text_2 }}</span>
+                    <span class="hero-slider__btn-arrow-right">→</span>
+                  </a>
+                {% endif %}
+              </div>
+
+              <!-- Stats -->
+              <div class="hero-slider__stats">
+                {% if block.settings.stat_1_value != blank %}
+                  <div class="hero-slider__stat">
+                    <div class="hero-slider__stat-value">{{ block.settings.stat_1_value }}</div>
+                    <div class="hero-slider__stat-label">{{ block.settings.stat_1_label }}</div>
+                  </div>
+                {% endif %}
+                {% if block.settings.stat_2_value != blank %}
+                  <div class="hero-slider__stat">
+                    <div class="hero-slider__stat-value">{{ block.settings.stat_2_value }}{% if block.settings.stat_2_icon == 'star' %}★{% endif %}</div>
+                    <div class="hero-slider__stat-label">{{ block.settings.stat_2_label }}</div>
+                  </div>
+                {% endif %}
+                {% if block.settings.stat_3_value != blank %}
+                  <div class="hero-slider__stat">
+                    <div class="hero-slider__stat-value">{{ block.settings.stat_3_value }}</div>
+                    <div class="hero-slider__stat-label">{{ block.settings.stat_3_label }}</div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Right Column: Card + Controls -->
+            <div class="hero-slider__right">
+              <div
+                class="hero-slider__card"
+                {% if block.settings.image != blank %}
+                  style="background-image: url('{{ block.settings.image | image_url: width: 1200 }}');"
+                {% endif %}
+              >
+                <!-- Overlay for readability -->
+                <div class="hero-slider__card-overlay"></div>
+
+                <!-- Foreground content -->
+                <div class="hero-slider__card-inner">
+                  <div class="hero-slider__card-header">
+                    {% if block.settings.card_label != blank %}
+                      <span class="hero-slider__card-label">{{ block.settings.card_label }}</span>
+                    {% endif %}
+                    {% if block.settings.card_title != blank %}
+                      <span class="hero-slider__card-title">{{ block.settings.card_title }}</span>
+                    {% endif %}
+                  </div>
+
+                  {% if block.settings.status_text != blank %}
+                    <div class="hero-slider__card-status">
+                      <span class="hero-slider__status-dot"></span>
+                      <div class="hero-slider__status-info">
+                        <span class="hero-slider__status-label">STATUS</span>
+                        <span class="hero-slider__status-text">{{ block.settings.status_text }}</span>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Controls inside right column, directly under the card -->
+              {% if section.blocks.size > 1 %}
+                <div class="hero-slider__controls">
+                  <div class="hero-slider__nav">
+                    <button type="button" class="hero-slider__nav-btn" data-nav="prev" aria-label="Previous slide">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 4L6 9L11 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button type="button" class="hero-slider__nav-btn" data-nav="next" aria-label="Next slide">
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7 4L12 9L7 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="hero-slider__pagination">
+                    {% for b in section.blocks %}
+                      <button type="button" class="hero-slider__dot {% if forloop.first %}is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" data-slide-target="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}">
+                        <span class="hero-slider__dot-progress"></span>
+                      </button>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const section = document.getElementById('hero-slider-{{ section.id }}');
+    if (!section) return;
+
+    const slides = section.querySelectorAll('.hero-slider__slide');
+    const autoplaySpeed = parseInt(section.dataset.autoplaySpeed, 10) || 5000;
+
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+    let rafId = null;
+    let startTime = null;
+    let isTransitioning = false;
+
+    function resetAllDots() {
+      slides.forEach(function (slide) {
+        const dots = slide.querySelectorAll('.hero-slider__dot');
+        dots.forEach(function (dot) {
+          dot.classList.remove('is-active');
+          const prog = dot.querySelector('.hero-slider__dot-progress');
+          if (prog) {
+            prog.style.transition = 'none';
+            prog.style.width = '0%';
+          }
+        });
+      });
+    }
+
+    function markActiveDot(index) {
+      slides.forEach(function (slide) {
+        const dots = slide.querySelectorAll('.hero-slider__dot');
+        if (dots[index]) dots[index].classList.add('is-active');
+      });
+    }
+
+    function setActiveSlide(index) {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      if (index < 0) index = slides.length - 1;
+      if (index >= slides.length) index = 0;
+
+      slides.forEach(function (slide) {
+        slide.classList.remove('is-active');
+      });
+
+      resetAllDots();
+
+      slides[index].classList.add('is-active');
+      markActiveDot(index);
+
+      currentIndex = index;
+
+      requestAnimationFrame(function () {
+        startProgress();
+        setTimeout(function () {
+          isTransitioning = false;
+        }, 100);
+      });
+    }
+
+    function startProgress() {
+      stopProgress();
+      startTime = performance.now();
+      tick();
+    }
+
+    function tick() {
+      const now = performance.now();
+      const elapsed = now - startTime;
+      const pct = Math.min((elapsed / autoplaySpeed) * 100, 100);
+
+      const activeSlide = slides[currentIndex];
+      if (activeSlide) {
+        const activeDot = activeSlide.querySelector('.hero-slider__dot.is-active');
+        if (activeDot) {
+          const bar = activeDot.querySelector('.hero-slider__dot-progress');
+          if (bar) bar.style.width = pct + '%';
+        }
+      }
+
+      if (pct >= 100) {
+        const nextIdx = (currentIndex + 1) % slides.length;
+        setActiveSlide(nextIdx);
+        return;
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function stopProgress() {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
+
+    section.addEventListener('click', function (e) {
+      const navBtn = e.target.closest('[data-nav]');
+      if (navBtn) {
+        const dir = navBtn.getAttribute('data-nav');
+        if (dir === 'prev') setActiveSlide(currentIndex - 1);
+        if (dir === 'next') setActiveSlide(currentIndex + 1);
+        return;
+      }
+
+      const dot = e.target.closest('.hero-slider__dot');
+      if (dot) {
+        const idx = parseInt(dot.getAttribute('data-slide-target'), 10);
+        if (!isNaN(idx) && idx !== currentIndex) {
+          setActiveSlide(idx);
+        }
+      }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        stopProgress();
+      } else {
+        startProgress();
+      }
+    });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    section.addEventListener('touchstart', function (e) {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    section.addEventListener('touchend', function (e) {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchStartX - touchEndX;
+      const diffY = touchStartY - touchEndY;
+
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) {
+          setActiveSlide(currentIndex + 1);
+        } else {
+          setActiveSlide(currentIndex - 1);
+        }
+      }
+    }, { passive: true });
+
+    markActiveDot(0);
+    startProgress();
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Hero Slider",
+  "tag": "section",
+  "class": "hero-slider-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 5,
+      "unit": "s",
+      "label": "Autoplay speed"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "header", "content": "Badge" },
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge text",
+          "default": "NEW · SPRING COLLECTION 2026"
+        },
+        { "type": "header", "content": "Content" },
+        {
+          "type": "html",
+          "id": "heading",
+          "label": "Heading (HTML allowed)",
+          "default": "Robot toys,<br><em>softly</em><br>engineered."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Tech builds friendly, minimalist companions for curious minds. Six models, one obsession — the quiet joy of a machine that fits your desk, your kid, your life."
+        },
+        { "type": "header", "content": "Button 1" },
+        { "type": "text", "id": "button_text_1", "label": "Button text", "default": "Shop the catalogue" },
+        { "type": "url", "id": "button_url_1", "label": "Button URL" },
+        { "type": "header", "content": "Button 2" },
+        { "type": "text", "id": "button_text_2", "label": "Button text", "default": "Watch the film" },
+        { "type": "url", "id": "button_url_2", "label": "Button URL" },
+        { "type": "header", "content": "Product Card" },
+        { "type": "image_picker", "id": "image", "label": "Card background image" },
+        { "type": "text", "id": "card_label", "label": "Card label", "default": "MODEL" },
+        { "type": "text", "id": "card_title", "label": "Card title", "default": "PEBBLE · Ceramic White" },
+        { "type": "text", "id": "status_text", "label": "Status text", "default": "Ready to ship" },
+        { "type": "header", "content": "Stats" },
+        { "type": "text", "id": "stat_1_value", "label": "Stat 1 value", "default": "72k" },
+        { "type": "text", "id": "stat_1_label", "label": "Stat 1 label", "default": "LITTLE OWNERS" },
+        { "type": "text", "id": "stat_2_value", "label": "Stat 2 value", "default": "4.9" },
+        {
+          "type": "select",
+          "id": "stat_2_icon",
+          "label": "Stat 2 icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "star"
+        },
+        { "type": "text", "id": "stat_2_label", "label": "Stat 2 label", "default": "DESIGN REVIEW AVG" },
+        { "type": "text", "id": "stat_3_value", "label": "Stat 3 value", "default": "24 mo" },
+        { "type": "text", "id": "stat_3_label", "label": "Stat 3 label", "default": "WARRANTY" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Slider",
+      "blocks": [
+        { "type": "slide" },
+        {
+          "type": "slide",
+          "settings": {
+            "badge_text": "NEW · SUMMER COLLECTION 2026",
+            "heading": "Drone kits,<br><em>gently</em><br>assembled.",
+            "description": "Precision-crafted micro drones designed for learning and play. Every piece snaps together — no tools, no frustration, just flight.",
+            "card_title": "SWIFT · Matte Black",
+            "status_text": "Pre-order",
+            "stat_1_value": "38k",
+            "stat_1_label": "PILOTS WORLDWIDE",
+            "stat_2_value": "4.8",
+            "stat_2_label": "USER RATING AVG",
+            "stat_3_value": "18 mo",
+            "stat_3_label": "WARRANTY"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "badge_text": "FEATURED · EDITOR'S PICK",
+            "heading": "Smart blocks,<br><em>boldly</em><br>imagined.",
+            "description": "Magnetic building blocks with embedded sensors. They light up, they respond, they teach — all through the magic of play.",
+            "card_title": "CUBO · Ocean Blue",
+            "status_text": "In stock",
+            "stat_1_value": "105k",
+            "stat_1_label": "HAPPY BUILDERS",
+            "stat_2_value": "4.7",
+            "stat_2_label": "PARENT REVIEW AVG",
+            "stat_3_value": "36 mo",
+            "stat_3_label": "WARRANTY"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

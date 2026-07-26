@@ -1,0 +1,97 @@
+{
+  "sections": {
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "contact_form_bVMipV": {
+      "type": "contact-form",
+      "name": "Contact form",
+      "settings": {
+        "badge_text": "Get In Touch",
+        "heading": "Let's Start a Conversation",
+        "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible.",
+        "info_title": "Contact Information",
+        "contact_email": "hello@yourstore.com",
+        "contact_phone": "+1 (555) 123-4567",
+        "contact_address": "123 Main Street, New York, NY 10001",
+        "show_social": true,
+        "social_title": "Follow Us",
+        "social_subtitle": "Stay connected with us on social media",
+        "social_facebook": "",
+        "social_instagram": "",
+        "social_twitter": "",
+        "social_snapchat": "",
+        "social_tiktok": "",
+        "social_youtube": "",
+        "social_pinterest": "",
+        "social_linkedin": "",
+        "social_whatsapp": "",
+        "form_title": "Send us a Message",
+        "form_description": "Fill out the form below and we will get back to you within 24 hours.",
+        "privacy_text": "<p>By submitting, you agree to our Privacy Policy and Terms of Service.</p>",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "multi_service_Cc4bDA": {
+      "type": "multi-service",
+      "blocks": {
+        "service_VnA47D": {
+          "type": "service",
+          "settings": {
+            "icon_name": "bolt",
+            "heading": "48-Hour Cell",
+            "description": "Silicon-anode pack rated for two full days of active operation.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_PAeTHL": {
+          "type": "service",
+          "settings": {
+            "icon_name": "shield",
+            "heading": "IP67 Chassis",
+            "description": "Sealed against dust and momentary immersion. Studio to sidewalk.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_JkKWWA": {
+          "type": "service",
+          "settings": {
+            "icon_name": "heart",
+            "heading": "Quiet Cortex",
+            "description": "On-device intelligence with a 32 dB acoustic profile.",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_VnA47D",
+        "service_PAeTHL",
+        "service_JkKWWA"
+      ],
+      "name": "Multi Services",
+      "settings": {
+        "heading": "Our Services",
+        "subtitle": "Everything you need, engineered with care.",
+        "heading_alignment": "center",
+        "heading_size": 36,
+        "columns_desktop": 3,
+        "gap": 28,
+        "card_radius": 20,
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main",
+    "contact_form_bVMipV",
+    "multi_service_Cc4bDA"
+  ]
+}

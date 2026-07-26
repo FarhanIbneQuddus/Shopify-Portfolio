@@ -1,0 +1,143 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "faq_e6pU4E": {
+      "type": "faq",
+      "blocks": {
+        "faq_item_4Cgn4w": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What makes your products unique?",
+            "answer": "<p>Every product is handcrafted with premium materials and designed with meticulous attention to detail that sets us apart from competitors.</p>"
+          }
+        },
+        "faq_item_rLagrh": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer international shipping?",
+            "answer": "<p>Yes! We ship to over 50 countries worldwide with tracked delivery options. Most orders arrive within 5-10 business days depending on your location.</p>"
+          }
+        },
+        "faq_item_B4apMK": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a hassle-free 30-day return policy on all our products. If you're not completely satisfied, simply reach out to our support team for a full refund.</p>"
+          }
+        },
+        "faq_item_WqWQ97": {
+          "type": "faq_item",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "<p>Once your order ships, you'll receive an email with a tracking number. You can also log into your account dashboard to view real-time order status updates.</p>"
+          }
+        },
+        "faq_item_JiP9Gh": {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer wholesale pricing?",
+            "answer": "<p>Absolutely! We have a dedicated wholesale program for businesses. Contact our sales team for bulk pricing, custom orders, and partnership opportunities.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_4Cgn4w",
+        "faq_item_rLagrh",
+        "faq_item_B4apMK",
+        "faq_item_WqWQ97",
+        "faq_item_JiP9Gh"
+      ],
+      "name": "FAQ Accordion",
+      "settings": {
+        "badge_text": "FAQ",
+        "title": "Frequently Asked Questions",
+        "subtitle": "Everything you need to know about our products and services",
+        "bottom_text": "Still have questions?",
+        "bottom_button_text": "Contact Us",
+        "bottom_button_link": "",
+        "allow_multiple": false,
+        "open_first": true,
+        "show_decorations": true,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light": "#a29bfe",
+        "border_radius": 18,
+        "max_width": 900,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "multi_service_xk3kAh": {
+      "type": "multi-service",
+      "blocks": {
+        "service_iNKUqt": {
+          "type": "service",
+          "settings": {
+            "icon_name": "bolt",
+            "heading": "48-Hour Cell",
+            "description": "Silicon-anode pack rated for two full days of active operation.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_qQKnJP": {
+          "type": "service",
+          "settings": {
+            "icon_name": "shield",
+            "heading": "IP67 Chassis",
+            "description": "Sealed against dust and momentary immersion. Studio to sidewalk.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_CGbyVD": {
+          "type": "service",
+          "settings": {
+            "icon_name": "heart",
+            "heading": "Quiet Cortex",
+            "description": "On-device intelligence with a 32 dB acoustic profile.",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_iNKUqt",
+        "service_qQKnJP",
+        "service_CGbyVD"
+      ],
+      "name": "Multi Services",
+      "settings": {
+        "heading": "Our Services",
+        "subtitle": "Everything you need, engineered with care.",
+        "heading_alignment": "center",
+        "heading_size": 36,
+        "columns_desktop": 3,
+        "gap": 28,
+        "card_radius": 20,
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq_e6pU4E",
+    "multi_service_xk3kAh"
+  ]
+}

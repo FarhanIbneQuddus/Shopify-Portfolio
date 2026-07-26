@@ -1,0 +1,1648 @@
+{% render 'neu-settings', section: section %}
+
+{{ 'neumorphic-product.css' | asset_url | stylesheet_tag }}
+
+{%- assign product = section.settings.product | default: product -%}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+
+<div
+  class="neu-product-section"
+  data-section-id="{{ section.id }}"
+  data-money-format="{{ shop.money_format | escape }}"
+  data-currency-symbol="{{ cart.currency.symbol | escape }}"
+  data-currency-code="{{ cart.currency.iso_code }}"
+  style="padding-top: {{ section.settings.section_padding_top }}px; padding-bottom: {{ section.settings.section_padding_bottom }}px;"
+>
+  <div class="neu-product-wrapper">
+
+    {%- comment -%} TOP GRID {%- endcomment -%}
+    <div class="neu-product-top">
+      {%- comment -%} LEFT — GALLERY {%- endcomment -%}
+      <div class="neu-product-gallery">
+        <div class="neu-main-image-wrapper">
+          <div class="neu-main-image">
+            <div class="neu-main-image-inner">
+              {%- if featured_image -%}
+                <img
+                  src="{{ featured_image | image_url: width: 800 }}"
+                  alt="{{ featured_image.alt | escape }}"
+                  loading="lazy"
+                  id="neu-product-featured-img"
+                  class="neu-featured-img"
+                >
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'neu-placeholder-svg' }}
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+
+        {%- if product.images.size > 1 -%}
+          <div class="neu-thumbnail-container">
+            <button type="button" class="neu-thumb-arrow neu-thumb-arrow--prev" aria-label="Previous image" data-thumb-direction="prev" hidden>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+
+            <div class="neu-thumbnail-row" data-thumbnail-row>
+              {%- for image in product.images -%}
+                <button
+                  class="neu-thumbnail{% if image == featured_image %} neu-thumbnail--active{% endif %}"
+                  data-image-url="{{ image | image_url: width: 800 }}"
+                  data-image-alt="{{ image.alt | escape }}"
+                  data-index="{{ forloop.index0 }}"
+                  aria-label="Load image {{ forloop.index }}"
+                  type="button"
+                >
+                  <img
+                    src="{{ image | image_url: width: 200 }}"
+                    alt="{{ image.alt | escape }}"
+                    loading="lazy"
+                  >
+                </button>
+              {%- endfor -%}
+            </div>
+
+            <button type="button" class="neu-thumb-arrow neu-thumb-arrow--next" aria-label="Next image" data-thumb-direction="next" hidden>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} RIGHT — PRODUCT INFO {%- endcomment -%}
+      <div class="neu-product-info">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="neu-product-subtitle">{{ section.settings.subtitle }}</p>
+        {%- elsif product.type != blank -%}
+          <p class="neu-product-subtitle">{{ product.type | upcase }}</p>
+        {%- endif -%}
+
+        <h1 class="neu-product-title">{{ product.title }}</h1>
+
+        {%- if section.settings.tagline != blank -%}
+          <p class="neu-product-tagline">{{ section.settings.tagline }}</p>
+        {%- endif -%}
+
+        <div class="neu-product-meta-row">
+          <div class="neu-badge-pill neu-reviews-pill">
+            <div class="neu-stars">
+              {%- assign rating = section.settings.rating | default: 5 -%}
+              {%- for i in (1..5) -%}
+                <svg class="neu-star{% if i <= rating %} neu-star--filled{% endif %}" width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              {%- endfor -%}
+            </div>
+            <span class="neu-review-count">{{ section.settings.review_count | default: '0' }} REVIEWS</span>
+          </div>
+          <div class="neu-badge-pill neu-stock-pill">
+            <span class="neu-stock-dot"></span>
+            <span class="neu-stock-text">
+              {%- if current_variant.available -%}IN STOCK{%- else -%}SOLD OUT{%- endif -%}
+            </span>
+          </div>
+        </div>
+
+        <div class="neu-price-row">
+          <span class="neu-price" id="neu-product-price">{{ current_variant.price | money_without_trailing_zeros }}</span>
+          {%- if section.settings.installment_count > 0 -%}
+            <span class="neu-installment">
+              or {{ section.settings.installment_count }} × {{ current_variant.price | divided_by: section.settings.installment_count | money_without_trailing_zeros }}
+            </span>
+          {%- endif -%}
+        </div>
+
+        {%- form 'product', product, id: 'neu-product-form', class: 'neu-product-form', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" id="neu-variant-id">
+
+          {%- for option in product.options_with_values -%}
+            <div class="neu-option-group">
+              <label class="neu-option-label">{{ option.name | upcase }}</label>
+              <div class="neu-option-buttons neu-tabs-slider" data-option-index="{{ forloop.index0 }}">
+                <span class="neu-tabs-indicator" aria-hidden="true"></span>
+                {%- for value in option.values -%}
+                  <button
+                    type="button"
+                    class="neu-option-btn neu-tabs-slider__btn{% if option.selected_value == value %} neu-option-btn--active is-active{% endif %}"
+                    data-value="{{ value }}"
+                    data-option-position="{{ option.position }}"
+                    aria-label="{{ option.name }}: {{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+          <div class="neu-action-row">
+            <div class="neu-quantity-selector">
+              <button type="button" class="neu-qty-btn" data-action="decrease" aria-label="Decrease quantity">
+                <svg width="10" height="2" viewBox="0 0 10 2" fill="none"><rect width="10" height="2" rx="1" fill="currentColor"/></svg>
+              </button>
+              <input
+                type="number"
+                name="quantity"
+                id="neu-quantity"
+                class="neu-qty-input"
+                value="1"
+                min="1"
+                aria-label="Quantity"
+              >
+              <button type="button" class="neu-qty-btn" data-action="increase" aria-label="Increase quantity">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="4" width="2" height="10" rx="1" fill="currentColor"/><rect y="4" width="10" height="2" rx="1" fill="currentColor"/></svg>
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              class="neu-add-to-bag"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              <span class="neu-atb-text">{%- if current_variant.available -%}Add to Bag{%- else -%}Sold Out{%- endif -%}</span>
+              <span class="neu-atb-spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+        {%- endform -%}
+
+        <div class="neu-trust-badges">
+          {%- assign trust_blocks = section.blocks | where: 'type', 'trust_badge' -%}
+          {%- if trust_blocks.size > 0 -%}
+            {%- for block in trust_blocks -%}
+              <div class="neu-trust-badge" {{ block.shopify_attributes }}>
+                <div class="neu-trust-icon">
+                  {%- case block.settings.icon -%}
+                    {%- when 'shipping' -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    {%- when 'returns' -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                    {%- when 'warranty' -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {%- when 'secure' -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                    {%- else -%}
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg>
+                  {%- endcase -%}
+                </div>
+                <span class="neu-trust-text">{{ block.settings.text }}</span>
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="neu-trust-badge">
+              <div class="neu-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+              <span class="neu-trust-text">Free shipping</span>
+            </div>
+            <div class="neu-trust-badge">
+              <div class="neu-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></div>
+              <span class="neu-trust-text">30-day returns</span>
+            </div>
+            <div class="neu-trust-badge">
+              <div class="neu-trust-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+              <span class="neu-trust-text">3-year warranty</span>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} BOTTOM — TABS + FAQ {%- endcomment -%}
+    <div class="neu-product-bottom">
+      <div class="neu-tabs-nav neu-tabs-slider">
+        <span class="neu-tabs-indicator" aria-hidden="true"></span>
+        {%- assign tab_blocks = section.blocks | where: 'type', 'tab' -%}
+        {%- if tab_blocks.size > 0 -%}
+          {%- for block in tab_blocks -%}
+            <button
+              type="button"
+              class="neu-tab-btn neu-tabs-slider__btn{% if forloop.first %} neu-tab-btn--active is-active{% endif %}"
+              data-tab="{{ block.id }}"
+              {{ block.shopify_attributes }}
+            >
+              {{ block.settings.tab_title }}
+            </button>
+          {%- endfor -%}
+        {%- else -%}
+          <button type="button" class="neu-tab-btn neu-tabs-slider__btn neu-tab-btn--active is-active" data-tab="overview">Overview</button>
+          <button type="button" class="neu-tab-btn neu-tabs-slider__btn" data-tab="specifications">Specifications</button>
+          <button type="button" class="neu-tab-btn neu-tabs-slider__btn" data-tab="shipping">Shipping</button>
+        {%- endif -%}
+      </div>
+
+      <div class="neu-bottom-panel">
+        <div class="neu-tabs-content">
+          {%- if tab_blocks.size > 0 -%}
+            {%- for block in tab_blocks -%}
+              {%- assign word_limit = block.settings.word_limit | default: 0 -%}
+              <div
+                class="neu-tab-panel{% if forloop.first %} neu-tab-panel--active{% endif %}"
+                data-tab-panel="{{ block.id }}"
+                data-word-limit="{{ word_limit }}"
+              >
+                <div class="neu-tab-panel__content" data-tab-content>
+                  {%- assign content_source = block.settings.content_source | default: 'custom' -%}
+
+                  {%- case content_source -%}
+                    {%- when 'product_description' -%}
+                      {%- if product.description != blank -%}
+                        {{ product.description }}
+                      {%- else -%}
+                        <p>No description available.</p>
+                      {%- endif -%}
+
+                    {%- when 'metafield' -%}
+                      {%- assign metafield_namespace = block.settings.metafield_namespace | default: 'custom' -%}
+                      {%- assign metafield_key = block.settings.metafield_key -%}
+                      {%- if metafield_key != blank -%}
+                        {%- assign metafield_value = product.metafields[metafield_namespace][metafield_key] -%}
+                        {%- if metafield_value != blank -%}
+                          {%- if metafield_value.type == 'rich_text_field' -%}
+                            {{ metafield_value | metafield_tag }}
+                          {%- elsif metafield_value.value.size > 0 and metafield_value.value.first -%}
+                            {{ metafield_value | metafield_tag }}
+                          {%- else -%}
+                            <div class="neu-metafield-content">{{ metafield_value }}</div>
+                          {%- endif -%}
+                        {%- else -%}
+                          <p class="neu-metafield-empty">No content found for metafield <code>{{ metafield_namespace }}.{{ metafield_key }}</code></p>
+                        {%- endif -%}
+                      {%- else -%}
+                        <p class="neu-metafield-empty">Please set a metafield key in the block settings.</p>
+                      {%- endif -%}
+
+                    {%- else -%}
+                      {%- if block.settings.tab_content != blank -%}
+                        {{ block.settings.tab_content }}
+                      {%- else -%}
+                        <p>No content added yet.</p>
+                      {%- endif -%}
+                  {%- endcase -%}
+                </div>
+
+                {%- if word_limit > 0 -%}
+                  <button type="button" class="neu-see-more-btn" data-see-more hidden>
+                    <span class="neu-see-more-btn__text">See more</span>
+                    <svg class="neu-see-more-btn__icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          {%- else -%}
+            <div class="neu-tab-panel neu-tab-panel--active" data-tab-panel="overview" data-word-limit="{{ section.settings.default_word_limit | default: 0 }}">
+              <div class="neu-tab-panel__content" data-tab-content>
+                {%- if product.description != blank -%}
+                  {{ product.description }}
+                {%- else -%}
+                  <p>No description available for this product.</p>
+                {%- endif -%}
+              </div>
+              {%- if section.settings.default_word_limit > 0 -%}
+                <button type="button" class="neu-see-more-btn" data-see-more hidden>
+                  <span class="neu-see-more-btn__text">See more</span>
+                  <svg class="neu-see-more-btn__icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+            <div class="neu-tab-panel" data-tab-panel="specifications" data-word-limit="{{ section.settings.default_word_limit | default: 0 }}">
+              <div class="neu-tab-panel__content" data-tab-content>
+                {%- assign specs_metafield = product.metafields.custom.specifications -%}
+                {%- if specs_metafield != blank -%}
+                  {{ specs_metafield | metafield_tag }}
+                {%- else -%}
+                  <p>Product specifications will appear here. Add a metafield <code>custom.specifications</code> to your product to populate this section.</p>
+                {%- endif -%}
+              </div>
+              {%- if section.settings.default_word_limit > 0 -%}
+                <button type="button" class="neu-see-more-btn" data-see-more hidden>
+                  <span class="neu-see-more-btn__text">See more</span>
+                  <svg class="neu-see-more-btn__icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+            <div class="neu-tab-panel" data-tab-panel="shipping" data-word-limit="{{ section.settings.default_word_limit | default: 0 }}">
+              <div class="neu-tab-panel__content" data-tab-content>
+                {%- assign shipping_metafield = product.metafields.custom.shipping -%}
+                {%- if shipping_metafield != blank -%}
+                  {{ shipping_metafield | metafield_tag }}
+                {%- else -%}
+                  <p>Shipping information will appear here. Add a metafield <code>custom.shipping</code> to your product to populate this section.</p>
+                {%- endif -%}
+              </div>
+              {%- if section.settings.default_word_limit > 0 -%}
+                <button type="button" class="neu-see-more-btn" data-see-more hidden>
+                  <span class="neu-see-more-btn__text">See more</span>
+                  <svg class="neu-see-more-btn__icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </button>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} FAQ ACCORDION {%- endcomment -%}
+        {%- assign faq_blocks = section.blocks | where: 'type', 'faq_item' -%}
+        <div class="neu-faq-wrapper">
+          {%- if section.settings.faq_heading != blank -%}
+            <h3 class="neu-faq-heading">{{ section.settings.faq_heading }}</h3>
+          {%- endif -%}
+
+          <div class="neu-faq-list">
+            {%- if faq_blocks.size > 0 -%}
+              {%- for block in faq_blocks -%}
+                <div class="neu-faq-item" {{ block.shopify_attributes }}>
+                  <button type="button" class="neu-faq-question" aria-expanded="false" aria-controls="faq-answer-{{ block.id }}">
+                    <span class="neu-faq-q-text">{{ block.settings.question }}</span>
+                    <span class="neu-faq-icon" aria-hidden="true">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="neu-faq-answer" id="faq-answer-{{ block.id }}" role="region">
+                    <div class="neu-faq-answer-inner">
+                      {{ block.settings.answer }}
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- else -%}
+              {%- assign default_faqs = 'What materials is it made of?|A precision-milled aluminum chassis with a soft-touch polymer shell for grip and durability.,How long does the battery last?|Up to 14 hours of active use on a single charge, with fast USB-C top-ups in under 45 minutes.,Is it water resistant?|Yes — rated IP54 for dust and splash resistance. Not suitable for full submersion.,What is the warranty coverage?|Every unit ships with a 3-year limited warranty covering defects and normal wear.,How do I set it up?|Unbox, power on, and follow the guided companion app — most people are running in under 3 minutes.,Does it work offline?|Absolutely. Core functions run on-device with no cloud dependency required.,Can I use it with iOS and Android?|Yes — full parity across iOS 15+ and Android 11+ through our free companion app.,What is your return policy?|30 days, no questions asked. We provide a prepaid label and issue refunds within 5 business days of receipt.,How is it shipped?|Free carbon-neutral shipping via express carriers, typically arriving in 2–4 business days.,Do you offer bulk or team pricing?|Yes — reach out to our team for volume discounts on orders of 10+ units.' | split: ',' -%}
+
+              {%- for faq in default_faqs -%}
+                {%- assign parts = faq | split: '|' -%}
+                <div class="neu-faq-item">
+                  <button type="button" class="neu-faq-question" aria-expanded="false" aria-controls="faq-answer-default-{{ forloop.index }}">
+                    <span class="neu-faq-q-text">{{ parts[0] }}</span>
+                    <span class="neu-faq-icon" aria-hidden="true">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <div class="neu-faq-answer" id="faq-answer-default-{{ forloop.index }}" role="region">
+                    <div class="neu-faq-answer-inner">
+                      <p>{{ parts[1] }}</p>
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="neu-product-variants-{{ section.id }}">
+    {{ product.variants | json }}
+  </script>
+</div>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const section = document.querySelector(`[data-section-id="${sectionId}"]`);
+    if (!section) return;
+
+    /* ============================================
+       MONEY FORMATTING
+       ============================================ */
+    const moneyFormat = section.dataset.moneyFormat || '${{amount}}';
+
+    function formatMoney(cents, format) {
+      if (typeof cents === 'string') cents = cents.replace('.', '');
+      const value = parseFloat(cents);
+      if (isNaN(value)) return cents;
+
+      const formatString = format || moneyFormat;
+      const placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+
+      function formatWithDelimiters(number, precision = 2, thousands = ',', decimal = '.') {
+        if (isNaN(number) || number == null) return 0;
+        number = (number / 100.0).toFixed(precision);
+        const parts = number.split('.');
+        const dollarsAmount = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands);
+        const centsAmount = parts[1] ? decimal + parts[1] : '';
+        return dollarsAmount + centsAmount;
+      }
+
+      let formatted = formatString;
+      const match = formatString.match(placeholderRegex);
+      if (!match) return formatString;
+
+      switch (match[1]) {
+        case 'amount':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 2));
+          break;
+        case 'amount_no_decimals':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 0));
+          break;
+        case 'amount_with_comma_separator':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 2, '.', ','));
+          break;
+        case 'amount_no_decimals_with_comma_separator':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 0, '.', ','));
+          break;
+        case 'amount_with_space_separator':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 2, ' ', '.'));
+          break;
+        case 'amount_no_decimals_with_space_separator':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 0, ' ', '.'));
+          break;
+        case 'amount_with_apostrophe_separator':
+          formatted = formatString.replace(placeholderRegex, formatWithDelimiters(value, 2, "'", '.'));
+          break;
+      }
+
+      return formatted;
+    }
+
+    function formatMoneyNoTrailingZeros(cents) {
+      const formatted = formatMoney(cents);
+      return formatted.replace(/([.,])00(\D|$)/, '$2');
+    }
+
+    /* ============================================
+       OPTION BUTTONS — Draggable when overflowing
+       ============================================ */
+    function scrollButtonIntoView(container, button, smooth = true) {
+      if (!container || !button) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+
+      const overflowLeft = containerRect.left - buttonRect.left;
+      const overflowRight = buttonRect.right - containerRect.right;
+
+      if (overflowLeft > 0) {
+        container.scrollBy({
+          left: -overflowLeft - 20,
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      } else if (overflowRight > 0) {
+        container.scrollBy({
+          left: overflowRight + 20,
+          behavior: smooth ? 'smooth' : 'auto'
+        });
+      }
+    }
+
+    /* ============================================
+   OPTION BUTTONS — Draggable when overflowing
+   ============================================ */
+function scrollButtonIntoView(container, button, smooth = true) {
+  if (!container || !button) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const buttonRect = button.getBoundingClientRect();
+
+  const overflowLeft = containerRect.left - buttonRect.left;
+  const overflowRight = buttonRect.right - containerRect.right;
+
+  if (overflowLeft > 0) {
+    container.scrollBy({
+      left: -overflowLeft - 20,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  } else if (overflowRight > 0) {
+    container.scrollBy({
+      left: overflowRight + 20,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  }
+}
+
+function initOptionDrag() {
+  const containers = section.querySelectorAll('.neu-option-buttons');
+
+  containers.forEach(container => {
+    if (container.dataset.dragBound) return;
+    container.dataset.dragBound = 'true';
+
+    // Detect if slider mode is needed (content overflows)
+    function checkSliderMode() {
+      const overflows = container.scrollWidth > container.clientWidth + 1;
+      container.classList.toggle('is-slider', overflows);
+      return overflows;
+    }
+
+    // Initial check + re-check on resize / font-load
+    requestAnimationFrame(checkSliderMode);
+    setTimeout(checkSliderMode, 100);
+    setTimeout(checkSliderMode, 400);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(checkSliderMode);
+    }
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        checkSliderMode();
+        if (container._updateIndicator) container._updateIndicator(false);
+      }, 120);
+    });
+
+    let isDragging = false;
+    let hasMoved = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let velX = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let momentumRAF = null;
+
+    const DRAG_THRESHOLD = 5; // px
+
+    // ---- Mouse drag ----
+    container.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      if (!container.classList.contains('is-slider')) return;
+
+      isDragging = true;
+      hasMoved = false;
+      startX = e.pageX;
+      scrollStart = container.scrollLeft;
+      lastX = e.pageX;
+      lastTime = Date.now();
+      velX = 0;
+
+      if (momentumRAF) {
+        cancelAnimationFrame(momentumRAF);
+        momentumRAF = null;
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+
+      const x = e.pageX;
+      const dx = startX - x;
+
+      if (!hasMoved && Math.abs(dx) > DRAG_THRESHOLD) {
+        hasMoved = true;
+        container.classList.add('is-dragging', 'was-dragged');
+      }
+
+      if (hasMoved) {
+        container.scrollLeft = scrollStart + dx;
+
+        const now = Date.now();
+        const dt = now - lastTime;
+        if (dt > 0) {
+          velX = (lastX - x) / dt;
+        }
+        lastX = x;
+        lastTime = now;
+
+        e.preventDefault();
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      container.classList.remove('is-dragging');
+
+      if (hasMoved) {
+        // Keep was-dragged briefly so the click event about to fire is blocked
+        setTimeout(() => container.classList.remove('was-dragged'), 100);
+
+        if (Math.abs(velX) > 0.3) {
+          applyMomentum(container, velX);
+        }
+      }
+
+      hasMoved = false;
+    });
+
+    // Also block click on capture phase if a drag happened
+    container.addEventListener('click', (e) => {
+      if (container.classList.contains('was-dragged')) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
+
+    // ---- Touch handling (native scroll handles movement) ----
+    let touchStartX = 0;
+    let touchDragDistance = 0;
+
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].pageX;
+      touchDragDistance = 0;
+    }, { passive: true });
+
+    container.addEventListener('touchmove', (e) => {
+      touchDragDistance = Math.abs(e.touches[0].pageX - touchStartX);
+    }, { passive: true });
+
+    container.addEventListener('touchend', () => {
+      if (touchDragDistance > 10) {
+        container.classList.add('was-dragged');
+        setTimeout(() => container.classList.remove('was-dragged'), 100);
+      }
+    }, { passive: true });
+
+    // ---- Momentum ----
+    function applyMomentum(el, velocity) {
+      const friction = 0.92;
+      const minVelocity = 0.1;
+      let v = velocity * 800;
+
+      function step() {
+        v *= friction;
+
+        if (Math.abs(v) < minVelocity) {
+          momentumRAF = null;
+          if (container._updateIndicator) container._updateIndicator(false);
+          return;
+        }
+
+        el.scrollLeft += v * 0.016;
+        momentumRAF = requestAnimationFrame(step);
+      }
+
+      momentumRAF = requestAnimationFrame(step);
+    }
+
+    // Scroll active option into view on load
+    requestAnimationFrame(() => {
+      const active = container.querySelector('.neu-option-btn--active');
+      if (active && container.classList.contains('is-slider')) {
+        scrollButtonIntoView(container, active, false);
+      }
+    });
+  });
+}
+
+initOptionDrag();
+
+    /* ============================================
+       SLIDING TAB INDICATOR — Universal
+       ============================================ */
+    function initTabsSlider(container) {
+      if (!container) return;
+      const indicator = container.querySelector('.neu-tabs-indicator');
+      if (!indicator) return;
+
+      const btns = container.querySelectorAll('.neu-tabs-slider__btn');
+
+      function moveIndicator(target, animate = true) {
+        if (!target) return;
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const left = targetRect.left - containerRect.left + container.scrollLeft;
+        const width = targetRect.width;
+
+        if (!animate) {
+          indicator.style.transition = 'none';
+          requestAnimationFrame(() => { indicator.style.transition = ''; });
+        }
+
+        indicator.style.width = width + 'px';
+        indicator.style.transform = `translateX(${left}px)`;
+        indicator.style.opacity = '1';
+      }
+
+      function updateIndicator(animate = true) {
+        const active = container.querySelector('.neu-tabs-slider__btn.is-active');
+        if (active) moveIndicator(active, animate);
+        else indicator.style.opacity = '0';
+      }
+
+      btns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          btns.forEach(b => b.classList.remove('is-active', 'neu-option-btn--active', 'neu-tab-btn--active'));
+          if (this.classList.contains('neu-option-btn')) this.classList.add('neu-option-btn--active');
+          if (this.classList.contains('neu-tab-btn')) this.classList.add('neu-tab-btn--active');
+          this.classList.add('is-active');
+          moveIndicator(this);
+
+          scrollButtonIntoView(container, this);
+        });
+      });
+
+      requestAnimationFrame(() => updateIndicator(false));
+
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => updateIndicator(false), 100);
+      });
+
+      container.addEventListener('scroll', () => {
+        requestAnimationFrame(() => updateIndicator(false));
+      }, { passive: true });
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => updateIndicator(false));
+      }
+
+      container._updateIndicator = updateIndicator;
+    }
+
+    section.querySelectorAll('.neu-tabs-slider').forEach(initTabsSlider);
+
+    /* ============================================
+       GALLERY
+       ============================================ */
+    const thumbnails = Array.from(section.querySelectorAll('.neu-thumbnail'));
+    const mainImg = section.querySelector('#neu-product-featured-img');
+    let currentImageIndex = thumbnails.findIndex(t => t.classList.contains('neu-thumbnail--active'));
+    if (currentImageIndex < 0) currentImageIndex = 0;
+
+    function switchImage(index) {
+      if (!thumbnails.length || !mainImg) return;
+
+      const total = thumbnails.length;
+      if (index < 0) index = total - 1;
+      if (index >= total) index = 0;
+
+      const thumb = thumbnails[index];
+      thumbnails.forEach(t => t.classList.remove('neu-thumbnail--active'));
+      thumb.classList.add('neu-thumbnail--active');
+
+      mainImg.style.opacity = '0';
+      mainImg.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        mainImg.src = thumb.dataset.imageUrl;
+        mainImg.alt = thumb.dataset.imageAlt || '';
+        mainImg.style.opacity = '1';
+        mainImg.style.transform = 'scale(1)';
+      }, 180);
+
+      currentImageIndex = index;
+    }
+
+    thumbnails.forEach((thumb, idx) => {
+      thumb.addEventListener('click', () => switchImage(idx));
+    });
+
+    const mainImageEl = section.querySelector('.neu-main-image');
+    if (mainImageEl && thumbnails.length > 1) {
+      mainImageEl.setAttribute('tabindex', '0');
+      mainImageEl.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); switchImage(currentImageIndex - 1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); switchImage(currentImageIndex + 1); }
+      });
+    }
+
+    /* ============================================
+       THUMBNAIL ROW NAV
+       ============================================ */
+    (function initThumbnailNav() {
+      const thumbContainer = section.querySelector('.neu-thumbnail-container');
+      const thumbRow = section.querySelector('[data-thumbnail-row]');
+      const prevArrow = section.querySelector('.neu-thumb-arrow--prev');
+      const nextArrow = section.querySelector('.neu-thumb-arrow--next');
+
+      if (!thumbRow || !prevArrow || !nextArrow) return;
+
+      const VISIBLE_COUNT = 5;
+
+      function updateArrowVisibility() {
+        const totalThumbs = thumbRow.querySelectorAll('.neu-thumbnail').length;
+        const isScrollable = totalThumbs > VISIBLE_COUNT;
+
+        if (!isScrollable) {
+          prevArrow.hidden = true;
+          nextArrow.hidden = true;
+          thumbContainer?.classList.remove('has-nav');
+          return;
+        }
+
+        thumbContainer?.classList.add('has-nav');
+        prevArrow.hidden = false;
+        nextArrow.hidden = false;
+      }
+
+      function scrollActiveThumbIntoView() {
+        const activeThumb = thumbRow.querySelector('.neu-thumbnail--active');
+        if (!activeThumb) return;
+
+        const rowRect = thumbRow.getBoundingClientRect();
+        const thumbRect = activeThumb.getBoundingClientRect();
+
+        if (thumbRect.left < rowRect.left - 1 || thumbRect.right > rowRect.right + 1) {
+          activeThumb.scrollIntoView({
+            behavior: 'smooth',
+            inline: 'nearest',
+            block: 'nearest'
+          });
+        }
+      }
+
+      prevArrow.addEventListener('click', () => {
+        switchImage(currentImageIndex - 1);
+        setTimeout(scrollActiveThumbIntoView, 120);
+      });
+
+      nextArrow.addEventListener('click', () => {
+        switchImage(currentImageIndex + 1);
+        setTimeout(scrollActiveThumbIntoView, 120);
+      });
+
+      let thumbResizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(thumbResizeTimer);
+        thumbResizeTimer = setTimeout(updateArrowVisibility, 100);
+      });
+
+      requestAnimationFrame(updateArrowVisibility);
+      setTimeout(updateArrowVisibility, 300);
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(updateArrowVisibility);
+      }
+    })();
+
+    /* ============================================
+       QUANTITY
+       ============================================ */
+    const qtyInput = section.querySelector('#neu-quantity');
+    section.querySelectorAll('.neu-qty-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        let val = parseInt(qtyInput.value) || 1;
+        if (this.dataset.action === 'decrease') val = Math.max(1, val - 1);
+        else val = val + 1;
+        qtyInput.value = val;
+      });
+    });
+
+    /* ============================================
+       VARIANT SELECTION
+       ============================================ */
+    const optionGroups = section.querySelectorAll('.neu-option-buttons');
+    const variantIdInput = section.querySelector('#neu-variant-id');
+    const priceEl = section.querySelector('#neu-product-price');
+    const addBtn = section.querySelector('.neu-add-to-bag');
+    const atbText = section.querySelector('.neu-atb-text');
+
+    let variantsJson = [];
+    try {
+      variantsJson = JSON.parse(document.getElementById(`neu-product-variants-${sectionId}`).textContent);
+    } catch(e) {}
+
+    optionGroups.forEach(group => {
+      const buttons = group.querySelectorAll('.neu-option-btn');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const selectedOptions = [];
+          section.querySelectorAll('.neu-option-buttons').forEach(g => {
+            const activeBtn = g.querySelector('.neu-option-btn--active');
+            if (activeBtn) selectedOptions.push(activeBtn.dataset.value);
+          });
+
+          const matched = variantsJson.find(v =>
+            v.options.every((opt, idx) => opt === selectedOptions[idx])
+          );
+
+          if (matched) {
+            variantIdInput.value = matched.id;
+
+            if (priceEl) {
+              priceEl.style.opacity = '0';
+              setTimeout(() => {
+                priceEl.textContent = formatMoneyNoTrailingZeros(matched.price);
+                priceEl.style.opacity = '1';
+              }, 150);
+            }
+
+            if (addBtn && atbText) {
+              addBtn.disabled = !matched.available;
+              atbText.textContent = matched.available ? 'Add to Bag' : 'Sold Out';
+            }
+
+            if (matched.featured_image && mainImg) {
+              mainImg.style.opacity = '0';
+              setTimeout(() => {
+                mainImg.src = matched.featured_image.src;
+                mainImg.style.opacity = '1';
+              }, 180);
+            }
+
+            const url = new URL(window.location);
+            url.searchParams.set('variant', matched.id);
+            window.history.replaceState({}, '', url);
+          }
+        });
+      });
+    });
+
+    /* ============================================
+       TABS
+       ============================================ */
+    const tabBtns = section.querySelectorAll('.neu-tab-btn');
+    const tabPanels = section.querySelectorAll('.neu-tab-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabId = this.dataset.tab;
+        const bottomPanel = section.querySelector('.neu-bottom-panel');
+
+        tabPanels.forEach(panel => {
+          const isActive = panel.dataset.tabPanel === tabId;
+          panel.classList.toggle('neu-tab-panel--active', isActive);
+
+          if (panel.classList.contains('neu-tab-panel--expanded')) {
+            const seeMoreBtn = panel.querySelector('[data-see-more]');
+            const contentEl = panel.querySelector('[data-tab-content]');
+            const truncatedHTML = contentEl?.getAttribute('data-truncated-html');
+
+            panel.classList.remove('neu-tab-panel--expanded');
+
+            if (contentEl && truncatedHTML) {
+              contentEl.innerHTML = truncatedHTML;
+            }
+
+            if (seeMoreBtn) {
+              const textEl = seeMoreBtn.querySelector('.neu-see-more-btn__text');
+              if (textEl) textEl.textContent = 'See more';
+            }
+          }
+        });
+
+        if (bottomPanel) {
+          bottomPanel.classList.remove('neu-bottom-panel--content-extended');
+          bottomPanel.style.removeProperty('--faq-height');
+        }
+      });
+    });
+
+    /* ============================================
+       SEE MORE / SEE LESS
+       ============================================ */
+    function countWords(text) {
+      if (!text) return 0;
+      return text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    }
+
+    function truncateToWordLimit(contentEl, wordLimit) {
+      const fullHTML = contentEl.getAttribute('data-full-html') || contentEl.innerHTML;
+
+      if (!contentEl.hasAttribute('data-full-html')) {
+        contentEl.setAttribute('data-full-html', fullHTML);
+      }
+
+      const temp = document.createElement('div');
+      temp.innerHTML = fullHTML;
+
+      let wordsUsed = 0;
+      let truncated = false;
+
+      function walk(node) {
+        if (truncated) return;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+          const words = node.textContent.trim().split(/\s+/).filter(w => w.length > 0);
+
+          if (wordsUsed + words.length <= wordLimit) {
+            wordsUsed += words.length;
+          } else {
+            const remaining = wordLimit - wordsUsed;
+            if (remaining > 0) {
+              node.textContent = words.slice(0, remaining).join(' ') + '…';
+              wordsUsed = wordLimit;
+            } else {
+              node.textContent = '';
+            }
+            truncated = true;
+            let next = node.nextSibling;
+            while (next) {
+              const toRemove = next;
+              next = next.nextSibling;
+              toRemove.remove();
+            }
+            let parent = node.parentNode;
+            while (parent && parent !== temp) {
+              let sibling = parent.nextSibling;
+              while (sibling) {
+                const toRemove = sibling;
+                sibling = sibling.nextSibling;
+                toRemove.remove();
+              }
+              parent = parent.parentNode;
+            }
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const children = Array.from(node.childNodes);
+          children.forEach(child => walk(child));
+        }
+      }
+
+      walk(temp);
+      return temp.innerHTML;
+    }
+
+    function measureAndApplyExtension(panel) {
+      const bottomPanel = section.querySelector('.neu-bottom-panel');
+      const faqWrapper = section.querySelector('.neu-faq-wrapper');
+      const tabsContent = section.querySelector('.neu-tabs-content');
+
+      if (!bottomPanel || !faqWrapper || !tabsContent) return;
+
+      if (window.matchMedia('(max-width: 768px)').matches) {
+        bottomPanel.classList.remove('neu-bottom-panel--content-extended');
+        bottomPanel.style.removeProperty('--faq-height');
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        const faqHeight = faqWrapper.offsetHeight;
+        const contentHeight = tabsContent.offsetHeight;
+
+        if (contentHeight > faqHeight) {
+          bottomPanel.style.setProperty('--faq-height', faqHeight + 'px');
+          bottomPanel.classList.add('neu-bottom-panel--content-extended');
+        } else {
+          bottomPanel.classList.remove('neu-bottom-panel--content-extended');
+          bottomPanel.style.removeProperty('--faq-height');
+        }
+      });
+    }
+
+    function initSeeMore(panel) {
+      const wordLimit = parseInt(panel.dataset.wordLimit) || 0;
+      if (wordLimit <= 0) return;
+
+      const contentEl = panel.querySelector('[data-tab-content]');
+      const seeMoreBtn = panel.querySelector('[data-see-more]');
+
+      if (!contentEl || !seeMoreBtn) return;
+
+      const fullText = contentEl.textContent || '';
+      const totalWords = countWords(fullText);
+
+      if (totalWords <= wordLimit) {
+        seeMoreBtn.hidden = true;
+        return;
+      }
+
+      const fullHTML = contentEl.innerHTML;
+      contentEl.setAttribute('data-full-html', fullHTML);
+
+      const truncatedHTML = truncateToWordLimit(contentEl, wordLimit);
+      contentEl.setAttribute('data-truncated-html', truncatedHTML);
+
+      contentEl.innerHTML = truncatedHTML;
+      seeMoreBtn.hidden = false;
+
+      const textEl = seeMoreBtn.querySelector('.neu-see-more-btn__text');
+
+      seeMoreBtn.addEventListener('click', function() {
+        const isExpanded = panel.classList.toggle('neu-tab-panel--expanded');
+        const bottomPanel = section.querySelector('.neu-bottom-panel');
+
+        if (isExpanded) {
+          contentEl.style.transition = 'opacity 0.2s ease';
+          contentEl.style.opacity = '0';
+          setTimeout(() => {
+            contentEl.innerHTML = contentEl.getAttribute('data-full-html');
+            contentEl.style.opacity = '1';
+            setTimeout(() => measureAndApplyExtension(panel), 50);
+          }, 180);
+
+          if (textEl) textEl.textContent = 'See less';
+        } else {
+          contentEl.style.transition = 'opacity 0.2s ease';
+          contentEl.style.opacity = '0';
+          setTimeout(() => {
+            contentEl.innerHTML = contentEl.getAttribute('data-truncated-html');
+            contentEl.style.opacity = '1';
+
+            if (bottomPanel) {
+              bottomPanel.classList.remove('neu-bottom-panel--content-extended');
+              bottomPanel.style.removeProperty('--faq-height');
+            }
+          }, 180);
+
+          if (textEl) textEl.textContent = 'See more';
+
+          setTimeout(() => {
+            const panelRect = panel.getBoundingClientRect();
+            if (panelRect.top < 0) {
+              panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }, 200);
+        }
+      });
+    }
+
+    tabPanels.forEach(initSeeMore);
+
+    let extendResizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(extendResizeTimer);
+      extendResizeTimer = setTimeout(() => {
+        const bottomPanel = section.querySelector('.neu-bottom-panel');
+        const activePanel = section.querySelector('.neu-tab-panel--active.neu-tab-panel--expanded');
+
+        if (window.matchMedia('(max-width: 768px)').matches) {
+          if (bottomPanel) {
+            bottomPanel.classList.remove('neu-bottom-panel--content-extended');
+            bottomPanel.style.removeProperty('--faq-height');
+          }
+          return;
+        }
+
+        if (bottomPanel && activePanel) {
+          measureAndApplyExtension(activePanel);
+        }
+      }, 150);
+    });
+
+    section.querySelectorAll('.neu-faq-question').forEach(q => {
+      q.addEventListener('click', () => {
+        setTimeout(() => {
+          const bottomPanel = section.querySelector('.neu-bottom-panel');
+          const activePanel = section.querySelector('.neu-tab-panel--active.neu-tab-panel--expanded');
+          if (bottomPanel && activePanel) {
+            measureAndApplyExtension(activePanel);
+          }
+        }, 450);
+      });
+    });
+
+    /* ============================================
+       FAQ ACCORDION
+       ============================================ */
+    const faqItems = section.querySelectorAll('.neu-faq-item');
+    faqItems.forEach(item => {
+      const q = item.querySelector('.neu-faq-question');
+      const a = item.querySelector('.neu-faq-answer');
+      if (!q || !a) return;
+
+      q.addEventListener('click', () => {
+        const isOpen = item.classList.contains('neu-faq-item--open');
+
+        faqItems.forEach(other => {
+          if (other !== item && other.classList.contains('neu-faq-item--open')) {
+            const oa = other.querySelector('.neu-faq-answer');
+            const oq = other.querySelector('.neu-faq-question');
+            other.classList.remove('neu-faq-item--open');
+            oq.setAttribute('aria-expanded', 'false');
+            oa.style.maxHeight = '0px';
+          }
+        });
+
+        if (isOpen) {
+          item.classList.remove('neu-faq-item--open');
+          q.setAttribute('aria-expanded', 'false');
+          a.style.maxHeight = '0px';
+        } else {
+          item.classList.add('neu-faq-item--open');
+          q.setAttribute('aria-expanded', 'true');
+          a.style.maxHeight = a.scrollHeight + 'px';
+        }
+      });
+    });
+
+    /* ============================================
+       ADD TO CART
+       ============================================ */
+    const form = section.querySelector('#neu-product-form');
+
+    function updateCartCounts(count) {
+      const selectors = [
+        '[data-cart-count]',
+        '.cart-count-bubble span[aria-hidden="true"]',
+        '.cart-count-bubble span:not(.visually-hidden)',
+        '#cart-icon-bubble .cart-count-bubble span',
+        '.cart-link__bubble-num',
+        '.neu-cart-count',
+        '[data-cart-count-bubble]'
+      ];
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => { el.textContent = count; });
+      });
+
+      document.querySelectorAll('.cart-count-bubble, [data-cart-count-bubble], .neu-cart-count').forEach(bubble => {
+        if (count > 0) {
+          bubble.style.display = '';
+          bubble.hidden = false;
+          bubble.classList.remove('hidden', 'is-hidden');
+        } else {
+          bubble.classList.add('hidden');
+        }
+      });
+    }
+
+    function openCustomCartDrawer() {
+      const drawer = document.querySelector('[data-cart-drawer]');
+      const overlay = document.querySelector('[data-cart-overlay]');
+
+      if (!drawer) { console.warn('[Cart] No [data-cart-drawer] found'); return false; }
+
+      drawer.classList.add('is-open', 'active', 'open');
+      drawer.setAttribute('aria-hidden', 'false');
+      drawer.setAttribute('open', '');
+
+      if (overlay) {
+        overlay.classList.add('is-open', 'active', 'open');
+        overlay.setAttribute('aria-hidden', 'false');
+      }
+
+      document.body.classList.add('cart-drawer-open', 'overflow-hidden', 'no-scroll');
+      document.documentElement.style.overflow = 'hidden';
+      return true;
+    }
+
+    async function refreshCartDrawer(cartData) {
+      const drawer = document.querySelector('[data-cart-drawer]');
+      if (!drawer) return;
+
+      const body = drawer.querySelector('[data-cart-body]');
+      const footer = drawer.querySelector('.neu-cart-footer');
+
+      if (!cartData || cartData.item_count === 0) {
+        if (body) body.innerHTML = '<div class="neu-cart-empty"><p>Your cart is empty</p></div>';
+        if (footer) footer.remove();
+        return;
+      }
+
+      let itemsHTML = '<ul class="neu-cart-items">';
+      cartData.items.forEach(item => {
+        const imageUrl = item.image
+          ? item.image.replace(/(\.[^.]+)$/, '_120x$1').replace(/^\/\//, 'https://')
+          : '';
+
+        itemsHTML += `
+          <li class="neu-cart-item" data-key="${item.key}">
+            <div class="neu-cart-item__image">
+              ${imageUrl ? `<img src="${imageUrl}" alt="${item.title.replace(/"/g, '&quot;')}">` : ''}
+            </div>
+            <div class="neu-cart-item__info">
+              <h4 class="neu-cart-item__title">${item.product_title}</h4>
+              <p class="neu-cart-item__price">${formatMoney(item.final_price)}</p>
+              <div class="neu-qty">
+                <button class="neu-qty__btn" data-qty-change="minus" data-key="${item.key}">−</button>
+                <span class="neu-qty__value">${item.quantity}</span>
+                <button class="neu-qty__btn" data-qty-change="plus" data-key="${item.key}">+</button>
+              </div>
+            </div>
+            <button class="neu-cart-item__remove" data-remove data-key="${item.key}" aria-label="Remove item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+              </svg>
+            </button>
+          </li>
+        `;
+      });
+      itemsHTML += '</ul>';
+
+      if (body) body.innerHTML = itemsHTML;
+
+      const routesRoot = window.Shopify?.routes?.root || '/';
+      const cartTotalFormatted = formatMoney(cartData.total_price);
+
+      const footerHTML = `
+        <div class="neu-cart-subtotal">
+          <span>Subtotal</span>
+          <span data-cart-total>${cartTotalFormatted}</span>
+        </div>
+        <a href="${routesRoot}cart" class="neu-btn neu-btn--secondary">View Cart</a>
+        <a href="/checkout" class="neu-btn neu-btn--primary">Checkout</a>
+      `;
+
+      if (footer) {
+        footer.innerHTML = footerHTML;
+      } else {
+        const newFooter = document.createElement('div');
+        newFooter.className = 'neu-cart-footer';
+        newFooter.innerHTML = footerHTML;
+        drawer.appendChild(newFooter);
+      }
+
+      bindCartItemHandlers();
+    }
+
+    function bindCartItemHandlers() {
+      const drawer = document.querySelector('[data-cart-drawer]');
+      if (!drawer) return;
+
+      drawer.querySelectorAll('[data-qty-change]').forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = 'true';
+
+        btn.addEventListener('click', async function() {
+          const key = this.dataset.key;
+          const direction = this.dataset.qtyChange;
+          const valueEl = this.parentElement.querySelector('.neu-qty__value');
+          let currentQty = parseInt(valueEl.textContent) || 1;
+
+          const newQty = direction === 'plus' ? currentQty + 1 : Math.max(0, currentQty - 1);
+
+          try {
+            const res = await fetch(`${window.Shopify.routes.root}cart/change.js`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: key, quantity: newQty })
+            });
+            const updatedCart = await res.json();
+            updateCartCounts(updatedCart.item_count);
+            refreshCartDrawer(updatedCart);
+
+            if (window.PUB_SUB_EVENTS && typeof window.publish === 'function') {
+              window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'neumorphic-cart-drawer', cartData: updatedCart });
+            }
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: updatedCart } }));
+          } catch(err) { console.error('[Cart] Qty update failed:', err); }
+        });
+      });
+
+      drawer.querySelectorAll('[data-remove]').forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = 'true';
+
+        btn.addEventListener('click', async function() {
+          const key = this.dataset.key;
+          const itemEl = this.closest('.neu-cart-item');
+
+          if (itemEl) {
+            itemEl.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            itemEl.style.opacity = '0';
+            itemEl.style.transform = 'translateX(20px)';
+          }
+
+          try {
+            const res = await fetch(`${window.Shopify.routes.root}cart/change.js`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: key, quantity: 0 })
+            });
+            const updatedCart = await res.json();
+            updateCartCounts(updatedCart.item_count);
+            setTimeout(() => refreshCartDrawer(updatedCart), 250);
+
+            if (window.PUB_SUB_EVENTS && typeof window.publish === 'function') {
+              window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'neumorphic-cart-drawer', cartData: updatedCart });
+            }
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: updatedCart } }));
+          } catch(err) { console.error('[Cart] Remove failed:', err); }
+        });
+      });
+    }
+
+    bindCartItemHandlers();
+
+    function closeCartDrawer() {
+      const drawer = document.querySelector('[data-cart-drawer]');
+      const overlay = document.querySelector('[data-cart-overlay]');
+
+      if (drawer) {
+        drawer.classList.remove('is-open', 'active', 'open');
+        drawer.setAttribute('aria-hidden', 'true');
+        drawer.removeAttribute('open');
+      }
+      if (overlay) {
+        overlay.classList.remove('is-open', 'active', 'open');
+        overlay.setAttribute('aria-hidden', 'true');
+      }
+      document.body.classList.remove('cart-drawer-open', 'overflow-hidden', 'no-scroll');
+      document.documentElement.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-cart-close]').forEach(btn => {
+      if (btn.dataset.neuBound) return;
+      btn.dataset.neuBound = 'true';
+      btn.addEventListener('click', closeCartDrawer);
+    });
+
+    document.querySelectorAll('[data-cart-overlay]').forEach(overlay => {
+      if (overlay.dataset.neuBound) return;
+      overlay.dataset.neuBound = 'true';
+      overlay.addEventListener('click', closeCartDrawer);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const drawer = document.querySelector('[data-cart-drawer]');
+        if (drawer && drawer.classList.contains('is-open')) closeCartDrawer();
+      }
+    });
+
+    if (form && addBtn) {
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (addBtn.classList.contains('neu-add-to-bag--loading')) return;
+
+        const originalText = atbText.textContent;
+        addBtn.classList.add('neu-add-to-bag--loading');
+        atbText.textContent = 'Adding';
+
+        const formData = new FormData(form);
+
+        try {
+          const addResponse = await fetch(`${window.Shopify.routes.root}cart/add.js`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData
+          });
+
+          const addData = await addResponse.json();
+
+          if (addData.status || addData.errors) {
+            atbText.textContent = addData.description || 'Error';
+            addBtn.classList.remove('neu-add-to-bag--loading');
+            console.error('[Cart] Add error:', addData);
+            setTimeout(() => { atbText.textContent = originalText; }, 2500);
+            return;
+          }
+
+          const cartResponse = await fetch(`${window.Shopify.routes.root}cart.js`);
+          const cartData = await cartResponse.json();
+
+          updateCartCounts(cartData.item_count);
+          await refreshCartDrawer(cartData);
+          openCustomCartDrawer();
+
+          if (window.PUB_SUB_EVENTS && typeof window.publish === 'function') {
+            window.publish(window.PUB_SUB_EVENTS.cartUpdate, {
+              source: 'neumorphic-product-form',
+              productVariantId: variantIdInput.value,
+              cartData: cartData
+            });
+          }
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cartData } }));
+
+          atbText.textContent = 'Added ✓';
+          addBtn.classList.remove('neu-add-to-bag--loading');
+          addBtn.classList.add('neu-add-to-bag--success');
+
+          setTimeout(() => {
+            atbText.textContent = originalText;
+            addBtn.classList.remove('neu-add-to-bag--success');
+          }, 2200);
+
+        } catch (err) {
+          console.error('[Cart] Add to cart failed:', err);
+          atbText.textContent = 'Error';
+          addBtn.classList.remove('neu-add-to-bag--loading');
+          setTimeout(() => { atbText.textContent = originalText; }, 2000);
+        }
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Neumorphic Product",
+  "tag": "section",
+  "class": "neu-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "subtitle", "label": "Subtitle / Category", "default": "DESKTOP ASSISTANT" },
+    { "type": "text", "id": "tagline", "label": "Tagline", "default": "A palm-sized companion for the desk." },
+    { "type": "range", "id": "rating", "label": "Star Rating", "min": 0, "max": 5, "step": 1, "default": 5 },
+    { "type": "text", "id": "review_count", "label": "Review Count", "default": "218" },
+    { "type": "range", "id": "installment_count", "label": "Installments (0 = hide)", "min": 0, "max": 24, "step": 1, "default": 12 },
+    { "type": "header", "content": "Default Tab Word Limit", "info": "Used only when no tab blocks are added (fallback tabs)" },
+    { "type": "range", "id": "default_word_limit", "label": "Default Word Limit", "min": 0, "max": 500, "step": 10, "default": 50, "unit": "wd", "info": "Word count (0 = no truncation)" },
+    { "type": "header", "content": "FAQ Section" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ Heading", "default": "Frequently Asked Questions" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "range", "id": "section_padding_top", "label": "Top Padding", "min": 0, "max": 100, "step": 4, "default": 40, "unit": "px" },
+    { "type": "range", "id": "section_padding_bottom", "label": "Bottom Padding", "min": 0, "max": 100, "step": 4, "default": 40, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "trust_badge",
+      "name": "Trust Badge",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "Icon", "options": [
+          { "value": "shipping", "label": "Shipping" },
+          { "value": "returns", "label": "Returns" },
+          { "value": "warranty", "label": "Warranty" },
+          { "value": "secure", "label": "Secure" }
+        ], "default": "shipping" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Free shipping" }
+      ]
+    },
+    {
+      "type": "tab",
+      "name": "Content Tab",
+      "settings": [
+        { "type": "text", "id": "tab_title", "label": "Tab Title", "default": "Overview" },
+        {
+          "type": "select",
+          "id": "content_source",
+          "label": "Content Source",
+          "info": "Choose where the tab content comes from",
+          "options": [
+            { "value": "product_description", "label": "Product Description" },
+            { "value": "metafield", "label": "Product Metafield" },
+            { "value": "custom", "label": "Custom Content (below)" }
+          ],
+          "default": "custom"
+        },
+        {
+          "type": "range",
+          "id": "word_limit",
+          "label": "Word Limit",
+          "min": 0,
+          "max": 500,
+          "step": 10,
+          "default": 50,
+          "unit": "wd",
+          "info": "Content above this word count will be truncated with a 'See more' button. Set to 0 to disable."
+        },
+        { "type": "header", "content": "Metafield Settings", "info": "Only used when Content Source is 'Product Metafield'" },
+        { "type": "text", "id": "metafield_namespace", "label": "Metafield Namespace", "default": "custom" },
+        { "type": "text", "id": "metafield_key", "label": "Metafield Key" },
+        { "type": "header", "content": "Custom Content" },
+        { "type": "richtext", "id": "tab_content", "label": "Custom Content", "default": "<p>Product info here.</p>" }
+      ]
+    },
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "What is included?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Everything you need to get started.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Neumorphic Product",
+      "blocks": [
+        { "type": "trust_badge", "settings": { "icon": "shipping", "text": "Free shipping" } },
+        { "type": "trust_badge", "settings": { "icon": "returns", "text": "30-day returns" } },
+        { "type": "trust_badge", "settings": { "icon": "warranty", "text": "3-year warranty" } },
+        { "type": "tab", "settings": { "tab_title": "Overview", "content_source": "product_description", "word_limit": 50 } },
+        { "type": "tab", "settings": { "tab_title": "Specifications", "content_source": "metafield", "metafield_namespace": "custom", "metafield_key": "specifications", "word_limit": 80 } },
+        { "type": "tab", "settings": { "tab_title": "Shipping", "content_source": "metafield", "metafield_namespace": "custom", "metafield_key": "shipping", "word_limit": 60 } },
+        { "type": "faq_item", "settings": { "question": "What materials is it made of?", "answer": "<p>A precision-milled aluminum chassis with a soft-touch polymer shell for grip and durability.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How long does the battery last?", "answer": "<p>Up to 14 hours of active use on a single charge, with fast USB-C top-ups in under 45 minutes.</p>" } },
+        { "type": "faq_item", "settings": { "question": "Is it water resistant?", "answer": "<p>Yes — rated IP54 for dust and splash resistance. Not suitable for full submersion.</p>" } },
+        { "type": "faq_item", "settings": { "question": "What is the warranty coverage?", "answer": "<p>Every unit ships with a 3-year limited warranty covering defects and normal wear.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How do I set it up?", "answer": "<p>Unbox, power on, and folluw the guided companion app — most people are running in under 3 minutes.</p>" } },
+        { "type": "faq_item", "settings": { "question": "Does it work offline?", "answer": "<p>Absolutely. Core functions run on-device with no cloud dependency required.</p>" } },
+        { "type": "faq_item", "settings": { "question": "Can I use it with iOS and Android?", "answer": "<p>Yes — full parity across iOS 15+ and Android 11+ through our free companion app.</p>" } },
+        { "type": "faq_item", "settings": { "question": "What is your return policy?", "answer": "<p>30 days, no questions asked. We provide a prepaid label and issue refunds within 5 business days of receipt.</p>" } },
+        { "type": "faq_item", "settings": { "question": "How is it shipped?", "answer": "<p>Free carbon-neutral shipping via express carriers, typically arriving in 2–4 business days.</p>" } },
+        { "type": "faq_item", "settings": { "question": "Do you offer bulk or team pricing?", "answer": "<p>Yes — reach out to our team for volume discounts on orders of 10+ units.</p>" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

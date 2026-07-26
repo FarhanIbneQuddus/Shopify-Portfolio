@@ -1,0 +1,314 @@
+{% render 'neu-settings', section: section %}
+
+<section class="neu-blog section-{{ section.id }}">
+  <div class="neu-blog__container">
+    <h1 class="neu-blog__heading">{{ blog.title }}</h1>
+
+    {% paginate blog.articles by 5 %}
+      <div class="neu-blog__grid">
+        {% for article in blog.articles %}
+          <article class="neu-blog-card">
+            {% if article.image %}
+              <a href="{{ article.url }}" class="neu-blog-card__media" aria-label="{{ article.title }}">
+                {{
+                  article.image
+                  | image_url: width: 1000
+                  | image_tag:
+                    class: 'neu-blog-card__image',
+                    loading: 'lazy',
+                    alt: article.title
+                }}
+              </a>
+            {% endif %}
+
+            <div class="neu-blog-card__content">
+              <h2 class="neu-blog-card__title">
+                <a href="{{ article.url }}">{{ article.title }}</a>
+              </h2>
+
+              {% assign date = article.published_at | time_tag: format: 'date' %}
+              <p class="neu-blog-card__meta">
+                {{ 'blog.article_metadata_html' | t: date: date, author: article.author }}
+              </p>
+
+              {% if article.excerpt != blank %}
+                <p class="neu-blog-card__excerpt">
+                  {{ article.excerpt | strip_html | truncate: 150 }}
+                </p>
+              {% else %}
+                <p class="neu-blog-card__excerpt">
+                  {{ article.content | strip_html | truncate: 150 }}
+                </p>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="neu-blog__pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+          {% if paginate.previous %}
+            <a class="neu-page neu-page--arrow" href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}">←</a>
+          {% else %}
+            <span class="neu-page neu-page--arrow is-disabled" aria-hidden="true">←</span>
+          {% endif %}
+
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a class="neu-page" href="{{ part.url }}">{{ part.title }}</a>
+            {% else %}
+              {% assign part_number = part.title | plus: 0 %}
+              {% if part_number == paginate.current_page %}
+                <span class="neu-page is-current" aria-current="page">{{ part.title }}</span>
+              {% else %}
+                <span class="neu-page is-ellipsis">{{ part.title }}</span>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if paginate.next %}
+            <a class="neu-page neu-page--arrow" href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}">→</a>
+          {% else %}
+            <span class="neu-page neu-page--arrow is-disabled" aria-hidden="true">→</span>
+          {% endif %}
+        </nav>
+      {%- endif -%}
+    {% endpaginate %}
+  </div>
+</section>
+
+<style>
+  .section-{{ section.id }} {
+    padding: 50px 0px;
+  }
+
+  .section-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  .section-{{ section.id }} .neu-blog__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-{{ section.id }} .neu-blog__heading {
+    display: inline-block;
+    margin: 0 0 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: 22px;
+    background: var(--neu-surface);
+    color: var(--neu-text);
+    box-shadow: var(--neu-shadow-strong);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .section-{{ section.id }} .neu-blog__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .section-{{ section.id }} .neu-blog-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+    border-radius: 28px;
+    background: var(--neu-surface);
+    box-shadow: var(--neu-shadow-strong);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .section-{{ section.id }} .neu-blog-card:hover,
+  .section-{{ section.id }} .neu-blog-card:focus-within {
+    transform: translateY(-6px);
+  }
+
+  .section-{{ section.id }} .neu-blog-card__media {
+    display: block;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 22px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-in-sm);
+    overflow: hidden;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__image {
+    display: block;
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    flex: 1 1 auto;
+    padding: 0.25rem;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__title {
+    margin: 0;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.3;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__title a {
+    color: var(--neu-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__title a:hover {
+    color: var(--neu-accent);
+  }
+
+  .section-{{ section.id }} .neu-blog-card__meta {
+    width: fit-content;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-in-sm);
+    color: var(--neu-muted);
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .section-{{ section.id }} .neu-blog-card__meta time {
+    font-weight: 600;
+    color: var(--neu-text);
+  }
+
+  .section-{{ section.id }} .neu-blog-card__excerpt {
+    margin: 0;
+    color: var(--neu-muted);
+    line-height: 1.7;
+    flex-grow: 1;
+  }
+
+  .section-{{ section.id }} .neu-blog__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .section-{{ section.id }} .neu-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-out-sm);
+    color: var(--neu-text);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .section-{{ section.id }} .neu-page:hover {
+    color: var(--neu-accent);
+    box-shadow: var(--shadow-neu-accent);
+  }
+
+  .section-{{ section.id }} .neu-page.is-current {
+    color: var(--neu-accent);
+    font-weight: 700;
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  .section-{{ section.id }} .neu-page.is-disabled,
+  .section-{{ section.id }} .neu-page.is-ellipsis {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-{{ section.id }} {
+      padding: 2rem 1rem;
+    }
+
+    .section-{{ section.id }} .neu-blog-card {
+      border-radius: 22px;
+      box-shadow: var(--shadow-neu-out-sm);
+    }
+
+    .section-{{ section.id }} .neu-blog-card__image {
+      height: 220px;
+    }
+
+    .section-{{ section.id }} .neu-blog__heading {
+      padding: 0.9rem 1.2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-{{ section.id }} .neu-blog-card,
+    .section-{{ section.id }} .neu-page,
+    .section-{{ section.id }} .neu-blog-card__title a {
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "t:general.blog",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Text Muted",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    }
+  ]
+}
+{% endschema %}

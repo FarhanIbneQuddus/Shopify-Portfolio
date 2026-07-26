@@ -1,0 +1,501 @@
+{{ 'section-product-tabs-catalogue.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-collection-neu.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-main-collection-neu.js' | asset_url }}" defer="defer"></script>
+
+{% render 'neu-settings', section: section %}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- comment -%}
+  ===== BUILD UNIQUE TAG LIST FROM ACTUAL PRODUCTS IN THE COLLECTION =====
+  This replaces collection.all_tags so the filter options exactly match
+  the tags stored on product cards (data-product-tags).
+{%- endcomment -%}
+{%- assign product_tags_string = '' -%}
+{%- for product in collection.products -%}
+  {%- for tag in product.tags -%}
+    {%- unless product_tags_string contains tag -%}
+      {%- if product_tags_string == '' -%}
+        {%- assign product_tags_string = tag -%}
+      {%- else -%}
+        {%- assign product_tags_string = product_tags_string | append: '|||' | append: tag -%}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endfor -%}
+{%- assign unique_product_tags = product_tags_string | split: '|||' | sort -%}
+
+<div class="neu-collection section-{{ section.id }}-padding" data-neu-collection data-collection-url="{{ collection.url }}">
+  <div class="neu-collection__inner">
+    {%- paginate collection.products by section.settings.products_per_page -%}
+
+      {%- comment -%} ========== HEADER ========== {%- endcomment -%}
+      <div class="neu-collection__header">
+        <div class="neu-collection__title-wrap">
+          {%- if collection.title != blank -%}
+            <p class="neu-collection__eyebrow">Collection</p>
+            <h1 class="neu-collection__title">{{ collection.title }}</h1>
+          {%- endif -%}
+
+          {%- if collection.description != blank -%}
+            <div class="neu-collection__description rte">{{ collection.description }}</div>
+          {%- endif -%}
+        </div>
+
+        {%- comment -%} ========== TOOLBAR ========== {%- endcomment -%}
+      <div class="neu-collection__toolbar" data-toolbar>
+        <div class="neu-collection__toolbar-left">
+          {%- if section.settings.enable_filtering -%}
+            {%- assign active_filter_count = 0 -%}
+            {%- for filter in collection.filters -%}
+              {%- for value in filter.active_values -%}
+                {%- assign active_filter_count = active_filter_count | plus: 1 -%}
+              {%- endfor -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value or filter.max_value.value -%}
+                  {%- assign active_filter_count = active_filter_count | plus: 1 -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            <button
+              type="button"
+              class="neu-toolbar-btn"
+              data-filter-toggle
+              aria-expanded="false"
+              aria-controls="NeuFilterPanel"
+            >
+              <span class="neu-toolbar-btn__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 6h18M6 12h12M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span>Filter</span>
+              <span class="neu-toolbar-btn__badge" data-filter-badge {% if active_filter_count == 0 %}hidden{% endif %}>{{ active_filter_count }}</span>
+            </button>
+          {%- endif -%}
+        </div>
+
+        <div class="neu-collection__toolbar-right">
+          {%- if section.settings.enable_sorting -%}
+            {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+            <div class="neu-dropdown neu-dropdown--sort" data-dropdown data-sort>
+              <button type="button" class="neu-toolbar-btn" data-dropdown-trigger aria-expanded="false">
+                <span class="neu-sort__label">Sort:</span>
+                <span class="neu-sort__value" data-sort-value>
+                  {%- for option in collection.sort_options -%}
+                    {%- if option.value == sort_by -%}{{ option.name }}{%- endif -%}
+                  {%- endfor -%}
+                </span>
+                <svg class="neu-caret" width="10" height="10" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <div class="neu-dropdown__menu neu-dropdown__menu--sort">
+                {%- for option in collection.sort_options -%}
+                  <button
+                    type="button"
+                    class="neu-sort__option {% if option.value == sort_by %}is-selected{% endif %}"
+                    data-sort-option
+                    data-sort-value-attr="{{ option.value | escape }}"
+                  >
+                    {{ option.name }}
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+
+        <div class="neu-collection__meta">
+          <div class="neu-collection__count" data-count>
+            <span class="neu-collection__count-num" data-count-num>{{ collection.products_count }}</span>
+            <span class="neu-collection__count-label" data-count-label>
+              {%- if collection.products_count == 1 -%}Product{%- else -%}Products{%- endif -%}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      
+
+      {%- comment -%} ========== FILTER SIDEBAR ========== {%- endcomment -%}
+      {%- if section.settings.enable_filtering -%}
+        <div class="neu-filter-sidebar" data-filter-panel hidden>
+          <div class="neu-filter-sidebar__overlay" data-filter-overlay></div>
+
+          <aside class="neu-filter-sidebar__panel">
+            <div class="neu-filter-sidebar__header">
+              <h3 class="neu-filter-sidebar__title">Filters</h3>
+              <button type="button" class="neu-filter-close" data-filter-close aria-label="Close filters">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+
+            <form data-neu-filter-form class="neu-filter-form">
+              {%- if section.settings.enable_sorting -%}
+                <input type="hidden" name="sort_by" value="{{ sort_by }}" data-sort-input>
+              {%- endif -%}
+
+              <div class="neu-filter-sidebar__body">
+
+                {%- comment -%} ===== TAGS FILTER — NOW BUILT FROM ACTUAL PRODUCT TAGS ===== {%- endcomment -%}
+                {%- if unique_product_tags.size > 0 -%}
+                  <div class="neu-filter-group" data-filter-group data-tags-group>
+                    <button type="button" class="neu-filter-group__header" data-filter-header aria-expanded="true">
+                      <span>
+                        Tags
+                        <span class="neu-filter-group__count" data-tags-count hidden>0</span>
+                      </span>
+                      <svg class="neu-caret" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <div class="neu-filter-group__body">
+                      {%- if unique_product_tags.size > 6 -%}
+                        <div class="neu-filter-search">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                          </svg>
+                          <input type="text" placeholder="Search tags…" data-tag-search>
+                        </div>
+                      {%- endif -%}
+                      <ul class="neu-filter-list neu-filter-list--tags" data-tag-list>
+                        {%- for tag in unique_product_tags -%}
+                          <li data-tag-item data-tag-name="{{ tag | downcase | escape }}">
+                            <label class="neu-check">
+                              <input
+                                type="checkbox"
+                                data-tag-checkbox
+                                data-tag-value="{{ tag | escape }}"
+                                value="{{ tag | escape }}"
+                              >
+                              <span class="neu-check__box">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                                  <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                              </span>
+                              <span class="neu-check__label">
+                                <span>{{ tag }}</span>
+                              </span>
+                            </label>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} ===== NATIVE SHOPIFY FILTERS ===== {%- endcomment -%}
+                {%- for filter in collection.filters -%}
+                  <div class="neu-filter-group" data-filter-group>
+                    <button type="button" class="neu-filter-group__header" data-filter-header aria-expanded="true">
+                      <span>{{ filter.label | escape }}</span>
+                      <svg class="neu-caret" width="12" height="12" viewBox="0 0 24 24" fill="none">
+                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <div class="neu-filter-group__body">
+                      {%- case filter.type -%}
+                        {%- when 'boolean', 'list' -%}
+                          <ul class="neu-filter-list">
+                            {%- for value in filter.values -%}
+                              <li>
+                                <label class="neu-check {% if value.count == 0 and value.active == false %}is-disabled{% endif %}">
+                                  <input
+                                    type="checkbox"
+                                    name="{{ value.param_name }}"
+                                    value="{{ value.value }}"
+                                    {% if value.active %}checked{% endif %}
+                                    {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                                  >
+                                  <span class="neu-check__box">
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                                      <path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                  </span>
+                                  <span class="neu-check__label">
+                                    {{ value.label | escape }}
+                                    <span class="neu-check__count">{{ value.count }}</span>
+                                  </span>
+                                </label>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+
+                        {%- when 'price_range' -%}
+                          <div class="neu-price-range">
+                            <div class="neu-price-range__inputs">
+                              <div class="neu-price-input">
+                                <span class="neu-price-input__prefix">{{ cart.currency.symbol }}</span>
+                                <input
+                                  type="number"
+                                  name="{{ filter.min_value.param_name }}"
+                                  value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | replace: ',', '' }}{% endif %}"
+                                  min="0"
+                                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                  placeholder="0"
+                                  inputmode="decimal"
+                                >
+                              </div>
+                              <span class="neu-price-range__separator">—</span>
+                              <div class="neu-price-input">
+                                <span class="neu-price-input__prefix">{{ cart.currency.symbol }}</span>
+                                <input
+                                  type="number"
+                                  name="{{ filter.max_value.param_name }}"
+                                  value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | replace: ',', '' }}{% endif %}"
+                                  min="0"
+                                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                  placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                                  inputmode="decimal"
+                                >
+                              </div>
+                            </div>
+                          </div>
+                      {%- endcase -%}
+                    </div>
+                  </div>
+                {%- endfor -%}
+
+              </div>
+
+              <div class="neu-filter-sidebar__footer">
+                <a href="{{ collection.url }}" class="neu-btn neu-btn--ghost" data-filter-clear>Clear all</a>
+                <button type="submit" class="neu-btn neu-btn--primary">Apply</button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ========== ACTIVE FILTER CHIPS ========== {%- endcomment -%}
+      {%- assign has_active = false -%}
+      {%- for filter in collection.filters -%}
+        {%- if filter.active_values.size > 0 -%}{%- assign has_active = true -%}{%- endif -%}
+        {%- if filter.type == 'price_range' and filter.min_value.value or filter.max_value.value -%}
+          {%- assign has_active = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="neu-active-chips" data-active-chips {% unless has_active %}hidden{% endunless %}>
+        <div data-tag-chips-container></div>
+        {%- for filter in collection.filters -%}
+          {%- for value in filter.active_values -%}
+            <a href="{{ value.url_to_remove }}" class="neu-chip">
+              <span>{{ value.label | escape }}</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </a>
+          {%- endfor -%}
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value or filter.max_value.value -%}
+              <a href="{{ filter.url_to_remove }}" class="neu-chip">
+                <span>
+                  {% if filter.min_value.value %}{{ filter.min_value.value | money }}{% else %}{{ 0 | money }}{% endif %}
+                  –
+                  {% if filter.max_value.value %}{{ filter.max_value.value | money }}{% else %}{{ filter.range_max | money }}{% endif %}
+                </span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </a>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <a href="{{ collection.url }}" class="neu-chip neu-chip--clear" data-clear-all>Clear all</a>
+      </div>
+
+      {%- comment -%} ========== PRODUCT GRID ========== {%- endcomment -%}
+      <div class="neu-collection__grid-wrap" data-grid-wrap>
+        <div class="neu-collection__loading" aria-hidden="true">
+          <div class="neu-spinner"></div>
+        </div>
+
+        {%- if collection.products.size == 0 -%}
+          <div class="neu-collection__empty">
+            <h2>No products found</h2>
+            <p>Try adjusting your filters or <a href="{{ collection.url }}">clear all filters</a>.</p>
+          </div>
+        {%- else -%}
+          <ul
+            class="neu-grid"
+            style="--cols-desktop: {{ section.settings.columns_desktop }}; --cols-mobile: {{ section.settings.columns_mobile }};"
+            id="product-grid"
+            data-id="{{ section.id }}"
+          >
+            {%- for product in collection.products -%}
+              <li class="neu-grid__item" data-product-tags="{{ product.tags | join: ',' | downcase | escape }}">
+                {%- render 'card-product', product: product -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- comment -%} Client-side "no matches" state shown when a tag filter hides every product on this page {%- endcomment -%}
+          <div class="neu-collection__empty" data-tag-empty-state hidden>
+            <h2>No products found</h2>
+            <p>Try adjusting your filters or <a href="{{ collection.url }}" data-clear-all-inline>clear all filters</a>.</p>
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="neu-pagination" role="navigation" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="neu-pagination__btn" aria-label="Previous page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              {%- endif -%}
+
+              <div class="neu-pagination__pages">
+                {%- for part in paginate.parts -%}
+                  {%- if part.is_link -%}
+                    <a href="{{ part.url }}" class="neu-pagination__page">{{ part.title }}</a>
+                  {%- else -%}
+                    {%- if part.title == paginate.current_page -%}
+                      <span class="neu-pagination__page is-current" aria-current="page">{{ part.title }}</span>
+                    {%- else -%}
+                      <span class="neu-pagination__page is-dots">{{ part.title }}</span>
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="neu-pagination__btn" aria-label="Next page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "class": "section section-main-collection-neu",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 36,
+      "step": 4,
+      "default": 16,
+      "label": "Products per page"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Columns"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "Mobile columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Filtering & Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Filters"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Sorting"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "🎨 Neumorphic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "header",
+      "content": "📐 Shape"
+    }
+  ]
+}
+{% endschema %}

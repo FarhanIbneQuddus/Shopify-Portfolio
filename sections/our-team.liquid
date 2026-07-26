@@ -1,0 +1,428 @@
+{% render 'neu-settings', section: section %}
+
+<style>
+  #NeuTeam-{{ section.id }} {
+    /* Neumorphic settings from snippet */
+  }
+
+  .neu-team {
+    background: var(--neu-bg);
+    color: var(--neu-text);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    overflow: visible;
+  }
+
+  .neu-team__container {
+    max-width: {{ section.settings.max_width | default: 1400 }}px;
+    margin: 0 auto;
+    padding: 0px;
+  }
+
+  @media (max-width: 749px){
+    .neu-team__container {
+      max-width: {{ section.settings.max_width | default: 1400 }}px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+  }
+
+  /* Header */
+  .neu-team__header {
+    text-align: center;
+    margin-bottom: 60px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+  }
+
+  .neu-team__header.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .neu-team__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--neu-accent);
+    margin-bottom: 20px;
+  }
+
+  .neu-team__title {
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 16px;
+  }
+
+  .neu-team__subtitle {
+    font-size: clamp(15px, 2vw, 18px);
+    opacity: 0.65;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Grid */
+  .neu-team__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  /* Card */
+  .neu-team__card {
+    background: var(--neu-bg);
+    box-shadow: var(--neu-shadow-strong);
+    border-radius: var(--neu-radius);
+    padding: 40px 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .neu-team__card.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+
+  .neu-team__card:hover {
+    transform: translateY(-10px) !important;
+  }
+
+  /* Avatar */
+  .neu-team__avatar-wrap {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 24px;
+  }
+
+  .neu-team__avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    box-shadow: var(--shadow-neu-in);
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .neu-team__card:hover .neu-team__avatar {
+    box-shadow: var(--shadow-neu-in);
+    transform: scale(1.05);
+  }
+
+  .neu-team__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .neu-team__card:hover .neu-team__avatar img {
+    transform: scale(1.12);
+  }
+
+  /* Animated ring */
+  .neu-team__avatar-ring {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--neu-accent);
+    border-right-color: var(--neu-accent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    animation: neuRingSpin 3s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .neu-team__card:hover .neu-team__avatar-ring {
+    opacity: 1;
+    animation-play-state: running;
+  }
+
+  @keyframes neuRingSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Status dot */
+  .neu-team__status {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    background: #00b894;
+    border: 3px solid var(--neu-bg);
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: var(--shadow-neu-out-sm);
+  }
+
+  .neu-team__status::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 2px solid #00b894;
+    opacity: 0;
+    animation: neuStatusPing 2s ease-in-out infinite;
+  }
+
+  @keyframes neuStatusPing {
+    0% { transform: scale(0.8); opacity: 0.7; }
+    50% { transform: scale(1.6); opacity: 0; }
+    100% { transform: scale(0.8); opacity: 0; }
+  }
+
+  .neu-team__name {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: var(--neu-text);
+  }
+
+  .neu-team__role {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--neu-accent);
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .neu-team__role-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--neu-accent);
+    border-radius: 50%;
+  }
+
+  .neu-team__bio {
+    font-size: 14px;
+    line-height: 1.65;
+    opacity: 0.65;
+    margin-bottom: 24px;
+    min-height: 46px;
+  }
+
+  /* Social links */
+  .neu-team__socials {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .neu-team__social {
+    width: 40px;
+    height: 40px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out-sm);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neu-accent);
+    text-decoration: none;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .neu-team__social:hover {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(-3px) scale(1.1);
+    color: var(--neu-accent);
+  }
+
+  .neu-team__social svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Stagger delay */
+  .neu-team__card:nth-child(1) { transition-delay: 0s; }
+  .neu-team__card:nth-child(2) { transition-delay: 0.15s; }
+  .neu-team__card:nth-child(3) { transition-delay: 0.3s; }
+  .neu-team__card:nth-child(4) { transition-delay: 0.45s; }
+  .neu-team__card:nth-child(5) { transition-delay: 0.6s; }
+  .neu-team__card:nth-child(6) { transition-delay: 0.75s; }
+
+  @media screen and (max-width: 990px) {
+    .neu-team__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 599px) {
+    .neu-team__grid {
+      grid-template-columns: 1fr;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .neu-team__header, .neu-team__card {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .neu-team__avatar-ring, .neu-team__status::after {
+      animation: none !important;
+    }
+  }
+</style>
+
+<section class="neu-team" id="NeuTeam-{{ section.id }}">
+  <div class="neu-team__container">
+    <div class="neu-team__header" data-neu-reveal>
+      {% if section.settings.badge != blank %}
+        <div class="neu-team__badge">{{ section.settings.badge }}</div>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="neu-team__title">{{ section.settings.heading }}</h2>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <p class="neu-team__subtitle">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    <div class="neu-team__grid">
+      {% for block in section.blocks %}
+        <div class="neu-team__card" data-neu-reveal {{ block.shopify_attributes }}>
+          <div class="neu-team__avatar-wrap">
+            <div class="neu-team__avatar">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 300 | image_tag: loading: 'lazy' }}
+              {% else %}
+                <div style="width:100%;height:100%;background:var(--neu-bg);box-shadow:var(--shadow-neu-in-sm);display:flex;align-items:center;justify-content:center;opacity:0.4;font-size:40px;">👤</div>
+              {% endif %}
+            </div>
+            <div class="neu-team__avatar-ring"></div>
+            {% if block.settings.show_status %}
+              <div class="neu-team__status"></div>
+            {% endif %}
+          </div>
+
+          <h3 class="neu-team__name">{{ block.settings.name }}</h3>
+
+          {% if block.settings.role != blank %}
+            <div class="neu-team__role">
+              <span class="neu-team__role-dot"></span>
+              {{ block.settings.role }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.bio != blank %}
+            <p class="neu-team__bio">{{ block.settings.bio }}</p>
+          {% endif %}
+
+          {% if block.settings.linkedin != blank or block.settings.twitter != blank or block.settings.instagram != blank %}
+            <div class="neu-team__socials">
+              {% if block.settings.linkedin != blank %}
+                <a href="{{ block.settings.linkedin }}" class="neu-team__social" target="_blank" rel="noopener" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+              {% endif %}
+              {% if block.settings.twitter != blank %}
+                <a href="{{ block.settings.twitter }}" class="neu-team__social" target="_blank" rel="noopener" aria-label="Twitter">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+                </a>
+              {% endif %}
+              {% if block.settings.instagram != blank %}
+                <a href="{{ block.settings.instagram }}" class="neu-team__social" target="_blank" rel="noopener" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function(){
+    const s = document.getElementById('NeuTeam-{{ section.id }}');
+    if (!s) return;
+    const o = new IntersectionObserver((es) => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); }});
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    s.querySelectorAll('[data-neu-reveal]').forEach(el => o.observe(el));
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Team Members",
+  "tag": "section",
+  "class": "neu-team-section",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max Width", "min": 800, "max": 1600, "step": 50, "default": 1400, "unit": "px" },
+    { "type": "range", "id": "padding_top", "label": "Padding Top", "min": 0, "max": 150, "step": 5, "default": 60, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom", "min": 0, "max": 150, "step": 5, "default": 60, "unit": "px" },
+    { "type": "header", "content": "Neuromatic Colors" },
+    { "type": "color", "id": "neu_bg", "label": "Background", "default": "#e6e9ee" },
+    { "type": "color", "id": "neu_shadow_dark", "label": "Shadow Dark", "default": "#4f4e4e" },
+    { "type": "color", "id": "neu_shadow_light", "label": "Shadow Light", "default": "#ffffff" },
+    { "type": "color", "id": "neu_text", "label": "Text", "default": "#2c3e50" },
+    { "type": "color", "id": "neu_text_muted", "label": "Text Muted", "default": "#8b95a3" },
+    { "type": "color", "id": "neu_accent", "label": "Accent", "default": "#7d3fbf" },
+    { "type": "header", "content": "Shape" },
+    { "type": "range", "id": "neu_radius", "label": "Border Radius", "min": 0, "max": 100, "step": 2, "default": 24, "unit": "px" },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "badge", "label": "Badge", "default": "Our People" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Meet the Team" },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "The passionate people behind our brand" }
+  ],
+  "blocks": [
+    {
+      "type": "member",
+      "name": "Team Member",
+      "limit": 12,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Jane Doe" },
+        { "type": "text", "id": "role", "label": "Role", "default": "Founder & CEO" },
+        { "type": "textarea", "id": "bio", "label": "Bio", "default": "Passionate about design and innovation." },
+        { "type": "checkbox", "id": "show_status", "label": "Show Online Status Dot", "default": true },
+        { "type": "url", "id": "linkedin", "label": "LinkedIn URL" },
+        { "type": "url", "id": "twitter", "label": "Twitter URL" },
+        { "type": "url", "id": "instagram", "label": "Instagram URL" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Team Members",
+    "blocks": [
+      { "type": "member", "settings": { "name": "Jane Cooper", "role": "Founder & CEO", "bio": "Visionary leader with 10+ years of experience." } },
+      { "type": "member", "settings": { "name": "Alex Rivera", "role": "Head of Design", "bio": "Creating beautiful experiences that inspire." } },
+      { "type": "member", "settings": { "name": "Sam Chen", "role": "Lead Developer", "bio": "Turning complex problems into elegant solutions." } }
+    ]
+  }]
+}
+{% endschema %}

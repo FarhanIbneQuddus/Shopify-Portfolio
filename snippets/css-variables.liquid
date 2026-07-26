@@ -1,0 +1,50 @@
+{% if settings.type_body_font != blank %}
+  {% assign body_font_bold = settings.type_body_font | font_modify: 'weight', 'bold' %}
+  {% assign body_font_italic = settings.type_body_font | font_modify: 'style', 'italic' %}
+  {% assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic' %}
+{% endif %}
+
+{% if settings.type_header_font != blank %}
+  {% assign header_font_bold = settings.type_header_font | font_modify: 'weight', 'bold' %}
+  {% assign header_font_italic = settings.type_header_font | font_modify: 'style', 'italic' %}
+  {% assign header_font_bold_italic = header_font_bold | font_modify: 'style', 'italic' %}
+{% endif %}
+
+{% style %}
+  {% comment %} Load body font variants {% endcomment %}
+  {% if settings.type_body_font != blank %}
+    {{ settings.type_body_font | font_face: font_display: 'swap' }}
+    {{ body_font_bold | font_face: font_display: 'swap' }}
+    {{ body_font_italic | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic | font_face: font_display: 'swap' }}
+  {% endif %}
+
+  {% comment %} Load heading font variants {% endcomment %}
+  {% if settings.type_header_font != blank %}
+    {{ settings.type_header_font | font_face: font_display: 'swap' }}
+    {{ header_font_bold | font_face: font_display: 'swap' }}
+    {{ header_font_italic | font_face: font_display: 'swap' }}
+    {{ header_font_bold_italic | font_face: font_display: 'swap' }}
+  {% endif %}
+
+  :root {
+    --font-heading-family: {% if settings.type_header_font != blank %}{{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }}{% else %}sans-serif{% endif %};
+    --font-heading-style: {% if settings.type_header_font != blank %}{{ settings.type_header_font.style }}{% else %}normal{% endif %};
+    --font-heading-weight: {% if settings.type_header_font != blank %}{{ settings.type_header_font.weight }}{% else %}400{% endif %};
+
+    --font-body-family: {% if settings.type_body_font != blank %}{{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }}{% else %}sans-serif{% endif %};
+    --font-body-style: {% if settings.type_body_font != blank %}{{ settings.type_body_font.style }}{% else %}normal{% endif %};
+    --font-body-weight: {% if settings.type_body_font != blank %}{{ settings.type_body_font.weight }}{% else %}400{% endif %};
+
+    /* Backward compatibility */
+    --font-primary-family: var(--font-body-family);
+    --font-primary-style: var(--font-body-style);
+    --font-primary-weight: var(--font-body-weight);
+
+    --page-width: {{ settings.max_page_width }};
+    --page-margin: {{ settings.min_page_margin }}px;
+    --color-background: {{ settings.background_color }};
+    --color-foreground: {{ settings.foreground_color }};
+    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+  }
+{% endstyle %}

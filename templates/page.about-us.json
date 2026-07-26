@@ -1,0 +1,326 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "about-us-banner",
+      "settings": {
+        "text_alignment": "center",
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "badge_text": "About Us",
+        "title": "We're building|the future of|commerce",
+        "highlight_last_line": true,
+        "subtitle": "Our mission is to empower entrepreneurs and small businesses with beautiful, intuitive tools that help them succeed online.",
+        "primary_cta_text": "Get Started",
+        "primary_cta_link": "",
+        "secondary_cta_text": "Watch Video",
+        "secondary_cta_link": "",
+        "secondary_cta_icon": "play",
+        "float_badge_left": "Trusted by 5k+",
+        "float_badge_left_icon": "⭐",
+        "float_badge_right": "Since 2020",
+        "float_badge_right_icon": "🚀",
+        "trust_1": "Free Shipping",
+        "trust_1_icon": "🚚",
+        "trust_2": "30-Day Returns",
+        "trust_2_icon": "↩️",
+        "trust_3": "Secure Checkout",
+        "trust_3_icon": "🔒",
+        "show_shapes": true,
+        "show_pattern": true,
+        "show_scroll_indicator": true
+      }
+    },
+    "timeline_BAKkn7": {
+      "type": "timeline",
+      "blocks": {
+        "event_zQMMVf": {
+          "type": "event",
+          "settings": {
+            "year": "2018",
+            "icon": "💡",
+            "title": "The Idea",
+            "text": "A simple idea sparked in a coffee shop conversation."
+          }
+        },
+        "event_ENEgw9": {
+          "type": "event",
+          "settings": {
+            "year": "2019",
+            "icon": "🚀",
+            "title": "Launch Day",
+            "text": "Launched our first product to the world."
+          }
+        },
+        "event_rAX8qK": {
+          "type": "event",
+          "settings": {
+            "year": "2021",
+            "icon": "🌍",
+            "title": "Going Global",
+            "text": "Expanded to 30+ countries worldwide."
+          }
+        },
+        "event_qW7emC": {
+          "type": "event",
+          "settings": {
+            "year": "2024",
+            "icon": "🏆",
+            "title": "Industry Award",
+            "text": "Recognized as a leader in innovation."
+          }
+        }
+      },
+      "block_order": [
+        "event_zQMMVf",
+        "event_ENEgw9",
+        "event_rAX8qK",
+        "event_qW7emC"
+      ],
+      "name": "Timeline",
+      "settings": {
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "badge": "Our Journey",
+        "heading": "Milestones & Memories",
+        "subheading": "Key moments that shaped who we are today"
+      }
+    },
+    "statistics_dhFQDz": {
+      "type": "statistics",
+      "blocks": {
+        "stat_EMV6td": {
+          "type": "stat",
+          "settings": {
+            "icon": "😊",
+            "number": "5000",
+            "prefix": "",
+            "suffix": "+",
+            "label": "Happy Customers",
+            "bar_percent": 90
+          }
+        },
+        "stat_8QWm9Q": {
+          "type": "stat",
+          "settings": {
+            "icon": "📦",
+            "number": "150",
+            "prefix": "",
+            "suffix": "+",
+            "label": "Products",
+            "bar_percent": 70
+          }
+        },
+        "stat_HmMXPz": {
+          "type": "stat",
+          "settings": {
+            "icon": "🌍",
+            "number": "30",
+            "prefix": "",
+            "suffix": "+",
+            "label": "Countries",
+            "bar_percent": 60
+          }
+        },
+        "stat_4mLtej": {
+          "type": "stat",
+          "settings": {
+            "icon": "⭐",
+            "number": "95",
+            "prefix": "",
+            "suffix": "%",
+            "label": "Satisfaction",
+            "bar_percent": 95
+          }
+        }
+      },
+      "block_order": [
+        "stat_EMV6td",
+        "stat_8QWm9Q",
+        "stat_HmMXPz",
+        "stat_4mLtej"
+      ],
+      "name": "Statistics",
+      "settings": {
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "badge": "By the Numbers",
+        "heading": "Our Impact in Numbers",
+        "subheading": "Growing stronger every single day"
+      }
+    },
+    "testimonials_hrQmhD": {
+      "type": "testimonials",
+      "blocks": {
+        "testimonial_AYnbY4": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "This company has completely transformed how we think about ecommerce. Their attention to detail is unmatched.",
+            "name": "Sarah Johnson",
+            "title": "CEO, TechStart Inc.",
+            "stars": 5
+          }
+        },
+        "testimonial_fh7PAF": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Working with them has been an absolute pleasure. The results truly speak for themselves.",
+            "name": "Michael Park",
+            "title": "Founder, Greenleaf Co.",
+            "stars": 5
+          }
+        },
+        "testimonial_gFMQWk": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "Best decision we ever made. Our online presence has never been stronger.",
+            "name": "Emily Chen",
+            "title": "Marketing Director",
+            "stars": 5
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_AYnbY4",
+        "testimonial_fh7PAF",
+        "testimonial_gFMQWk"
+      ],
+      "name": "Testimonials",
+      "settings": {
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "badge": "Testimonials",
+        "heading": "What Our Customers Say",
+        "subheading": "Real stories from real people",
+        "autoplay_speed": 5000
+      }
+    },
+    "our_team_PeXwLJ": {
+      "type": "our-team",
+      "blocks": {
+        "member_8k6TRi": {
+          "type": "member",
+          "settings": {
+            "name": "Jane Cooper",
+            "role": "Founder & CEO",
+            "bio": "Visionary leader with 10+ years of experience.",
+            "show_status": true,
+            "linkedin": "",
+            "twitter": "",
+            "instagram": ""
+          }
+        },
+        "member_p4pxxQ": {
+          "type": "member",
+          "settings": {
+            "name": "Alex Rivera",
+            "role": "Head of Design",
+            "bio": "Creating beautiful experiences that inspire.",
+            "show_status": true,
+            "linkedin": "",
+            "twitter": "",
+            "instagram": ""
+          }
+        },
+        "member_eJEGJC": {
+          "type": "member",
+          "settings": {
+            "name": "Sam Chen",
+            "role": "Lead Developer",
+            "bio": "Turning complex problems into elegant solutions.",
+            "show_status": true,
+            "linkedin": "",
+            "twitter": "",
+            "instagram": ""
+          }
+        }
+      },
+      "block_order": [
+        "member_8k6TRi",
+        "member_p4pxxQ",
+        "member_eJEGJC"
+      ],
+      "name": "Team Members",
+      "settings": {
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "badge": "Our People",
+        "heading": "Meet the Team",
+        "subheading": "The passionate people behind our brand"
+      }
+    },
+    "rich_text_banner_PN7VFe": {
+      "type": "rich-text-banner",
+      "name": "Rich Text Banner",
+      "settings": {
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "background_color": "#e6e9ee",
+        "text_color": "#2d3436",
+        "accent_color": "#6c5ce7",
+        "accent_light_color": "#a29bfe",
+        "border_radius": 20,
+        "icon": "🚀",
+        "title": "Ready to *Get Started?*",
+        "text": "Join thousands of happy customers and start your journey with us today.",
+        "primary_text": "Shop Now",
+        "primary_link": "",
+        "secondary_text": "Learn More",
+        "secondary_link": "",
+        "trust_1": "Free Shipping",
+        "trust_1_icon": "🚚",
+        "trust_2": "30-Day Returns",
+        "trust_2_icon": "↩️",
+        "trust_3": "Secure Payment",
+        "trust_3_icon": "🔒"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "timeline_BAKkn7",
+    "statistics_dhFQDz",
+    "testimonials_hrQmhD",
+    "our_team_PeXwLJ",
+    "rich_text_banner_PN7VFe"
+  ]
+}

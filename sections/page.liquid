@@ -1,0 +1,333 @@
+{% render 'neu-settings', section: section %}
+<section class="page-neu section-{{ section.id }}" aria-labelledby="page-title-{{ section.id }}">
+  <div class="page-neu__shell">
+    {% if page.title != blank %}
+      <div class="page-neu__title-wrap">
+        <h1 id="page-title-{{ section.id }}" class="page-neu__title">
+          {{ page.title }}
+        </h1>
+      </div>
+    {% endif %}
+
+    {% if page.content != blank %}
+      <div class="page-neu__content rte">
+        {{ page.content }}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .section-{{ section.id }} {
+    padding: 40px 0px;
+  }
+
+  @media (max-width:768px){
+    .section-{{ section.id }} {
+      padding: clamp(28px, 5vw, 72px) 20px;
+    }
+  }
+
+  .section-{{ section.id }} .page-neu__shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: clamp(24px, 4vw, 48px);
+    border-radius: var(--neu-radius);
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out);
+    border: 1px solid var(--neu-border);
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 990px) {
+    .section-{{ section.id }} .page-neu__shell {
+      box-shadow: var(--neu-shadow-strong);
+    }
+  }
+
+  .section-{{ section.id }} .page-neu__title-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 clamp(20px, 3vw, 32px);
+    padding: 14px 24px;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, #f6f8fc, #e8ecf2);
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  .section-{{ section.id }} .page-neu__title {
+    margin: 0;
+    color: var(--neu-text);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .section-{{ section.id }} .page-neu__content {
+    padding: clamp(24px, 3vw, 38px);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, #edf1f6, #e8ecf1);
+    box-shadow: var(--shadow-neu-in);
+    color: var(--neu-text);
+  }
+
+  .section-{{ section.id }} .page-neu__content > *:first-child {
+    margin-top: 0;
+  }
+
+  .section-{{ section.id }} .page-neu__content > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-{{ section.id }} .page-neu__content,
+  .section-{{ section.id }} .page-neu__content p,
+  .section-{{ section.id }} .page-neu__content li {
+    color: var(--neu-text);
+    line-height: 1.8;
+  }
+
+  .section-{{ section.id }} .page-neu__content p {
+    margin: 0 0 1.15em;
+  }
+
+  .section-{{ section.id }} .page-neu__content h2,
+  .section-{{ section.id }} .page-neu__content h3,
+  .section-{{ section.id }} .page-neu__content h4 {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 1.8em 0 0.9em;
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, #f5f7fb, #e8ecf2);
+    box-shadow: var(--shadow-neu-out-sm);
+    color: var(--neu-text);
+    line-height: 1.25;
+  }
+
+  .section-{{ section.id }} .page-neu__content h2 {
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+  }
+
+  .section-{{ section.id }} .page-neu__content h3 {
+    font-size: clamp(1.25rem, 2.3vw, 1.6rem);
+  }
+
+  .section-{{ section.id }} .page-neu__content h4 {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+  }
+
+  .section-{{ section.id }} .page-neu__content a {
+    color: var(--neu-accent);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dashed rgba(140, 107, 207, 0.45);
+    transition: color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  .section-{{ section.id }} .page-neu__content a:hover {
+    color: #7450bf;
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 2px 0 rgba(140, 107, 207, 0.15);
+  }
+
+  .section-{{ section.id }} .page-neu__content ul,
+  .section-{{ section.id }} .page-neu__content ol {
+    margin: 0 0 1.25em;
+    padding-left: 1.4rem;
+  }
+
+  .section-{{ section.id }} .page-neu__content li + li {
+    margin-top: 0.45em;
+  }
+
+  .section-{{ section.id }} .page-neu__content blockquote {
+    margin: 1.75rem 0;
+    padding: 20px 24px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(145deg, #e9edf2, #f5f7fb);
+    box-shadow: var(--shadow-neu-in-sm);
+    color: var(--neu-muted);
+    border-left: 4px solid rgba(140, 107, 207, 0.35);
+  }
+
+  .section-{{ section.id }} .page-neu__content hr {
+    border: 0;
+    height: 1px;
+    margin: 2rem 0;
+    background: linear-gradient(
+      90deg,
+      rgba(200, 204, 209, 0),
+      rgba(200, 204, 209, 0.9),
+      rgba(255, 255, 255, 0.95),
+      rgba(200, 204, 209, 0)
+    );
+  }
+
+  .section-{{ section.id }} .page-neu__content img,
+  .section-{{ section.id }} .page-neu__content video,
+  .section-{{ section.id }} .page-neu__content iframe {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.5rem 0;
+    border-radius: 22px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-out-sm);
+    overflow: hidden;
+  }
+
+  .section-{{ section.id }} .page-neu__content table {
+    width: 100%;
+    margin: 1.75rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #f5f7fb, #e7ebf0);
+    box-shadow: var(--shadow-neu-out-sm);
+  }
+
+  .section-{{ section.id }} .page-neu__content th,
+  .section-{{ section.id }} .page-neu__content td {
+    padding: 14px 16px;
+    text-align: left;
+    color: var(--neu-text);
+  }
+
+  .section-{{ section.id }} .page-neu__content thead th {
+    background: rgba(255, 255, 255, 0.55);
+    font-weight: 700;
+  }
+
+  .section-{{ section.id }} .page-neu__content tbody tr + tr td {
+    border-top: 1px solid rgba(200, 204, 209, 0.6);
+  }
+
+  .section-{{ section.id }} .page-neu__content input,
+  .section-{{ section.id }} .page-neu__content textarea,
+  .section-{{ section.id }} .page-neu__content select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 0;
+    outline: 0;
+    border-radius: 16px;
+    background: var(--neu-surface);
+    color: var(--neu-text);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  .section-{{ section.id }} .page-neu__content button,
+  .section-{{ section.id }} .page-neu__content .button,
+  .section-{{ section.id }} .page-neu__content input[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(145deg, #f5f7fb, #e7ebf0);
+    color: var(--neu-text);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-neu-out-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .section-{{ section.id }} .page-neu__content button:hover,
+  .section-{{ section.id }} .page-neu__content .button:hover,
+  .section-{{ section.id }} .page-neu__content input[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-neu-accent);
+  }
+
+  @media screen and (max-width: 749px) {
+    .section-{{ section.id }} {
+      padding: 20px 14px 40px;
+    }
+
+    .section-{{ section.id }} .page-neu__shell {
+      padding: 20px;
+      border-radius: 26px;
+      box-shadow: var(--shadow-neu-out-sm);
+    }
+
+    .section-{{ section.id }} .page-neu__title-wrap {
+      display: flex;
+      width: 100%;
+      border-radius: 22px;
+      padding: 14px 18px;
+    }
+
+    .section-{{ section.id }} .page-neu__content {
+      padding: 20px;
+      border-radius: 22px;
+      box-shadow: var(--shadow-neu-in-sm);
+    }
+
+    .section-{{ section.id }} .page-neu__content h2,
+    .section-{{ section.id }} .page-neu__content h3,
+    .section-{{ section.id }} .page-neu__content h4 {
+      padding: 10px 14px;
+      border-radius: 14px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "t:general.page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Neumorphic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "📐 Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    }
+  ]
+}
+{% endschema %}

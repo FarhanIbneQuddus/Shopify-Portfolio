@@ -1,0 +1,1028 @@
+{% render 'neu-settings', section: section %}
+
+{% comment %}
+  Section: Neumorphic Hero Banner
+  File: sections/neu-hero-banner.liquid
+{% endcomment %}
+
+<style>
+  #NeuHero-{{ section.id }} {
+    /* Neumorphic settings from snippet */
+  }
+
+  /* ===== BASE ===== */
+  .neu-hero {
+    background: var(--neu-bg);
+    color: var(--neu-text);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    overflow: visible;
+    position: relative;
+  }
+
+  .neu-hero__container {
+      max-width: {{ section.settings.max_width | default: 1400 }}px;
+      margin: 0 auto;
+  }
+
+  @media (max-width: 749px){
+    .neu-hero__container {
+      max-width: {{ section.settings.max_width | default: 1400 }}px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+  }
+
+  .neu-hero__inner {
+    border-radius: calc(var(--neu-radius) * 1.5);
+    box-shadow: var(--neu-shadow-strong);
+    padding: 40px 20px;
+    text-align: {{ section.settings.text_alignment | default: 'center' }};
+    position: relative;
+    overflow: hidden;
+    background: var(--neu-bg);
+  }
+
+  /* ===== FLOATING DECORATIVE ORBS ===== */
+  .neu-hero__orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .neu-hero__orb--1 {
+    width: clamp(200px, 30vw, 400px);
+    height: clamp(200px, 30vw, 400px);
+    top: -15%;
+    right: -10%;
+    background: radial-gradient(circle, rgba(var(--neu-accent-rgb), 0.12) 0%, transparent 70%);
+    animation: neuOrbFloat1 12s ease-in-out infinite, neuOrbReveal 1.5s 0.5s ease forwards;
+  }
+
+  .neu-hero__orb--2 {
+    width: clamp(150px, 22vw, 300px);
+    height: clamp(150px, 22vw, 300px);
+    bottom: -10%;
+    left: -8%;
+    background: radial-gradient(circle, rgba(var(--neu-accent-rgb), 0.08) 0%, transparent 70%);
+    animation: neuOrbFloat2 15s ease-in-out infinite, neuOrbReveal 1.5s 0.8s ease forwards;
+  }
+
+  .neu-hero__orb--3 {
+    width: clamp(80px, 12vw, 150px);
+    height: clamp(80px, 12vw, 150px);
+    top: 20%;
+    left: 15%;
+    background: radial-gradient(circle, rgba(var(--neu-accent-rgb), 0.06) 0%, transparent 70%);
+    animation: neuOrbFloat3 10s ease-in-out infinite, neuOrbReveal 1.5s 1.1s ease forwards;
+  }
+
+  @keyframes neuOrbReveal {
+    to { opacity: 1; }
+  }
+
+  @keyframes neuOrbFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-20px, 15px) scale(1.05); }
+    66% { transform: translate(10px, -10px) scale(0.95); }
+  }
+
+  @keyframes neuOrbFloat2 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(15px, -20px) rotate(5deg); }
+  }
+
+  @keyframes neuOrbFloat3 {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(10px, 10px); }
+    50% { transform: translate(-5px, 15px); }
+    75% { transform: translate(-15px, -5px); }
+  }
+
+  /* ===== GRID DOTS PATTERN ===== */
+  .neu-hero__pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: radial-gradient(rgba(var(--neu-accent-rgb), 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+    opacity: 0;
+    animation: neuPatternReveal 2s 0.3s ease forwards;
+  }
+
+  @keyframes neuPatternReveal {
+    to { opacity: 1; }
+  }
+
+  /* ===== BADGE ===== */
+  .neu-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50px;
+    font-size: clamp(11px, 1.5vw, 14px);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--neu-accent);
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    animation: neuBadgeIn 0.8s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes neuBadgeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .neu-hero__badge-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--neu-accent);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  {% comment %} .neu-hero__badge-dot::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--neu-accent);
+    opacity: 0;
+    animation: neuDotPing 2s ease-in-out infinite;
+  }
+
+  @keyframes neuDotPing {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    50% { transform: scale(1.8); opacity: 0; }
+    100% { transform: scale(0.8); opacity: 0; }
+  } {% endcomment %}
+
+  /* ===== TITLE ===== */
+  .neu-hero__title {
+    font-size: clamp(32px, 7vw, 72px);
+    font-weight: 900;
+    line-height: 1.08;
+    margin: 0 0 24px;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -0.02em;
+  }
+
+  .neu-hero__title-line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .neu-hero__title-text {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(110%);
+    animation: neuTitleSlide 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .neu-hero__title-line:nth-child(1) .neu-hero__title-text { animation-delay: 0.5s; }
+  .neu-hero__title-line:nth-child(2) .neu-hero__title-text { animation-delay: 0.65s; }
+  .neu-hero__title-line:nth-child(3) .neu-hero__title-text { animation-delay: 0.8s; }
+
+  @keyframes neuTitleSlide {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .neu-hero__title-highlight {
+    background: linear-gradient(135deg, var(--neu-accent), var(--neu-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+
+  {% comment %} .neu-hero__title-highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--neu-accent), var(--neu-accent));
+    border-radius: 2px;
+    animation: neuUnderlineGrow 0.8s 1.2s ease forwards;
+  }
+
+  @keyframes neuUnderlineGrow {
+    to { width: 100%; }
+  } {% endcomment %}
+
+  /* ===== SUBTITLE ===== */
+  .neu-hero__subtitle {
+    font-size: clamp(15px, 2.2vw, 20px);
+    line-height: 1.7;
+    max-width: 650px;
+    color: var(--neu-text);
+    opacity: 0;
+    position: relative;
+    z-index: 2;
+    animation: neuFadeUp 0.8s 0.9s ease forwards;
+  }
+
+  .neu-hero__inner--center .neu-hero__subtitle {
+    margin: 0 auto 40px;
+  }
+
+  .neu-hero__inner--left .neu-hero__subtitle {
+    margin: 0 0 40px;
+  }
+
+  @keyframes neuFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 0.8;
+      transform: translateY(0);
+    }
+  }
+
+  /* ===== CTA BUTTONS ===== */
+  .neu-hero__ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: neuFadeUp 0.8s 1.1s ease forwards;
+  }
+
+  .neu-hero__inner--center .neu-hero__ctas {
+    justify-content: center;
+  }
+
+  .neu-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: clamp(14px, 1.8vw, 16px);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .neu-hero__cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .neu-hero__cta:hover::before {
+    left: 100%;
+  }
+
+  .neu-hero__cta--primary {
+    background: var(--neu-accent);
+    color: #fff;
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  .neu-hero__cta--primary:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+
+  .neu-hero__cta--primary:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: inset -3px -3px 6px var(--neu-shadow-light),inset 3px 3px 6px var(--neu-shadow-dark);
+  }
+
+  .neu-hero__cta--secondary {
+    background: var(--neu-bg);
+    color: var(--neu-accent);
+    box-shadow: var(--shadow-neu-out-sm);
+  }
+
+  .neu-hero__cta--secondary:hover {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(2px);
+  }
+
+  .neu-hero__cta-icon {
+    display: inline-flex;
+    transition: transform 0.3s ease;
+  }
+
+  .neu-hero__cta:hover .neu-hero__cta-icon {
+    transform: translateX(4px);
+  }
+
+  /* ===== SCROLL INDICATOR ===== */
+  .neu-hero__scroll {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: neuFadeUp 0.8s 1.4s ease forwards;
+  }
+
+  .neu-hero__scroll-mouse {
+    width: 28px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out-sm);
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .neu-hero__scroll-wheel {
+    width: 4px;
+    height: 10px;
+    background: var(--neu-accent);
+    border-radius: 2px;
+    margin-top: 10px;
+    animation: neuScrollWheel 2s ease-in-out infinite;
+  }
+
+  @keyframes neuScrollWheel {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(8px); opacity: 0.3; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .neu-hero__scroll-text {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--neu-accent);
+    opacity: 0.5;
+  }
+
+  /* ===== FLOATING SHAPES ===== */
+  .neu-hero__shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .neu-hero__shape {
+    position: absolute;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out-sm);
+    opacity: 0;
+  }
+
+  .neu-hero__shape--1 {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    top: 12%;
+    right: 10%;
+    animation: neuShapeFloat 8s ease-in-out infinite, neuShapeReveal 1s 1.5s ease forwards;
+    transform: rotate(15deg);
+  }
+
+  .neu-hero__shape--2 {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    bottom: 15%;
+    right: 20%;
+    animation: neuShapeFloat 6s 1s ease-in-out infinite, neuShapeReveal 1s 1.7s ease forwards;
+  }
+
+  .neu-hero__shape--3 {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    bottom: 20%;
+    left: 8%;
+    animation: neuShapeFloat 10s 0.5s ease-in-out infinite, neuShapeReveal 1s 1.9s ease forwards;
+    transform: rotate(-10deg);
+  }
+
+  .neu-hero__shape--4 {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    top: 30%;
+    left: 12%;
+    animation: neuShapeFloat 7s 2s ease-in-out infinite, neuShapeReveal 1s 2.1s ease forwards;
+    transform: rotate(45deg);
+  }
+
+  @keyframes neuShapeReveal {
+    to { opacity: 0.6; }
+  }
+
+  @keyframes neuShapeFloat {
+    0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)); }
+    50% { transform: translateY(-15px) rotate(calc(var(--rotation, 0deg) + 5deg)); }
+  }
+
+  /* ===== FEATURED IMAGE (OPTIONAL) ===== */
+  .neu-hero__image-wrap {
+    margin-top: 50px;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    animation: neuImageReveal 1.2s 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+
+  @keyframes neuImageReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .neu-hero__image-container {
+    border-radius: var(--neu-radius);
+    box-shadow: var(--neu-shadow-strong);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .neu-hero__image-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(var(--neu-accent-rgb), 0.1));
+    pointer-events: none;
+  }
+
+  .neu-hero__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    transition: transform 6s ease;
+  }
+
+  .neu-hero__image-container:hover .neu-hero__image {
+    transform: scale(1.05);
+  }
+
+  .neu-hero__image-float {
+    position: absolute;
+    padding: 14px 22px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out-sm);
+    border-radius: calc(var(--neu-radius) / 1.5);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--neu-accent);
+    z-index: 3;
+    opacity: 0;
+    animation: neuFloatBadge 1s 1.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .neu-hero__image-float--left {
+    bottom: 20px;
+    left: -15px;
+  }
+
+  .neu-hero__image-float--right {
+    top: 20px;
+    right: -15px;
+  }
+
+  @keyframes neuFloatBadge {
+    from {
+      opacity: 0;
+      transform: scale(0.5) translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .neu-hero__image-float-icon {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 16px;
+  }
+
+  /* ===== TRUST BAR ===== */
+  .neu-hero__trust {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: neuFadeUp 0.8s 1.6s ease forwards;
+  }
+
+  .neu-hero__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--neu-text);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+  }
+
+  .neu-hero__trust-item:hover {
+    opacity: 1;
+    box-shadow: var(--shadow-neu-out-sm);
+    transform: translateY(-2px);
+  }
+
+  .neu-hero__trust-icon {
+    font-size: 18px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media screen and (max-width: 990px) {
+    .neu-hero__shape--1,
+    .neu-hero__shape--4 {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .neu-hero__inner {
+      padding: 40px 20px;
+    }
+
+    .neu-hero__shapes {
+      display: none;
+    }
+
+    .neu-hero__ctas {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .neu-hero__cta {
+      justify-content: center;
+    }
+
+    .neu-hero__trust {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .neu-hero__image-float {
+      display: none;
+    }
+  }
+
+  /* ===== REDUCED MOTION ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .neu-hero__title-text,
+    .neu-hero__badge,
+    .neu-hero__subtitle,
+    .neu-hero__ctas,
+    .neu-hero__scroll,
+    .neu-hero__image-wrap,
+    .neu-hero__trust,
+    .neu-hero__image-float,
+    .neu-hero__shape,
+    .neu-hero__orb {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    .neu-hero__scroll-wheel,
+    .neu-hero__badge-dot::after {
+      animation: none !important;
+    }
+  }
+</style>
+
+<section class="neu-hero" id="NeuHero-{{ section.id }}">
+  <div class="neu-hero__container">
+    <div class="neu-hero__inner neu-hero__inner--{{ section.settings.text_alignment | default: 'center' }}">
+
+      {%- comment -%} Decorative Elements {%- endcomment -%}
+      {% if section.settings.show_pattern %}
+        <div class="neu-hero__pattern"></div>
+      {% endif %}
+
+      <div class="neu-hero__orb neu-hero__orb--1"></div>
+      <div class="neu-hero__orb neu-hero__orb--2"></div>
+      <div class="neu-hero__orb neu-hero__orb--3"></div>
+
+      {% if section.settings.show_shapes %}
+        <div class="neu-hero__shapes">
+          <div class="neu-hero__shape neu-hero__shape--1" style="--rotation: 15deg;"></div>
+          <div class="neu-hero__shape neu-hero__shape--2"></div>
+          <div class="neu-hero__shape neu-hero__shape--3" style="--rotation: -10deg;"></div>
+          <div class="neu-hero__shape neu-hero__shape--4" style="--rotation: 45deg;"></div>
+        </div>
+      {% endif %}
+
+      {%- comment -%} Badge {%- endcomment -%}
+      {% if section.settings.badge_text != blank %}
+        <div class="neu-hero__badge">
+          <span class="neu-hero__badge-dot"></span>
+          {{ section.settings.badge_text }}
+        </div>
+      {% endif %}
+
+      {%- comment -%} Title with line-by-line reveal {%- endcomment -%}
+      {% if section.settings.title != blank %}
+        <h1 class="neu-hero__title">
+          {% assign title_lines = section.settings.title | split: '|' %}
+          {% for line in title_lines %}
+            <span class="neu-hero__title-line">
+              <span class="neu-hero__title-text">
+                {% if forloop.last and section.settings.highlight_last_line %}
+                  <span class="neu-hero__title-highlight">{{ line | strip }}</span>
+                {% else %}
+                  {{ line | strip }}
+                {% endif %}
+              </span>
+            </span>
+          {% endfor %}
+        </h1>
+      {% endif %}
+
+      {%- comment -%} Subtitle {%- endcomment -%}
+      {% if section.settings.subtitle != blank %}
+        <p class="neu-hero__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+
+      {%- comment -%} CTA Buttons {%- endcomment -%}
+      {% if section.settings.primary_cta_text != blank or section.settings.secondary_cta_text != blank %}
+        <div class="neu-hero__ctas">
+          {% if section.settings.primary_cta_text != blank %}
+            <a href="{{ section.settings.primary_cta_link }}" class="neu-hero__cta neu-hero__cta--primary">
+              {{ section.settings.primary_cta_text }}
+              <span class="neu-hero__cta-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </span>
+            </a>
+          {% endif %}
+
+          {% if section.settings.secondary_cta_text != blank %}
+            <a href="{{ section.settings.secondary_cta_link }}" class="neu-hero__cta neu-hero__cta--secondary">
+              {% if section.settings.secondary_cta_icon == 'play' %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              {% endif %}
+              {{ section.settings.secondary_cta_text }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {%- comment -%} Featured Image {%- endcomment -%}
+      {% if section.settings.hero_image != blank %}
+        <div class="neu-hero__image-wrap">
+          <div class="neu-hero__image-container">
+            {{ section.settings.hero_image | image_url: width: 1400 | image_tag:
+              class: 'neu-hero__image',
+              loading: 'eager',
+              widths: '600, 900, 1200, 1400',
+              sizes: '(max-width: 749px) 100vw, (max-width: 990px) 90vw, 1200px'
+            }}
+          </div>
+
+          {% if section.settings.float_badge_left != blank %}
+            <div class="neu-hero__image-float neu-hero__image-float--left">
+              <span class="neu-hero__image-float-icon">{{ section.settings.float_badge_left_icon | default: '⭐' }}</span>
+              {{ section.settings.float_badge_left }}
+            </div>
+          {% endif %}
+
+          {% if section.settings.float_badge_right != blank %}
+            <div class="neu-hero__image-float neu-hero__image-float--right">
+              <span class="neu-hero__image-float-icon">{{ section.settings.float_badge_right_icon | default: '🚀' }}</span>
+              {{ section.settings.float_badge_right }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {%- comment -%} Trust Bar {%- endcomment -%}
+      {% comment %} {% if section.settings.trust_1 != blank or section.settings.trust_2 != blank or section.settings.trust_3 != blank %}
+        <div class="neu-hero__trust">
+          {% if section.settings.trust_1 != blank %}
+            <div class="neu-hero__trust-item">
+              <span class="neu-hero__trust-icon">{{ section.settings.trust_1_icon | default: '✓' }}</span>
+              {{ section.settings.trust_1 }}
+            </div>
+          {% endif %}
+          {% if section.settings.trust_2 != blank %}
+            <div class="neu-hero__trust-item">
+              <span class="neu-hero__trust-icon">{{ section.settings.trust_2_icon | default: '✓' }}</span>
+              {{ section.settings.trust_2 }}
+            </div>
+          {% endif %}
+          {% if section.settings.trust_3 != blank %}
+            <div class="neu-hero__trust-item">
+              <span class="neu-hero__trust-icon">{{ section.settings.trust_3_icon | default: '✓' }}</span>
+              {{ section.settings.trust_3 }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %} {% endcomment %}
+
+      {%- comment -%} Scroll Indicator {%- endcomment -%}
+      {% if section.settings.show_scroll_indicator %}
+        <div class="neu-hero__scroll">
+          <div class="neu-hero__scroll-mouse">
+            <div class="neu-hero__scroll-wheel"></div>
+          </div>
+          <span class="neu-hero__scroll-text">Scroll</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Us Banner",
+  "tag": "section",
+  "class": "neu-hero-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max Width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "default": 1400,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Text Muted",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "About Us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title (use | for line breaks)",
+      "default": "We're building|the future of|commerce",
+      "info": "Separate lines with | for staggered animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "highlight_last_line",
+      "label": "Highlight Last Line with Gradient",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our mission is to empower entrepreneurs and small businesses with beautiful, intuitive tools that help them succeed online."
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "primary_cta_text",
+      "label": "Primary Button Text",
+      "default": "Get Started"
+    },
+    {
+      "type": "url",
+      "id": "primary_cta_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_text",
+      "label": "Secondary Button Text",
+      "default": "Watch Video"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Secondary Button Link"
+    },
+    {
+      "type": "select",
+      "id": "secondary_cta_icon",
+      "label": "Secondary Button Icon",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "play", "label": "Play" }
+      ],
+      "default": "play"
+    },
+    {
+      "type": "header",
+      "content": "Featured Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "float_badge_left",
+      "label": "Left Float Badge Text",
+      "default": "Trusted by 5k+"
+    },
+    {
+      "type": "text",
+      "id": "float_badge_left_icon",
+      "label": "Left Badge Emoji",
+      "default": "⭐"
+    },
+    {
+      "type": "text",
+      "id": "float_badge_right",
+      "label": "Right Float Badge Text",
+      "default": "Since 2020"
+    },
+    {
+      "type": "text",
+      "id": "float_badge_right_icon",
+      "label": "Right Badge Emoji",
+      "default": "🚀"
+    },
+    
+    {
+      "type": "header",
+      "content": "Decorations"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shapes",
+      "label": "Show Floating Shapes",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pattern",
+      "label": "Show Dot Pattern",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show Scroll Indicator",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Us Banner"
+    }
+  ]
+}
+{% endschema %}

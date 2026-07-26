@@ -1,0 +1,1070 @@
+{% render 'neu-settings', section: section %}
+<style>
+a:empty, ul:empty, dl:empty, div:empty, section:empty, article:empty, p:empty, h1:empty, h2:empty, h3:empty, h4:empty, h5:empty, h6:empty {
+    display: block;
+}
+
+.neubot-footer {
+  background: var(--neu-bg);
+}
+
+@media (max-width: 768px) {
+  .neubot-footer {
+    background: var(--neu-bg);
+    padding: 40px 20px;
+  }
+}
+
+.neubot-footer__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--neu-bg);
+  border-radius: var(--neu-radius);
+  padding: 40px 48px 28px;
+  box-shadow: var(--neu-shadow-strong);
+}
+
+.neubot-footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Brand column */
+.neubot-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.neubot-footer__logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.neubot-footer__logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-neu-in);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.neubot-footer__logo-icon img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.neubot-footer__logo-icon--default svg {
+  width: 22px;
+  height: 22px;
+}
+
+.neubot-footer__brand-name {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--neu-text);
+}
+
+.neubot-footer__tagline {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--neu-text-muted);
+  margin: 0;
+  max-width: 240px;
+}
+
+/* Link Columns */
+.neubot-footer__column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.neubot-footer__column-desktop {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.neubot-footer__heading {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--neu-text);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.neubot-footer__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.neubot-footer__link-item {
+  margin: 0;
+}
+
+.neubot-footer__link {
+  font-size: 15px;
+  color: var(--neu-text);
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.neubot-footer__link:hover {
+  color: var(--neu-text);
+  transform: translateX(2px);
+}
+
+/* Collapsible - hidden on desktop */
+.neubot-footer__collapsible {
+  display: none;
+}
+
+/* ===== Newsletter Column ===== */
+.neubot-footer__newsletter {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Social Icons */
+.neubot-footer__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.neubot-footer__social-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neu-text);
+  text-decoration: none;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.neubot-footer__social-icon svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.25s ease;
+}
+
+/* .neubot-footer__social-icon:hover {
+  box-shadow: var(--shadow-neu-in-sm);
+  color: var(--neu-text);
+} */
+
+.neubot-footer__social-icon:hover svg {
+  transform: scale(1.08);
+}
+
+.neubot-footer__social-icon:active {
+  box-shadow: var(--shadow-neu-in-sm);
+  transform: scale(0.96);
+}
+
+/* Newsletter text */
+.neubot-footer__newsletter-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--neu-text-muted);
+  margin: 0;
+}
+
+/* Newsletter form */
+.neubot-footer__newsletter-form {
+  margin: 0;
+  width: 100%;
+}
+
+.neubot-footer__newsletter-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--neu-bg);
+  border-radius: 50px;
+  box-shadow: var(--shadow-neu-in-sm);
+  padding: 6px 6px 6px 20px;
+  transition: box-shadow 0.25s ease;
+}
+
+.neubot-footer__newsletter-input-wrap:focus-within {
+  box-shadow: var(--shadow-neu-in-sm);
+}
+
+.neubot-footer__newsletter-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--neu-text);
+  font-family: inherit;
+  padding: 8px 0;
+  min-width: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.neubot-footer__newsletter-input:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.neubot-footer__newsletter-input:active {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.neubot-footer__newsletter-input:-webkit-autofill,
+.neubot-footer__newsletter-input:-webkit-autofill:hover,
+.neubot-footer__newsletter-input:-webkit-autofill:focus,
+.neubot-footer__newsletter-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--neu-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--neu-bg) inset !important;
+  -webkit-text-fill-color: var(--neu-text) !important;
+  background-color: var(--neu-bg) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.neubot-footer__newsletter-input::placeholder {
+  color: var(--neu-text-muted);
+  opacity: 0.75;
+}
+
+.neubot-footer__newsletter-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--shadow-neu-out-sm);
+  color: var(--neu-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+.neubot-footer__newsletter-button svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.25s ease;
+}
+
+.neubot-footer__newsletter-button:hover {
+  color: var(--neu-text);
+}
+
+.neubot-footer__newsletter-button:hover svg {
+  transform: translateX(2px);
+}
+
+.neubot-footer__newsletter-button:active {
+  box-shadow: var(--shadow-neu-in-sm);
+  transform: scale(0.95);
+}
+
+.neubot-footer__newsletter-success {
+  font-size: 13px;
+  color: #3a7d4a;
+  margin: 10px 0 0;
+}
+
+/* Divider */
+.neubot-footer__divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(122, 106, 143, 0.25),
+    transparent
+  );
+  margin: 32px 0 20px;
+}
+
+/* Bottom bar */
+.neubot-footer__bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: var(--neu-bg);
+  border-radius: 50px;
+  width: max-content;
+  margin: auto;
+  box-shadow: var(--shadow-neu-in);
+  padding: 10px 40px;
+}
+
+.neubot-footer__copyright,
+.neubot-footer__locations {
+  font-size: 13px;
+  color: var(--neu-text-muted);
+}
+
+/* Tablet */
+@media screen and (max-width: 990px) and (min-width: 641px) {
+  .neubot-footer__container {
+    padding: 32px 32px 24px;
+  }
+
+  .neubot-footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .neubot-footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  .neubot-footer__newsletter {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 640px) {
+  .neubot-footer {
+    padding: 20px 16px;
+  }
+
+  .neubot-footer__container {
+    padding: 28px 20px 22px;
+    border-radius: 20px;
+  }
+
+  .neubot-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  /* Brand centered on mobile */
+  .neubot-footer__brand {
+    grid-column: auto;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 10px;
+    gap: 14px;
+  }
+
+  .neubot-footer__logo-wrap {
+    justify-content: center;
+  }
+
+  .neubot-footer__brand-name {
+    font-size: 18px;
+  }
+
+  .neubot-footer__tagline {
+    text-align: center;
+    max-width: 280px;
+  }
+
+  /* Column resets */
+  .neubot-footer__column {
+    gap: 0;
+  }
+
+  /* Hide desktop version */
+  .neubot-footer__column-desktop {
+    display: none;
+  }
+
+  /* Show collapsible version */
+  .neubot-footer__collapsible {
+    display: block;
+    background: var(--neu-bg);
+    border-radius: 14px;
+    box-shadow: var(--shadow-neu-out-sm);
+    overflow: hidden;
+    transition: box-shadow 0.35s ease;
+  }
+
+  .neubot-footer__collapsible.is-open {
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  .neubot-footer__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .neubot-footer__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .neubot-footer__summary::marker {
+    display: none;
+  }
+
+  .neubot-footer__summary .neubot-footer__heading {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--neu-text);
+    transition: color 0.3s ease;
+  }
+
+  .neubot-footer__collapsible.is-open .neubot-footer__summary .neubot-footer__heading {
+    color: var(--neu-text);
+  }
+
+  .neubot-footer__summary-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-out-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neu-text);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.35s ease;
+    flex-shrink: 0;
+  }
+
+  .neubot-footer__summary-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .neubot-footer__collapsible.is-open .neubot-footer__summary-icon {
+    transform: rotate(180deg);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  /* Smooth height animation wrapper */
+  .neubot-footer__collapsible-wrapper {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .neubot-footer__collapsible-content {
+    padding: 4px 20px 18px;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .neubot-footer__collapsible.is-open .neubot-footer__collapsible-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.1s;
+  }
+
+  .neubot-footer__collapsible-content .neubot-footer__links {
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(122, 106, 143, 0.15);
+  }
+
+  .neubot-footer__collapsible-content .neubot-footer__link {
+    font-size: 14px;
+    padding: 3px 0;
+  }
+
+  /* Newsletter on mobile */
+  .neubot-footer__newsletter {
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    padding-top: 10px;
+  }
+
+  .neubot-footer__socials {
+    justify-content: center;
+  }
+
+  .neubot-footer__newsletter-text {
+    text-align: center;
+    max-width: 280px;
+  }
+
+  /* Divider tighter on mobile */
+  .neubot-footer__divider {
+    margin: 22px 0 12px;
+  }
+
+  /* Bottom bar */
+  .neubot-footer__bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    text-align: center;
+    width: fit-content;
+  }
+
+  .neubot-footer__copyright,
+  .neubot-footer__locations {
+    font-size: 12px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .neubot-footer__collapsible,
+  .neubot-footer__collapsible-wrapper,
+  .neubot-footer__collapsible-content,
+  .neubot-footer__summary-icon,
+  .neubot-footer__link,
+  .neubot-footer__social-icon,
+  .neubot-footer__newsletter-button {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+
+<footer class="neubot-footer" role="contentinfo">
+  <div class="neubot-footer__container">
+    <div class="neubot-footer__grid">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'brand' -%}
+            <div class="neubot-footer__brand" {{ block.shopify_attributes }}>
+              <div class="neubot-footer__logo-wrap">
+                {%- if block.settings.logo != blank -%}
+                  <div class="neubot-footer__logo-icon">
+                    <img
+                      src="{{ block.settings.logo | image_url: width: 80 }}"
+                      alt="{{ block.settings.brand_name | escape }}"
+                      width="32"
+                      height="32"
+                      loading="lazy"
+                    >
+                  </div>
+                {%- else -%}
+                  <div class="neubot-footer__logo-icon neubot-footer__logo-icon--default">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <circle cx="12" cy="12" r="4" fill="#4A2C6F"/>
+                      <circle cx="12" cy="12" r="8" stroke="#4A2C6F" stroke-width="1.2" opacity="0.4"/>
+                    </svg>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.brand_name != blank -%}
+                  <span class="neubot-footer__brand-name">{{ block.settings.brand_name }}</span>
+                {%- endif -%}
+              </div>
+              {%- if block.settings.tagline != blank -%}
+                <p class="neubot-footer__tagline">{{ block.settings.tagline }}</p>
+              {%- endif -%}
+            </div>
+
+          {%- when 'link_column' -%}
+            <div class="neubot-footer__column" {{ block.shopify_attributes }}>
+              {%- comment -%} Desktop view {%- endcomment -%}
+              <div class="neubot-footer__column-desktop">
+                {%- if block.settings.heading != blank -%}
+                  <h3 class="neubot-footer__heading">{{ block.settings.heading }}</h3>
+                {%- endif -%}
+                {%- if block.settings.menu != blank -%}
+                  <ul class="neubot-footer__links" role="list">
+                    {%- for link in block.settings.menu.links -%}
+                      <li class="neubot-footer__link-item">
+                        <a href="{{ link.url }}" class="neubot-footer__link">{{ link.title }}</a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Mobile collapsible view {%- endcomment -%}
+              <details class="neubot-footer__collapsible">
+                <summary class="neubot-footer__summary">
+                  <span class="neubot-footer__heading">{{ block.settings.heading }}</span>
+                  <span class="neubot-footer__summary-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="neubot-footer__collapsible-wrapper">
+                  <div class="neubot-footer__collapsible-content">
+                    {%- if block.settings.menu != blank -%}
+                      <ul class="neubot-footer__links" role="list">
+                        {%- for link in block.settings.menu.links -%}
+                          <li class="neubot-footer__link-item">
+                            <a href="{{ link.url }}" class="neubot-footer__link">{{ link.title }}</a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </details>
+            </div>
+
+          {%- when 'newsletter' -%}
+            <div class="neubot-footer__newsletter" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}
+                <h3 class="neubot-footer__heading">{{ block.settings.heading }}</h3>
+              {%- endif -%}
+
+              {%- comment -%} Newsletter text {%- endcomment -%}
+              {%- if block.settings.newsletter_text != blank -%}
+                <p class="neubot-footer__newsletter-text">{{ block.settings.newsletter_text }}</p>
+              {%- endif -%}
+
+              {%- comment -%} Newsletter Form {%- endcomment -%}
+              {%- form 'customer', class: 'neubot-footer__newsletter-form' -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <div class="neubot-footer__newsletter-input-wrap">
+                  <input
+                    type="email"
+                    name="contact[email]"
+                    class="neubot-footer__newsletter-input"
+                    placeholder="{{ block.settings.placeholder | default: 'Enter your email' }}"
+                    aria-label="Email"
+                    required
+                  >
+                  <button type="submit" class="neubot-footer__newsletter-button" aria-label="Subscribe">
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path d="M3 8H13M13 8L8.5 3.5M13 8L8.5 12.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                {%- if form.posted_successfully? -%}
+                  <p class="neubot-footer__newsletter-success">Thank you for subscribing!</p>
+                {%- endif -%}
+              {%- endform -%}
+
+              {%- comment -%} Social Media Icons - Now BELOW newsletter {%- endcomment -%}
+              {%- if block.settings.show_social -%}
+                <div class="neubot-footer__socials">
+                  {%- if block.settings.facebook_url != blank -%}
+                    <a href="{{ block.settings.facebook_url }}" class="neubot-footer__social-icon" aria-label="Facebook" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3V2z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.instagram_url != blank -%}
+                    <a href="{{ block.settings.instagram_url }}" class="neubot-footer__social-icon" aria-label="Instagram" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/>
+                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/>
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.twitter_url != blank -%}
+                    <a href="{{ block.settings.twitter_url }}" class="neubot-footer__social-icon" aria-label="X (Twitter)" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-6.8-8.5L20 4h-2l-5.2 6.4L8 4H4z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.tiktok_url != blank -%}
+                    <a href="{{ block.settings.tiktok_url }}" class="neubot-footer__social-icon" aria-label="TikTok" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.youtube_url != blank -%}
+                    <a href="{{ block.settings.youtube_url }}" class="neubot-footer__social-icon" aria-label="YouTube" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect x="2" y="4" width="20" height="16" rx="4" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.pinterest_url != blank -%}
+                    <a href="{{ block.settings.pinterest_url }}" class="neubot-footer__social-icon" aria-label="Pinterest" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2a10 10 0 0 0-3.64 19.33c-.1-.83-.18-2.1.04-3l1.33-5.63s-.34-.68-.34-1.68c0-1.58.92-2.76 2.06-2.76.97 0 1.44.73 1.44 1.6 0 .98-.62 2.44-.94 3.8-.27 1.13.57 2.05 1.68 2.05 2.02 0 3.57-2.13 3.57-5.2 0-2.72-1.95-4.62-4.74-4.62-3.23 0-5.12 2.42-5.12 4.92 0 .98.38 2.02.85 2.59.09.11.1.21.08.32l-.32 1.3c-.05.21-.17.25-.38.15C6.18 14.4 5.2 12.3 5.2 10.72 5.2 7.13 7.82 3.85 12.4 3.85c3.7 0 6.57 2.64 6.57 6.16 0 3.68-2.32 6.64-5.54 6.64-1.08 0-2.1-.56-2.45-1.22l-.67 2.54c-.24.93-.89 2.1-1.33 2.81A10 10 0 1 0 12 2z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.snapchat_url != blank -%}
+                    <a href="{{ block.settings.snapchat_url }}" class="neubot-footer__social-icon" aria-label="Snapchat" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2c-2.5 0-4.5 1.5-5 4-.2.8-.1 2.2-.1 2.2l-1.6-.3c-.4-.1-.8.2-.7.6.1.4.3.8.7.9l1.7.4s-.8 2.8-3.5 3.8c-.3.1-.4.5-.2.7 1.2 1.2 3 1.4 3.8 1.5.1.3.2.8.4 1.1.1.2.3.3.5.3h.3c.8-.2 1.5-.8 2.7-.8s1.9.6 2.7.8h.3c.2 0 .4-.1.5-.3.2-.3.3-.8.4-1.1.8-.1 2.6-.3 3.8-1.5.2-.2.1-.6-.2-.7-2.7-1-3.5-3.8-3.5-3.8l1.7-.4c.4-.1.6-.5.7-.9.1-.4-.3-.7-.7-.6l-1.6.3s.1-1.4-.1-2.2c-.5-2.5-2.5-4-5-4z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.linkedin_url != blank -%}
+                    <a href="{{ block.settings.linkedin_url }}" class="neubot-footer__social-icon" aria-label="LinkedIn" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.3c0-1.27-.02-2.9-1.77-2.9-1.77 0-2.04 1.38-2.04 2.8V21h-4V9z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.github_url != blank -%}
+                    <a href="{{ block.settings.github_url }}" class="neubot-footer__social-icon" aria-label="GitHub" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.tumblr_url != blank -%}
+                    <a href="{{ block.settings.tumblr_url }}" class="neubot-footer__social-icon" aria-label="Tumblr" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M14.5 21c-2.5 0-4.5-1.3-4.5-4.5V11H7V8.5c2.5-.5 3.5-2.5 3.5-4.5H13v4h3v3h-3v5c0 1 .5 1.5 1.5 1.5H16v3.5h-1.5z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                  {%- if block.settings.vimeo_url != blank -%}
+                    <a href="{{ block.settings.vimeo_url }}" class="neubot-footer__social-icon" aria-label="Vimeo" target="_blank" rel="noopener">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M22 7.42c-.1 2.13-1.58 5.05-4.47 8.76C14.53 19.73 12.07 21 10.1 21c-1.22 0-2.25-1.13-3.1-3.38-.56-2.06-1.12-4.12-1.69-6.18C4.74 9.19 4.12 8.06 3.45 8.06c-.15 0-.7.33-1.63.99L1 7.95c1.03-.9 2.04-1.81 3.04-2.72C5.34 4.12 6.28 3.56 6.9 3.5c1.36-.13 2.2.8 2.52 2.78.35 2.14.59 3.47.73 3.97.4 1.84.85 2.76 1.33 2.76.38 0 .94-.6 1.7-1.78.75-1.19 1.15-2.1 1.21-2.72.1-1.03-.3-1.55-1.21-1.55-.43 0-.88.1-1.34.3.89-2.91 2.59-4.33 5.1-4.25 1.86.05 2.74 1.26 2.63 3.63z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_bottom_bar -%}
+      <div class="neubot-footer__divider"></div>
+      <div class="neubot-footer__bottom">
+        <div class="neubot-footer__copyright">
+          © {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text }}
+        </div>
+        {%- if section.settings.locations_text != blank -%}
+          <div class="neubot-footer__locations">
+            {{ section.settings.locations_text }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const collapsibles = document.querySelectorAll('.neubot-footer__collapsible');
+
+    collapsibles.forEach((details) => {
+      const summary = details.querySelector('.neubot-footer__summary');
+      const wrapper = details.querySelector('.neubot-footer__collapsible-wrapper');
+      const content = wrapper.querySelector('.neubot-footer__collapsible-content');
+
+      const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
+      summary.addEventListener('click', (e) => {
+        if (!isMobile()) return;
+
+        e.preventDefault();
+        const isOpen = details.classList.contains('is-open');
+
+        if (isOpen) {
+          const currentHeight = content.offsetHeight;
+          wrapper.style.height = currentHeight + 'px';
+
+          requestAnimationFrame(() => {
+            wrapper.style.height = '0px';
+            details.classList.remove('is-open');
+          });
+
+          const onClose = (event) => {
+            if (event.propertyName !== 'height') return;
+            details.removeAttribute('open');
+            wrapper.style.height = '';
+            wrapper.removeEventListener('transitionend', onClose);
+          };
+          wrapper.addEventListener('transitionend', onClose);
+        } else {
+          details.setAttribute('open', '');
+          const targetHeight = content.offsetHeight;
+          wrapper.style.height = '0px';
+
+          requestAnimationFrame(() => {
+            wrapper.style.height = targetHeight + 'px';
+            details.classList.add('is-open');
+          });
+
+          const onOpen = (event) => {
+            if (event.propertyName !== 'height') return;
+            wrapper.style.height = 'auto';
+            wrapper.removeEventListener('transitionend', onOpen);
+          };
+          wrapper.addEventListener('transitionend', onOpen);
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (!isMobile()) {
+          wrapper.style.height = '';
+          details.classList.remove('is-open');
+          details.removeAttribute('open');
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "section-neubot-footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Neumorphic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "header",
+      "content": "📐 Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bottom_bar",
+      "label": "Show bottom bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "NEUBOT Systems"
+    },
+    {
+      "type": "text",
+      "id": "locations_text",
+      "label": "Locations text",
+      "default": "Kyoto · Zürich · San Francisco"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo (optional)"
+        },
+        {
+          "type": "text",
+          "id": "brand_name",
+          "label": "Brand name",
+          "default": "NEUBOT"
+        },
+        {
+          "type": "textarea",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Machines with a softer surface. Made in Kyoto & Zürich."
+        }
+      ]
+    },
+    {
+      "type": "link_column",
+      "name": "Link Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "SHOP"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "STAY CONNECTED"
+        },
+        {
+          "type": "header",
+          "content": "Newsletter"
+        },
+        {
+          "type": "text",
+          "id": "newsletter_text",
+          "label": "Newsletter text",
+          "default": "Subscribe to get updates."
+        },
+        {
+          "type": "text",
+          "id": "placeholder",
+          "label": "Input placeholder",
+          "default": "Enter your email"
+        },
+        {
+          "type": "header",
+          "content": "Social Media"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_social",
+          "label": "Show social icons",
+          "default": true
+        },
+        {
+          "type": "url",
+          "id": "facebook_url",
+          "label": "Facebook URL"
+        },
+        {
+          "type": "url",
+          "id": "instagram_url",
+          "label": "Instagram URL"
+        },
+        {
+          "type": "url",
+          "id": "twitter_url",
+          "label": "X (Twitter) URL"
+        },
+        {
+          "type": "url",
+          "id": "tiktok_url",
+          "label": "TikTok URL"
+        },
+        {
+          "type": "url",
+          "id": "youtube_url",
+          "label": "YouTube URL"
+        },
+        {
+          "type": "url",
+          "id": "pinterest_url",
+          "label": "Pinterest URL"
+        },
+        {
+          "type": "url",
+          "id": "snapchat_url",
+          "label": "Snapchat URL"
+        },
+        {
+          "type": "url",
+          "id": "linkedin_url",
+          "label": "LinkedIn URL"
+        },
+        {
+          "type": "url",
+          "id": "github_url",
+          "label": "GitHub URL"
+        },
+        {
+          "type": "url",
+          "id": "tumblr_url",
+          "label": "Tumblr URL"
+        },
+        {
+          "type": "url",
+          "id": "vimeo_url",
+          "label": "Vimeo URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "link_column" },
+        { "type": "link_column" },
+        { "type": "newsletter" }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": ["footer"]
+  }
+}
+{% endschema %}

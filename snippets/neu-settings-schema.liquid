@@ -1,0 +1,76 @@
+{%- comment -%}
+  Reusable schema settings for neumorphic customization.
+
+  Copy the settings array below into any section's {% raw %}{% schema %}{% endraw %} block.
+  Then render the snippet at the top of the section:
+
+    {% render 'neu-settings', section: section %}
+{%- endcomment -%}
+
+/*
+  ╔══════════════════════════════════════════════════════════╗
+  ║  COPY-PASTE INTO YOUR SECTION'S  schema             ║
+  ║  "settings": [ ... paste below ... ]                    ║
+  ╚══════════════════════════════════════════════════════════╝
+
+  {
+    "name": "Neumorphic Settings",
+    "settings": [
+      {
+        "type": "header",
+        "content": "🎨 Neumorphic Colors"
+      },
+      {
+        "type": "color",
+        "id": "neu_bg",
+        "label": "Background",
+        "default": "#e6e9ee"
+      },
+      {
+        "type": "color",
+        "id": "neu_shadow_dark",
+        "label": "Shadow Dark",
+        "default": "#4f4e4e"
+      },
+      {
+        "type": "color",
+        "id": "neu_shadow_light",
+        "label": "Shadow Light",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "neu_text",
+        "label": "Text Color",
+        "default": "#2c3e50"
+      },
+      {
+        "type": "color",
+        "id": "neu_text_muted",
+        "label": "Muted Text",
+        "default": "#8b95a3"
+      },
+      {
+        "type": "color",
+        "id": "neu_accent",
+        "label": "Accent",
+        "default": "#7d3fbf"
+      },
+      {
+        "type": "header",
+        "content": "📐 Shape"
+      },
+      {
+        "type": "range",
+        "id": "neu_radius",
+        "label": "Border Radius",
+        "min": 0,
+        "max": 100,
+        "step": 2,
+        "unit": "px",
+        "default": 24
+      }
+    ]
+  }
+
+*/

@@ -1,0 +1,304 @@
+{% render 'neu-settings', section: section %}
+
+<div class="neu-newsletter-wrapper page-width">
+  <div class="neu-newsletter-card">
+    <div class="neu-newsletter-content">
+      <div class="neu-newsletter-text">
+        <h2 class="neu-newsletter-heading">{{ section.settings.heading }}</h2>
+        <p class="neu-newsletter-subheading">{{ section.settings.subheading }}</p>
+      </div>
+      <div class="neu-newsletter-form-wrap">
+        {%- form 'customer', class: 'neu-newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="neu-newsletter-field">
+            <input
+              type="email"
+              name="contact[email]"
+              id="NewsletterForm--{{ section.id }}"
+              class="neu-newsletter-input"
+              value="{{ form.email }}"
+              placeholder="{{ section.settings.placeholder }}"
+              required
+            >
+            <button type="submit" class="neu-newsletter-btn" aria-label="Subscribe">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          {%- if form.posted_successfully? -%}
+            <p class="neu-newsletter-success">Thanks for subscribing</p>
+          {%- endif -%}
+          {%- if form.errors -%}
+            <p class="neu-newsletter-error">{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+
+  section#shopify-section-{{ section.id }} {
+    padding-top: 25px;
+    padding-bottom: 85px;
+    padding-left: 16px;
+    padding-right: 16px;
+    background: var(--neu-bg);
+  }
+
+  .neu-newsletter-wrapper {
+    width: 100%;
+    padding: 40px 20px;
+  }
+
+  .neu-newsletter-card {
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    padding: 60px 70px;
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  .neu-newsletter-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .neu-newsletter-text {
+    flex: 1;
+    max-width: max-content;
+  }
+
+  .neu-newsletter-heading {
+    font-family: var(--font-heading-family);
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0 0 20px 0;
+    color: var(--neu-text);
+    letter-spacing: -0.02em;
+  }
+
+  .neu-newsletter-subheading {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--neu-text-muted);
+    margin: 0;
+    max-width: 460px;
+  }
+
+  .neu-newsletter-form-wrap {
+    flex-shrink: 0;
+  }
+
+  .neu-newsletter-form {
+    margin: 0;
+  }
+
+  .neu-newsletter-field {
+    position: relative;
+    background: var(--neu-bg);
+    border-radius: 100px;
+    padding: 8px;
+    width: 380px;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-neu-in);
+  }
+
+  .neu-newsletter-field:focus-within {
+    box-shadow: var(--shadow-neu-in);
+  }
+
+  .neu-newsletter-field .neu-newsletter-input,
+  .neu-newsletter-field .neu-newsletter-input:focus,
+  .neu-newsletter-field .neu-newsletter-input:hover,
+  .neu-newsletter-field .neu-newsletter-input:active {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 14px 20px;
+    font-size: 15px;
+    color: var(--neu-text-muted);
+    font-family: inherit;
+    min-height: unset;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .neu-newsletter-field .neu-newsletter-input::placeholder {
+    color: var(--neu-text-muted);
+    opacity: 1;
+  }
+
+  /* Fix autofill background */
+  .neu-newsletter-input:-webkit-autofill,
+  .neu-newsletter-input:-webkit-autofill:hover,
+  .neu-newsletter-input:-webkit-autofill:focus,
+  .neu-newsletter-input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--neu-text-muted) !important;
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    box-shadow: 0 0 0 1000px transparent inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+  }
+
+  .neu-newsletter-btn {
+    background: var(--neu-bg);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--neu-text-muted);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-neu-out-sm);
+    transition: all 0.2s ease;
+  }
+
+  .neu-newsletter-btn:hover {
+    color: var(--neu-text);
+  }
+
+  .neu-newsletter-btn:active {
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  .neu-newsletter-success {
+    margin: 12px 0 0;
+    font-size: 14px;
+    color: #10b981;
+    text-align: center;
+  }
+
+  .neu-newsletter-error {
+    margin: 12px 0 0;
+    font-size: 14px;
+    color: #ef4444;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 990px) {
+    .neu-newsletter-card {
+      padding: 40px 30px;
+    }
+    .neu-newsletter-content {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .neu-newsletter-heading {
+      font-size: 38px;
+    }
+    .neu-newsletter-field {
+      width: 100%;
+      max-width: 380px;
+    }
+    .neu-newsletter-form-wrap {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .neu-newsletter-card {
+      padding: 30px 20px;
+      border-radius: 20px;
+    }
+    .neu-newsletter-heading {
+      font-size: 30px;
+    }
+    .neu-newsletter-subheading {
+      font-size: 14px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "class": "section-neu-newsletter",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "First look. First drops."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Join 12,400 collectors who get our field notes and early access to new models — no noise, twice a month."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "you@studio.com"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

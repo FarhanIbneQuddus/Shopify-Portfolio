@@ -1,0 +1,1835 @@
+{% render 'neu-settings', section: section %}
+<style>
+  
+
+html,
+body {
+  overflow-x: hidden;
+  height: auto;
+}
+
+body {
+  background: var(--neu-bg);
+}
+
+/* ===== Header ===== */
+.neu-header--sticky.is-fixed.is-scrolled .neu-icon-btn:active,
+.neu-header--sticky.is-fixed.is-scrolled .neu-icon-btn.is-active {
+  box-shadow:
+    inset -3px -3px 6px var(--neu-shadow-light),
+    inset 3px 3px 6px var(--neu-shadow-dark);
+}
+
+.neu-header {
+  padding: 20px 0px;
+  background: var(--neu-bg);
+  position: relative;
+  z-index: 100;
+  transition:
+    padding 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+}
+
+.neu-header--sticky {
+  position: relative;
+}
+
+.neu-header-spacer {
+  display: block;
+  height: 0;
+  transition: height 0.3s ease;
+}
+
+.neu-header--sticky.is-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 999;
+  animation: headerSlideDown 0.28s ease forwards;
+}
+
+@keyframes headerSlideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.neu-header--sticky.is-fixed.is-scrolled {
+  padding: 30px;
+  background: rgba(232, 236, 241, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 4px 20px rgba(150, 165, 185, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.neu-header--sticky.is-fixed.is-scrolled .neu-pill {
+  height: 54px;
+  box-shadow: var(--neu-shadow-strong);
+}
+
+.neu-header--sticky.is-fixed.is-scrolled .neu-icon-btn {
+  width: 44px;
+  height: 44px;
+  box-shadow: var(--neu-shadow-strong);
+}
+
+.neu-header--sticky.is-fixed.is-scrolled .neu-logo__icon {
+  width: 38px;
+  height: 38px;
+}
+
+.neu-header__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ===== Pill Container ===== */
+.neu-pill {
+  background: var(--neu-bg);
+  border-radius: var(--neu-radius);
+  padding: 8px 20px;
+  box-shadow: var(--neu-shadow-strong);
+  display: flex;
+  align-items: center;
+  height: 60px;
+  transition: height 0.3s ease, box-shadow 0.3s ease;
+}
+
+.neu-pill--logo {
+  padding: 8px 24px 8px 8px;
+}
+
+.neu-pill--nav {
+  padding: 6px;
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+/* ===== Logo ===== */
+.neu-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--neu-text);
+}
+
+.neu-logo__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: var(--shadow-neu-in);
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.neu-logo__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.neu-logo__text {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* ===== Navigation ===== */
+.neu-nav {
+  list-style: none;
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.neu-nav__item {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.neu-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 24px;
+  border-radius: var(--neu-radius);
+  text-decoration: none;
+  color: var(--neu-text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease, box-shadow 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+  min-height: 40px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+
+.neu-nav__label {
+  display: inline-block;
+}
+
+.neu-nav__link:hover {
+  color: var(--neu-text);
+}
+
+.neu-nav__link--active {
+  color: var(--neu-text);
+  font-weight: 600;
+  background: transparent;
+  box-shadow:
+    inset -3px -3px 6px var(--neu-shadow-light),
+    inset 3px 3px 6px var(--neu-shadow-dark);
+}
+
+/* Chevron icon in nav */
+.neu-nav__chevron {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+  display: inline-block;
+}
+
+/* Inset pressed state on hover for parent items with children */
+.neu-nav__item--has-children:hover > .neu-nav__link {
+  color: var(--neu-text);
+  box-shadow:
+    inset -3px -3px 6px var(--neu-shadow-light),
+    inset 3px 3px 6px var(--neu-shadow-dark);
+}
+
+.neu-nav__item--has-children:hover > .neu-nav__link .neu-nav__chevron {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* ===== dropdownn Wrapper (Level 2 isolator) ===== */
+.neu-dropdownn-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ===== Desktop dropdownn (Level 2) ===== */
+.neu-dropdownn {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  transform: translateX(-50%) translateY(8px);
+  width: max-content;
+  min-width: 200px;
+  max-width: 280px;
+  background: var(--neu-bg);
+  border-radius: 20px;
+  padding: 8px;
+  box-shadow: var(--neu-shadow-strong);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+}
+
+/* Hover bridge: nav item → level-2 dropdownn */
+.neu-dropdownn::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: transparent;
+}
+
+.neu-nav__item--has-children:hover .neu-dropdownn-wrapper > .neu-dropdownn {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.neu-dropdownn__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.neu-dropdownn__item {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.neu-dropdownn__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--neu-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+
+.neu-dropdownn__link:hover {
+  color: var(--neu-text);
+  background: var(--neu-bg);
+  box-shadow:
+    inset -2px -2px 5px var(--neu-shadow-light),
+    inset 2px 2px 5px var(--neu-shadow-dark);
+}
+
+.neu-dropdownn__link--active {
+  color: var(--neu-text);
+  font-weight: 600;
+  box-shadow:
+    inset -2px -2px 5px var(--neu-shadow-light),
+    inset 2px 2px 5px var(--neu-shadow-dark);
+}
+
+.neu-dropdownn__chevron {
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Sub-item hover: pressed + chevron highlight */
+.neu-dropdownn__item--has-children:hover > .neu-dropdownn__link {
+  color: var(--neu-text);
+  box-shadow:
+    inset -2px -2px 5px var(--neu-shadow-light),
+    inset 2px 2px 5px var(--neu-shadow-dark);
+}
+
+.neu-dropdownn__item--has-children:hover > .neu-dropdownn__link .neu-dropdownn__chevron {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+/* ===== Sub-dropdownn Wrapper (Level 3 isolator) ===== */
+.neu-dropdownn-sub-wrapper {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* ===== Sub-dropdownn (Level 3) ===== */
+.neu-dropdownn--sub {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  transform: translateX(8px) translateY(0);
+  width: max-content;
+  min-width: 180px;
+  max-width: 250px;
+  padding-left: 8px;
+}
+
+/* Hover bridge: level-2 item → level-3 dropdownn */
+.neu-dropdownn--sub::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  bottom: -20px;
+  width: calc(100% + 40px);
+  pointer-events: auto;
+  z-index: -1;
+  background: transparent;
+}
+
+/* Extra bridge on parent item extending rightward */
+.neu-dropdownn__item--has-children::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -20px;
+  bottom: 0;
+  width: 20px;
+  pointer-events: auto;
+  background: transparent;
+}
+
+.neu-dropdownn__item--has-children:hover .neu-dropdownn-sub-wrapper > .neu-dropdownn--sub {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0) translateY(0);
+}
+
+/* ===== Action Buttons ===== */
+.neu-actions {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.neu-icon-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--neu-radius);
+  background: var(--neu-bg);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neu-text);
+  box-shadow: var(--neu-shadow-strong);
+  transition: all 0.15s ease;
+  position: relative;
+  text-decoration: none;
+}
+
+.neu-icon-btn:hover {
+  color: var(--neu-accent);
+}
+
+.neu-icon-btn:active,
+.neu-icon-btn.is-active {
+  box-shadow:
+    inset -3px -3px 6px var(--neu-shadow-light),
+    inset 3px 3px 6px var(--neu-shadow-dark);
+}
+
+.neu-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--neu-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  box-shadow: var(--shadow-neu-badge);
+}
+
+/* ===== Hamburger Button ===== */
+.neu-hamburger-btn {
+  display: none;
+}
+
+.neu-hamburger-icon {
+  width: 18px;
+  height: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.neu-hamburger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--neu-text);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Hamburger to X animation */
+.neu-hamburger-btn.is-active .neu-hamburger-line:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.neu-hamburger-btn.is-active .neu-hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.neu-hamburger-btn.is-active .neu-hamburger-line:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ===== Mobile Overlay ===== */
+.neu-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1050;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.neu-mobile-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===== Mobile Drawer ===== */
+.neu-mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-width: 85vw;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--neu-bg);
+  z-index: 1060;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-neu-drawer);
+  overflow: hidden;
+}
+
+.neu-mobile-drawer.is-open {
+  transform: translateX(0);
+}
+
+.neu-mobile-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(197, 205, 215, 0.3);
+  flex-shrink: 0;
+}
+
+.neu-mobile-drawer__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neu-text);
+}
+
+.neu-mobile-close {
+  width: 40px;
+  height: 40px;
+}
+
+.neu-mobile-drawer__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.neu-mobile-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.neu-mobile-nav__item {
+  width: 100%;
+}
+
+/* Row wrapper: link + toggle button side by side */
+.neu-mobile-nav__row {
+  display: flex;
+  align-items: center;
+  border-radius: 16px;
+  background: var(--neu-bg);
+  box-shadow:
+    -4px -4px 8px var(--neu-shadow-light),
+    4px 4px 8px var(--neu-shadow-dark);
+  overflow: hidden;
+}
+
+.neu-mobile-nav__link {
+  flex: 1;
+  display: block;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: var(--neu-text-muted);
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 16px 0 0 16px;
+}
+
+.neu-mobile-nav__item:not(.neu-mobile-nav__item--has-children) .neu-mobile-nav__link {
+  border-radius: 16px;
+}
+
+.neu-mobile-nav__link:hover,
+.neu-mobile-nav__link:active {
+  color: var(--neu-text);
+}
+
+.neu-mobile-nav__link--active {
+  color: var(--neu-text);
+  font-weight: 600;
+}
+
+/* Accordion toggle button */
+.neu-mobile-nav__toggle {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(197, 205, 215, 0.3);
+  cursor: pointer;
+  color: var(--neu-text-muted);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.neu-mobile-nav__toggle:hover {
+  color: var(--neu-text);
+}
+
+.neu-mobile-nav__toggle[aria-expanded="true"] {
+  color: var(--neu-accent);
+  background: var(--neu-bg);
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+}
+
+.neu-mobile-nav__chevron {
+  transition: transform 0.3s ease;
+}
+
+.neu-mobile-nav__toggle[aria-expanded="true"] .neu-mobile-nav__chevron {
+  transform: rotate(180deg);
+}
+
+/* Active parent row pressed state */
+.neu-mobile-nav__item--has-children.is-expanded > .neu-mobile-nav__row {
+  box-shadow:
+    inset -3px -3px 6px var(--neu-shadow-light),
+    inset 3px 3px 6px var(--neu-shadow-dark);
+}
+
+.neu-mobile-nav__item--has-children.is-expanded > .neu-mobile-nav__row .neu-mobile-nav__link {
+  color: var(--neu-text);
+  font-weight: 600;
+}
+
+/* ===== Mobile Sub-navigation (accordion) ===== */
+.neu-mobile-subnav {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-mobile-subnav.is-open {
+  max-height: 1000px;
+}
+
+.neu-mobile-subnav__list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 0 4px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.neu-mobile-subnav__list--deep {
+  padding-left: 12px;
+}
+
+.neu-mobile-subnav__item {
+  width: 100%;
+}
+
+/* Sub-nav row wrapper */
+.neu-mobile-subnav__item > .neu-mobile-nav__row {
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark);
+  border-radius: 14px;
+}
+
+.neu-mobile-subnav__item--has-children.is-expanded > .neu-mobile-nav__row {
+  box-shadow:
+    inset -2px -2px 5px var(--neu-shadow-light),
+    inset 2px 2px 5px var(--neu-shadow-dark);
+}
+
+.neu-mobile-subnav__item--has-children.is-expanded > .neu-mobile-nav__row .neu-mobile-subnav__link {
+  color: var(--neu-text);
+  font-weight: 600;
+}
+
+.neu-mobile-subnav__link {
+  flex: 1;
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--neu-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 14px 0 0 14px;
+}
+
+.neu-mobile-subnav__item:not(.neu-mobile-subnav__item--has-children) .neu-mobile-subnav__link {
+  border-radius: 14px;
+  padding: 12px 16px;
+  background: var(--neu-bg);
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark);
+}
+
+.neu-mobile-subnav__link:hover,
+.neu-mobile-subnav__link:active {
+  color: var(--neu-text);
+}
+
+.neu-mobile-subnav__link--active {
+  color: var(--neu-text);
+  font-weight: 600;
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+}
+
+/* Deep level items */
+.neu-mobile-subnav__list--deep .neu-mobile-subnav__link {
+  font-size: 13px;
+  padding: 10px 14px;
+}
+
+.neu-mobile-drawer__footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(197, 205, 215, 0.3);
+  flex-shrink: 0;
+}
+
+.neu-mobile-footer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--neu-text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  background: var(--neu-bg);
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark);
+  transition: all 0.2s ease;
+}
+
+.neu-mobile-footer-link:hover {
+  color: var(--neu-text);
+}
+
+/* ===== Search Popup ===== */
+.neu-search-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(200, 210, 225, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1100;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.neu-search-overlay.is-open {
+  display: flex;
+  opacity: 1;
+}
+
+.neu-search-popup {
+  width: 90%;
+  max-width: 600px;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.neu-search-overlay.is-open .neu-search-popup {
+  transform: translateY(0);
+}
+
+.neu-search-form {
+  width: 100%;
+}
+
+.neu-search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--neu-bg);
+  border-radius: var(--neu-radius);
+  padding: 8px 8px 8px 24px;
+  box-shadow:
+    -8px -8px 16px var(--neu-shadow-light),
+    8px 8px 16px var(--neu-shadow-dark);
+  gap: 12px;
+  position: relative;
+}
+
+.neu-search-icon {
+  color: var(--neu-text-muted);
+  flex-shrink: 0;
+}
+
+.neu-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 16px 0;
+  font-size: 16px;
+  color: var(--neu-text);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.neu-search-input::placeholder {
+  color: var(--neu-text-muted);
+}
+
+.neu-search-input:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.neu-search-input::-webkit-search-decoration,
+.neu-search-input::-webkit-search-cancel-button,
+.neu-search-input::-webkit-search-results-button,
+.neu-search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.neu-search-input-wrap:focus-within {
+  box-shadow:
+    -8px -8px 16px var(--neu-shadow-light),
+    8px 8px 16px var(--neu-shadow-dark),
+    inset -2px -2px 5px var(--neu-shadow-light),
+    inset 2px 2px 5px var(--neu-shadow-dark);
+  transition: box-shadow 0.25s ease;
+}
+
+.neu-search-input-wrap:focus-within::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: var(--neu-radius);
+  border: 2px solid rgba(125, 63, 191, 0.2);
+  pointer-events: none;
+}
+
+.neu-search-close {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--neu-bg);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neu-text);
+  box-shadow:
+    -3px -3px 6px var(--neu-shadow-light),
+    3px 3px 6px var(--neu-shadow-dark);
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.neu-search-close:active {
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+}
+
+/* ===== Cart Drawer ===== */
+[data-cart-drawer] {
+  transform: translateX(100%);
+  transition: transform 0.35s ease;
+}
+
+[data-cart-drawer].is-open,
+[data-cart-drawer].active,
+[data-cart-drawer].open {
+  transform: translateX(0);
+}
+
+[data-cart-overlay] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+[data-cart-overlay].is-open,
+[data-cart-overlay].active,
+[data-cart-overlay].open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.cart-drawer-open,
+body.overflow-hidden {
+  overflow: hidden;
+}
+
+.neu-btn--primary:active {
+  box-shadow: var(--shadow-neu-in);
+}
+
+.neu-cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.neu-cart-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.neu-cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  max-width: 100vw;
+  height: 100vh;
+  background: var(--neu-bg);
+  z-index: 1300;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-neu-drawer-right);
+}
+
+.neu-cart-drawer.is-open {
+  transform: translateX(0);
+}
+
+.neu-cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid rgba(197, 205, 215, 0.3);
+}
+
+.neu-cart-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neu-text);
+  margin: 0;
+}
+
+.neu-cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.neu-cart-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.neu-cart-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  background: var(--neu-bg);
+  border-radius: var(--neu-radius);
+  box-shadow:
+    -4px -4px 8px var(--neu-shadow-light),
+    4px 4px 8px var(--neu-shadow-dark);
+  position: relative;
+}
+
+.neu-cart-item__image {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+  background: #fff;
+}
+
+.neu-cart-item__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.neu-cart-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.neu-cart-item__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neu-text);
+  margin: 0 0 4px;
+  padding-right: 24px;
+}
+
+.neu-cart-item__variant {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--neu-text-muted);
+  margin: 0 0 4px;
+  padding-right: 24px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.neu-cart-item__price {
+  font-size: 13px;
+  color: var(--neu-accent);
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+
+.neu-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--neu-bg);
+  border-radius: 20px;
+  padding: 3px;
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+}
+
+.neu-qty__btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neu-bg);
+  cursor: pointer;
+  color: var(--neu-text);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    -2px -2px 4px var(--neu-shadow-light),
+    2px 2px 4px var(--neu-shadow-dark);
+  transition: all 0.15s;
+}
+
+.neu-qty__btn:active {
+  box-shadow:
+    inset -1px -1px 2px var(--neu-shadow-light),
+    inset 1px 1px 2px var(--neu-shadow-dark);
+}
+
+.neu-qty__value {
+  min-width: 24px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neu-text);
+}
+
+.neu-cart-item__remove {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--neu-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+}
+
+.neu-cart-item__remove:hover {
+  color: var(--neu-accent);
+}
+
+.neu-cart-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--neu-text-muted);
+}
+
+.neu-cart-footer {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(197, 205, 215, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.neu-cart-subtotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neu-text);
+  margin-bottom: 8px;
+}
+
+.neu-btn {
+  padding: 14px 24px;
+  border-radius: var(--neu-radius);
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.15s;
+  display: block;
+}
+
+.neu-btn--secondary {
+  background: var(--neu-bg);
+  color: var(--neu-text);
+  box-shadow:
+    -4px -4px 8px var(--neu-shadow-light),
+    4px 4px 8px var(--neu-shadow-dark);
+}
+
+.neu-btn--secondary:active {
+  box-shadow:
+    inset -2px -2px 4px var(--neu-shadow-light),
+    inset 2px 2px 4px var(--neu-shadow-dark);
+}
+
+.neu-btn--primary {
+  background: var(--neu-accent);
+  color: white;
+  box-shadow:
+    -4px -4px 8px var(--neu-shadow-light),
+    4px 4px 8px var(--neu-shadow-dark);
+}
+
+.neu-btn--primary:hover {
+  filter: brightness(1.05);
+}
+
+/* ===== Responsive ===== */
+
+/* Desktop: hide hamburger */
+@media (min-width: 901px) {
+  .neu-hamburger-btn {
+    display: none !important;
+  }
+
+  .neu-mobile-drawer,
+  .neu-mobile-overlay {
+    display: none !important;
+  }
+}
+
+/* Tablet & Mobile */
+@media (max-width: 900px) {
+  .neu-pill--nav-desktop {
+    display: none;
+  }
+
+  .neu-hamburger-btn {
+    display: flex;
+  }
+
+  .neu-header {
+    padding: 15px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled {
+    padding: 10px 15px;
+  }
+
+  .neu-header__container {
+    gap: 10px;
+  }
+
+  .neu-actions {
+    gap: 8px;
+  }
+
+  .neu-icon-btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .neu-pill--logo {
+    padding: 6px 16px 6px 6px;
+  }
+
+  .neu-pill {
+    height: 52px;
+  }
+
+  .neu-logo__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .neu-logo__text {
+    font-size: 17px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-pill {
+    height: 46px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-logo__icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Search overlay adjustments */
+  .neu-search-overlay {
+    padding-top: 80px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .neu-search-popup {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .neu-search-input-wrap {
+    padding: 6px 6px 6px 16px;
+  }
+
+  .neu-search-input {
+    font-size: 15px;
+    padding: 12px 0;
+  }
+
+  .neu-search-close {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* Mobile accordion toggle sizing */
+  .neu-mobile-nav__toggle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .neu-cart-drawer {
+    width: 100vw;
+  }
+
+  .neu-actions {
+    gap: 6px;
+  }
+
+  .neu-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .neu-cart-badge {
+    min-width: 18px;
+    height: 18px;
+    font-size: 10px;
+    top: -3px;
+    right: -3px;
+  }
+
+  .neu-logo__text {
+    font-size: 15px;
+  }
+
+  .neu-logo__icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .neu-pill--logo {
+    padding: 5px 12px 5px 5px;
+    height: 46px;
+  }
+
+  .neu-pill {
+    height: 46px;
+  }
+
+  .neu-header {
+    padding: 12px 10px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled {
+    padding: 8px 10px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-pill {
+    height: 42px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .neu-header--sticky.is-fixed.is-scrolled .neu-logo__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .neu-cart-item__variant {
+    font-size: 11px;
+    max-width: calc(100% - 30px);
+  }
+
+  .neu-hamburger-icon {
+    width: 16px;
+    height: 12px;
+  }
+
+  /* Mobile drawer full width on small screens */
+  .neu-mobile-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+
+  .neu-mobile-nav__toggle {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ===== Prevent overflow on very small screens ===== */
+@media (max-width: 360px) {
+  .neu-header__container {
+    gap: 6px;
+  }
+
+  .neu-actions {
+    gap: 4px;
+  }
+
+  .neu-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .neu-icon-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .neu-logo__text {
+    font-size: 14px;
+  }
+
+  .neu-logo__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .neu-pill--logo {
+    padding: 4px 10px 4px 4px;
+    height: 42px;
+  }
+
+  .neu-pill {
+    height: 42px;
+  }
+
+  .neu-hamburger-icon {
+    width: 14px;
+    height: 10px;
+  }
+}
+</style>
+
+<script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
+
+<header class="neu-header {% if section.settings.enable_sticky %}neu-header--sticky{% endif %}" data-header>
+  <div class="neu-header__container">
+    <!-- Logo Section -->
+    <div class="neu-pill neu-pill--logo">
+      <a href="{{ routes.root_url }}" class="neu-logo">
+        <div class="neu-logo__icon">
+          {%- if section.settings.logo != blank -%}
+            <img
+              src="{{ section.settings.logo | image_url: width: 120 }}"
+              alt="{{ shop.name | escape }}"
+              width="{{ section.settings.logo.width }}"
+              height="{{ section.settings.logo.height }}"
+              loading="eager"
+            >
+          {%- endif -%}
+        </div>
+        {%- if section.settings.show_logo_text -%}
+          <span class="neu-logo__text">{{ section.settings.logo_text }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    <!-- Navigation Menu (Desktop) -->
+    <nav class="neu-pill neu-pill--nav neu-pill--nav-desktop">
+      <ul class="neu-nav">
+        {%- for link in section.settings.menu.links -%}
+          <li class="neu-nav__item {% if link.links.size > 0 %}neu-nav__item--has-children{% endif %}">
+            <a href="{{ link.url }}"
+              class="neu-nav__link {% if link.active %}neu-nav__link--active{% endif %}"
+              data-nav-link
+              {% if link.links.size > 0 %}aria-haspopup="true" aria-expanded="false"{% endif %}>
+              <span class="neu-nav__label">{{ link.title }}</span>
+              {%- if link.links.size > 0 -%}
+                <svg class="neu-nav__chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              {%- endif -%}
+            </a>
+
+            {%- if link.links.size > 0 -%}
+              <div class="neu-dropdownn-wrapper">
+                <div class="neu-dropdownn" data-dropdownn>
+                  <ul class="neu-dropdownn__list">
+                    {%- for child in link.links -%}
+                      <li class="neu-dropdownn__item {% if child.links.size > 0 %}neu-dropdownn__item--has-children{% endif %}">
+                        <a href="{{ child.url }}"
+                          class="neu-dropdownn__link {% if child.active %}neu-dropdownn__link--active{% endif %}"
+                          {% if child.links.size > 0 %}aria-haspopup="true" aria-expanded="false"{% endif %}>
+                          {{ child.title }}
+                          {%- if child.links.size > 0 -%}
+                            <svg class="neu-dropdownn__chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="9 6 15 12 9 18"></polyline>
+                            </svg>
+                          {%- endif -%}
+                        </a>
+
+                        {%- if child.links.size > 0 -%}
+                          <div class="neu-dropdownn-sub-wrapper">
+                            <div class="neu-dropdownn neu-dropdownn--sub" data-dropdownn-sub>
+                              <ul class="neu-dropdownn__list">
+                                {%- for grandchild in child.links -%}
+                                  <li class="neu-dropdownn__item">
+                                    <a href="{{ grandchild.url }}"
+                                      class="neu-dropdownn__link {% if grandchild.active %}neu-dropdownn__link--active{% endif %}">
+                                      {{ grandchild.title }}
+                                    </a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            </div>
+                          </div>
+                        {%- endif -%}
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              </div>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <!-- Action Icons -->
+    <div class="neu-actions">
+      <button class="neu-icon-btn" data-search-toggle aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+
+      <a href="{{ routes.account_url }}" class="neu-icon-btn" aria-label="Account">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </a>
+
+      <button class="neu-icon-btn neu-cart-btn" data-cart-toggle aria-label="Cart">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span class="neu-cart-badge" data-cart-count>{{ cart.item_count }}</span>
+      </button>
+
+      <!-- Hamburger Menu Button (Mobile Only) -->
+      <button class="neu-icon-btn neu-hamburger-btn" data-hamburger-toggle aria-label="Menu" aria-expanded="false">
+        <div class="neu-hamburger-icon">
+          <span class="neu-hamburger-line"></span>
+          <span class="neu-hamburger-line"></span>
+          <span class="neu-hamburger-line"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="neu-mobile-overlay" data-mobile-overlay></div>
+<aside class="neu-mobile-drawer" data-mobile-drawer>
+  <div class="neu-mobile-drawer__header">
+    <span class="neu-mobile-drawer__title">Menu</span>
+    <button class="neu-icon-btn neu-mobile-close" data-mobile-close aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <nav class="neu-mobile-drawer__nav">
+    <ul class="neu-mobile-nav">
+      {%- for link in section.settings.menu.links -%}
+        <li class="neu-mobile-nav__item {% if link.links.size > 0 %}neu-mobile-nav__item--has-children{% endif %}">
+          <div class="neu-mobile-nav__row">
+            <a href="{{ link.url }}"
+               class="neu-mobile-nav__link {% if link.active %}neu-mobile-nav__link--active{% endif %}">
+              {{ link.title }}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <button class="neu-mobile-nav__toggle" data-mobile-accordion aria-expanded="false" aria-label="Expand {{ link.title }}">
+                <svg class="neu-mobile-nav__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            {%- endif -%}
+          </div>
+
+          {%- if link.links.size > 0 -%}
+            <div class="neu-mobile-subnav" data-mobile-subnav>
+              <ul class="neu-mobile-subnav__list">
+                {%- for child in link.links -%}
+                  <li class="neu-mobile-subnav__item {% if child.links.size > 0 %}neu-mobile-subnav__item--has-children{% endif %}">
+                    <div class="neu-mobile-nav__row">
+                      <a href="{{ child.url }}"
+                         class="neu-mobile-subnav__link {% if child.active %}neu-mobile-subnav__link--active{% endif %}">
+                        {{ child.title }}
+                      </a>
+                      {%- if child.links.size > 0 -%}
+                        <button class="neu-mobile-nav__toggle" data-mobile-accordion aria-expanded="false" aria-label="Expand {{ child.title }}">
+                          <svg class="neu-mobile-nav__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </button>
+                      {%- endif -%}
+                    </div>
+
+                    {%- if child.links.size > 0 -%}
+                      <div class="neu-mobile-subnav" data-mobile-subnav>
+                        <ul class="neu-mobile-subnav__list neu-mobile-subnav__list--deep">
+                          {%- for grandchild in child.links -%}
+                            <li class="neu-mobile-subnav__item">
+                              <a href="{{ grandchild.url }}"
+                                 class="neu-mobile-subnav__link {% if grandchild.active %}neu-mobile-subnav__link--active{% endif %}">
+                                {{ grandchild.title }}
+                              </a>
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+  <div class="neu-mobile-drawer__footer">
+    <a href="{{ routes.account_url }}" class="neu-mobile-footer-link">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Account</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Search Popup -->
+<div class="neu-search-overlay" data-search-overlay>
+  <div class="neu-search-popup">
+    <form action="{{ routes.search_url }}" method="get" class="neu-search-form">
+      <div class="neu-search-input-wrap">
+        <svg class="neu-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" name="q" placeholder="Search products..." class="neu-search-input" autocomplete="off">
+        <button type="button" class="neu-search-close" data-search-close aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div class="neu-cart-overlay" data-cart-overlay></div>
+<aside class="neu-cart-drawer" data-cart-drawer>
+  <div class="neu-cart-header">
+    <h3 class="neu-cart-title">Your Cart</h3>
+    <button class="neu-icon-btn neu-cart-close" data-cart-close aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="neu-cart-body" data-cart-body>
+    {%- if cart.item_count > 0 -%}
+      <ul class="neu-cart-items">
+        {%- for item in cart.items -%}
+          <li class="neu-cart-item" data-key="{{ item.key }}">
+            <div class="neu-cart-item__image">
+              {%- if item.image -%}
+                <img src="{{ item.image | image_url: width: 120 }}" alt="{{ item.title | escape }}">
+              {%- endif -%}
+            </div>
+            <div class="neu-cart-item__info">
+              <h4 class="neu-cart-item__title">{{ item.product.title }}</h4>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <p class="neu-cart-item__variant">{{ item.variant.title }}</p>
+              {%- endunless -%}
+              <p class="neu-cart-item__price">{{ item.final_price | money }}</p>
+              <div class="neu-qty">
+                <button class="neu-qty__btn" data-qty-change="minus" data-key="{{ item.key }}">−</button>
+                <span class="neu-qty__value">{{ item.quantity }}</span>
+                <button class="neu-qty__btn" data-qty-change="plus" data-key="{{ item.key }}">+</button>
+              </div>
+            </div>
+            <button class="neu-cart-item__remove" data-remove data-key="{{ item.key }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path>
+              </svg>
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="neu-cart-empty">
+        <p>Your cart is empty</p>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="neu-cart-footer">
+      <div class="neu-cart-subtotal">
+        <span>Subtotal</span>
+        <span data-cart-total>{{ cart.total_price | money }}</span>
+      </div>
+      <a href="{{ routes.cart_url }}" class="neu-btn neu-btn--secondary">View Cart</a>
+      <a href="/checkout" class="neu-btn neu-btn--primary">Checkout</a>
+    </div>
+  {%- endif -%}
+</aside>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "header",
+      "content": "🎨 Neumorphic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "📐 Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo Image",
+      "info": "Recommended: square image, 200x200px"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo_text",
+      "label": "Show logo text",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "Tech"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Sticky Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Enable sticky header",
+      "default": true,
+      "info": "Header stays visible when scrolling"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

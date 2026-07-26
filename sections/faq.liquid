@@ -1,0 +1,621 @@
+{% render 'neu-settings', section: section %}
+
+<style>
+  .neu-faq-section {
+    background: var(--neu-bg);
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+  }
+
+  .neu-faq-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header */
+  .neu-faq-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .neu-faq-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--neu-accent);
+    margin-bottom: 20px;
+  }
+
+  .neu-faq-badge-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--neu-accent);
+    border-radius: 50%;
+    animation: neuFaqPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes neuFaqPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .neu-faq-title {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    color: var(--neu-text);
+    margin: 0 0 16px;
+    line-height: 1.15;
+  }
+
+  .neu-faq-subtitle {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--neu-text);
+    opacity: 0.6;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Accordion wrapper */
+  .neu-faq-list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Accordion Item */
+  .neu-faq-item {
+    background: var(--neu-bg);
+    box-shadow: var(--neu-shadow-strong);
+    border-radius: var(--neu-radius);
+    overflow: hidden;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .neu-faq-item.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s cubic-bezier(.22,.61,.36,1), transform 0.6s cubic-bezier(.22,.61,.36,1), box-shadow 0.4s ease;
+  }
+
+  .neu-faq-item:hover {
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  .neu-faq-item.is-open {
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  /* Trigger Button */
+  .neu-faq-trigger {
+    width: 100%;
+    padding: 24px 28px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: clamp(15px, 2vw, 17px);
+    font-weight: 600;
+    color: var(--neu-text);
+    text-align: left;
+    line-height: 1.4;
+    transition: color 0.3s ease;
+    font-family: inherit;
+  }
+
+  .neu-faq-item.is-open .neu-faq-trigger {
+    color: var(--neu-accent);
+  }
+
+  /* Number badge */
+  .neu-faq-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--neu-accent);
+    transition: all 0.4s ease;
+  }
+
+  .neu-faq-item.is-open .neu-faq-num {
+    box-shadow: var(--shadow-neu-out-sm);
+    background: var(--neu-accent);
+    color: #fff;
+  }
+
+  .neu-faq-trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+  }
+
+  /* Toggle icon */
+  .neu-faq-toggle {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    background: var(--neu-bg);
+    box-shadow: var(--shadow-neu-in-sm);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+    position: relative;
+  }
+
+  .neu-faq-item.is-open .neu-faq-toggle {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: rotate(180deg);
+  }
+
+  .neu-faq-toggle-bar {
+    position: absolute;
+    width: 14px;
+    height: 2px;
+    background: var(--neu-accent);
+    border-radius: 1px;
+    transition: all 0.4s cubic-bezier(.22,.61,.36,1);
+  }
+
+  .neu-faq-toggle-bar--v {
+    transform: rotate(90deg);
+  }
+
+  .neu-faq-item.is-open .neu-faq-toggle-bar--v {
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+
+  /* Accordion body */
+  .neu-faq-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(.22,.61,.36,1);
+  }
+
+  .neu-faq-item.is-open .neu-faq-body {
+    max-height: 600px;
+  }
+
+  .neu-faq-body-inner {
+    padding: 0 28px 28px 80px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--neu-text);
+    opacity: 0.7;
+  }
+
+  .neu-faq-body-inner p {
+    margin: 0 0 12px;
+  }
+
+  .neu-faq-body-inner p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Bottom decoration */
+  .neu-faq-bottom {
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .neu-faq-bottom-text {
+    font-size: 15px;
+    color: var(--neu-text);
+    opacity: 0.6;
+    margin-bottom: 20px;
+  }
+
+  .neu-faq-bottom-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    background: var(--neu-bg);
+    box-shadow: var(--neu-shadow-strong);
+    border-radius: 50px;
+    color: var(--neu-accent);
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .neu-faq-bottom-btn:active {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(2px);
+  }
+
+  .neu-faq-bottom-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.3s ease;
+  }
+
+  .neu-faq-bottom-btn:hover svg {
+    transform: translateX(4px);
+  }
+
+  .neu-faq-section-inner {
+    position: relative;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .neu-faq-trigger {
+      padding: 18px 20px;
+    }
+    .neu-faq-body-inner {
+      padding: 0 20px 20px 20px;
+    }
+    .neu-faq-num {
+      display: none;
+    }
+    .neu-faq-toggle {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .neu-faq-item {
+      opacity: 1;
+      transform: none;
+    }
+    .neu-faq-badge-dot {
+      animation: none !important;
+    }
+  }
+</style>
+
+<section class="neu-faq-section" id="NeuFaq-{{ section.id }}">
+  <div class="neu-faq-section-inner">
+    <div class="neu-faq-container">
+      {% if section.settings.badge_text != blank or section.settings.title != blank %}
+        <div class="neu-faq-header">
+          {% if section.settings.badge_text != blank %}
+            <div class="neu-faq-badge">
+              <span class="neu-faq-badge-dot"></span>
+              {{ section.settings.badge_text }}
+            </div>
+          {% endif %}
+          {% if section.settings.title != blank %}
+            <h2 class="neu-faq-title">{{ section.settings.title }}</h2>
+          {% endif %}
+          {% if section.settings.subtitle != blank %}
+            <p class="neu-faq-subtitle">{{ section.settings.subtitle }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="neu-faq-list" data-neu-faq-list>
+        {% for block in section.blocks %}
+          {% if block.type == 'faq_item' and block.settings.question != blank %}
+            <div class="neu-faq-item" data-neu-faq-item style="transition-delay: {{ forloop.index | times: 80 }}ms;" {{ block.shopify_attributes }}>
+              <button class="neu-faq-trigger" data-neu-faq-trigger aria-expanded="false" aria-controls="neuFaqBody-{{ section.id }}-{{ forloop.index }}">
+                <span class="neu-faq-trigger-left">
+                  <span class="neu-faq-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+                  <span>{{ block.settings.question }}</span>
+                </span>
+                <span class="neu-faq-toggle">
+                  <span class="neu-faq-toggle-bar"></span>
+                  <span class="neu-faq-toggle-bar neu-faq-toggle-bar--v"></span>
+                </span>
+              </button>
+              <div class="neu-faq-body" id="neuFaqBody-{{ section.id }}-{{ forloop.index }}">
+                <div class="neu-faq-body-inner">
+                  {{ block.settings.answer }}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if section.settings.bottom_text != blank or section.settings.bottom_button_text != blank %}
+        <div class="neu-faq-bottom">
+          {% if section.settings.bottom_text != blank %}
+            <p class="neu-faq-bottom-text">{{ section.settings.bottom_text }}</p>
+          {% endif %}
+          {% if section.settings.bottom_button_text != blank %}
+            <a href="{{ section.settings.bottom_button_link }}" class="neu-faq-bottom-btn">
+              {{ section.settings.bottom_button_text }}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function(){
+    const section = document.getElementById('NeuFaq-{{ section.id }}');
+    if (!section) return;
+
+    /* Scroll reveal */
+    const items = section.querySelectorAll('[data-neu-faq-item]');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    items.forEach(item => revealObserver.observe(item));
+
+    /* Accordion logic */
+    const triggers = section.querySelectorAll('[data-neu-faq-trigger]');
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('[data-neu-faq-item]');
+        const isOpen = item.classList.contains('is-open');
+
+        {% if section.settings.allow_multiple == false %}
+          section.querySelectorAll('[data-neu-faq-item]').forEach(i => {
+            i.classList.remove('is-open');
+            i.querySelector('[data-neu-faq-trigger]').setAttribute('aria-expanded', 'false');
+          });
+        {% endif %}
+
+        if (!isOpen) {
+          item.classList.add('is-open');
+          trigger.setAttribute('aria-expanded', 'true');
+        } else {
+          item.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    {% if section.settings.open_first %}
+      const first = section.querySelector('[data-neu-faq-item]');
+      if (first) {
+        first.classList.add('is-open');
+        first.querySelector('[data-neu-faq-trigger]').setAttribute('aria-expanded', 'true');
+      }
+    {% endif %}
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Neu FAQ Accordion",
+  "tag": "section",
+  "class": "neu-faq-section-wrapper",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge Text",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Everything you need to know about our products and services"
+    },
+    {
+      "type": "text",
+      "id": "bottom_text",
+      "label": "Bottom Text",
+      "default": "Still have questions?"
+    },
+    {
+      "type": "text",
+      "id": "bottom_button_text",
+      "label": "Bottom Button Text",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "bottom_button_link",
+      "label": "Bottom Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
+      "type": "checkbox",
+      "id": "allow_multiple",
+      "label": "Allow Multiple Open",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open First Item by Default",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Text Muted",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max Width",
+      "min": 600,
+      "max": 1400,
+      "step": 50,
+      "default": 900,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "default": 80,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What makes your products unique?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Every product is handcrafted with premium materials and designed with meticulous attention to detail. We source only the finest ingredients and materials from trusted suppliers worldwide.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Accordion",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What makes your products unique?",
+            "answer": "<p>Every product is handcrafted with premium materials and designed with meticulous attention to detail that sets us apart from competitors.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer international shipping?",
+            "answer": "<p>Yes! We ship to over 50 countries worldwide with tracked delivery options. Most orders arrive within 5-10 business days depending on your location.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>We offer a hassle-free 30-day return policy on all our products. If you're not completely satisfied, simply reach out to our support team for a full refund.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "<p>Once your order ships, you'll receive an email with a tracking number. You can also log into your account dashboard to view real-time order status updates.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "Do you offer wholesale pricing?",
+            "answer": "<p>Absolutely! We have a dedicated wholesale program for businesses. Contact our sales team for bulk pricing, custom orders, and partnership opportunities.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

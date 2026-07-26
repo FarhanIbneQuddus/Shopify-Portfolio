@@ -1,0 +1,748 @@
+{% render 'neu-settings', section: section %}
+
+{% comment %}
+  This section is used in the article template to render the article page, which
+  displays the full content of the blog post and can optionally include a
+  comments section for customers.
+{% endcomment %}
+
+{% assign layout_side = section.settings.image_position | default: 'left' %}
+
+<style>
+  /* ─── CRITICAL: Fix sticky by removing overflow clipping on ancestors ─── */
+  html,
+  body {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+  }
+
+  #shopify-section-{{ section.id }},
+  #shopify-section-{{ section.id }} > * {
+    overflow: visible !important;
+  }
+
+  /* Common Shopify theme wrappers that break sticky */
+  main,
+  #MainContent,
+  .main-content,
+  .page-width,
+  .shopify-section {
+    overflow: visible !important;
+  }
+
+  #article-neu-{{ section.id }} {
+    --sticky-offset: 20px;
+
+    padding: clamp(24px, 4vw, 64px) 16px;
+    overflow: visible;
+  }
+
+  #article-neu-{{ section.id }},
+  #article-neu-{{ section.id }} * {
+    box-sizing: border-box;
+  }
+
+  /* ─── Desktop two-column layout ─── */
+  @media screen and (min-width: 990px) {
+    #article-neu-{{ section.id }} .article-neu__wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: start;
+      overflow: visible;
+      {% if layout_side == 'right' %}
+        direction: rtl;
+      {% endif %}
+    }
+
+    #article-neu-{{ section.id }} .article-neu__wrapper > * {
+      direction: ltr;
+    }
+
+    /* ── Image column: sticky ── */
+    #article-neu-{{ section.id }} .article-neu__sticky-col {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 140px;
+      align-self: start;
+      height: fit-content;
+    }
+
+    /* ── Text column ── */
+    #article-neu-{{ section.id }} .article-neu__text-col {
+      display: grid;
+      gap: 28px;
+      min-width: 0;
+    }
+
+    /* If no article image, let text take full width */
+    #article-neu-{{ section.id }} .article-neu__wrapper--no-image {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ─── Mobile single-column ─── */
+  @media screen and (max-width: 989px) {
+    #article-neu-{{ section.id }} .article-neu__wrapper {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      gap: 28px;
+    }
+
+    #article-neu-{{ section.id }} .article-neu__sticky-col,
+    #article-neu-{{ section.id }} .article-neu__text-col {
+      display: grid;
+      gap: 28px;
+    }
+  }
+
+  /* ─── Card base ─── */
+  #article-neu-{{ section.id }} .article-neu__media,
+  #article-neu-{{ section.id }} .article-neu__header,
+  #article-neu-{{ section.id }} .article-neu__content,
+  #article-neu-{{ section.id }} .article-neu__comments-section {
+    background: var(--neu-surface);
+    border-radius: var(--radius-xl);
+  }
+
+  /* ─── Image ─── */
+  #article-neu-{{ section.id }} .article-neu__media {
+    padding: 14px;
+    box-shadow: var(--neu-shadow-strong);
+    overflow: hidden;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: calc(var(--radius-xl) - 10px);
+    object-fit: cover;
+  }
+
+  @media screen and (min-width: 990px) {
+    #article-neu-{{ section.id }} .article-neu__image {
+      width: 100%;
+      max-height: calc(100vh - var(--sticky-offset) * 2 - 28px);
+      object-fit: cover;
+    }
+  }
+
+  /* ─── Header ─── */
+  #article-neu-{{ section.id }} .article-neu__header {
+    padding: clamp(24px, 3vw, 42px);
+    box-shadow: var(--neu-shadow-strong);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__eyebrow {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--neu-muted);
+    font-weight: 700;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__title {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--neu-text);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__meta {
+    margin-top: 18px;
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 999px;
+    color: var(--neu-muted);
+    box-shadow: var(--shadow-neu-in-sm);
+    background: var(--neu-surface);
+    font-size: 0.95rem;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__meta time {
+    color: var(--neu-text);
+    font-weight: 600;
+  }
+
+  /* ─── Tags ─── */
+  #article-neu-{{ section.id }} .article-neu__tags {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-out-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--neu-accent);
+    text-decoration: none;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__tag:hover {
+    box-shadow: var(--shadow-neu-in-sm);
+    transform: translateY(1px);
+  }
+
+  /* ─── Content ─── */
+  #article-neu-{{ section.id }} .article-neu__content {
+    padding: clamp(24px, 3vw, 42px);
+    box-shadow: var(--neu-shadow-strong);
+    line-height: 1.8;
+    font-size: 1rem;
+    color: var(--neu-text);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content > *:first-child {
+    margin-top: 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content > *:last-child {
+    margin-bottom: 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content h2,
+  #article-neu-{{ section.id }} .article-neu__content h3,
+  #article-neu-{{ section.id }} .article-neu__content h4 {
+    color: var(--neu-text);
+    line-height: 1.2;
+    margin: 1.8em 0 0.6em;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content p,
+  #article-neu-{{ section.id }} .article-neu__content ul,
+  #article-neu-{{ section.id }} .article-neu__content ol {
+    margin: 1em 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content a {
+    color: var(--neu-accent);
+    text-decoration: none;
+    box-shadow: var(--shadow-neu-link);
+    transition: color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content a:hover {
+    color: var(--neu-accent-dark);
+    box-shadow: var(--shadow-neu-link-hover);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content img,
+  #article-neu-{{ section.id }} .article-neu__content iframe,
+  #article-neu-{{ section.id }} .article-neu__content video {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-neu-out-sm);
+    margin: 18px 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content blockquote {
+    margin: 24px 0;
+    padding: 20px 24px;
+    border-left: 4px solid rgba(142, 114, 199, 0.45);
+    border-radius: 20px;
+    background: var(--neu-surface-soft);
+    box-shadow: var(--shadow-neu-in-sm);
+    color: var(--neu-muted);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content pre,
+  #article-neu-{{ section.id }} .article-neu__content code {
+    border-radius: 14px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content pre {
+    padding: 18px;
+    overflow: auto;
+    background: var(--neu-surface-soft);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    box-shadow: var(--shadow-neu-out-sm);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__content th,
+  #article-neu-{{ section.id }} .article-neu__content td {
+    padding: 14px 16px;
+    background: var(--neu-surface-soft);
+  }
+
+  /* ─── Comments section ─── */
+  #article-neu-{{ section.id }} .article-neu__comments-section {
+    padding: clamp(24px, 3vw, 42px);
+    box-shadow: var(--neu-shadow-strong);
+    display: grid;
+    gap: 24px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__section-head h2,
+  #article-neu-{{ section.id }} .article-neu__form-title {
+    margin: 0;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
+    line-height: 1.2;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comments-list {
+    display: grid;
+    gap: 18px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment {
+    padding: 20px 22px;
+    border-radius: var(--radius-lg);
+    background: var(--neu-surface-soft);
+    box-shadow: var(--shadow-neu-out-sm);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment-author {
+    margin: 0;
+    font-weight: 700;
+    color: var(--neu-text);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment-date {
+    margin: 0;
+    color: var(--neu-muted);
+    font-size: 0.95rem;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment-body {
+    color: var(--neu-text);
+    line-height: 1.7;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__comment-body p {
+    margin: 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__pagination {
+    margin-top: 8px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__pagination .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__pagination a,
+  #article-neu-{{ section.id }} .article-neu__pagination span {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-out-sm);
+    color: var(--neu-text);
+    text-decoration: none;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__pagination .current {
+    color: var(--neu-accent);
+    font-weight: 700;
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  /* ─── Comment form ─── */
+  #article-neu-{{ section.id }} .article-neu__form-divider {
+    border: none;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--neu-surface);
+    box-shadow: var(--shadow-neu-in-sm);
+    margin: 8px 0;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__form {
+    display: grid;
+    gap: 18px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field {
+    display: grid;
+    gap: 8px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--neu-muted);
+    padding-left: 4px;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field input,
+  #article-neu-{{ section.id }} .article-neu__field textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: var(--neu-surface);
+    color: var(--neu-text);
+    font: inherit;
+    padding: 16px 18px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-neu-in);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field input::placeholder,
+  #article-neu-{{ section.id }} .article-neu__field textarea::placeholder {
+    color: #99a2b2;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field input:focus,
+  #article-neu-{{ section.id }} .article-neu__field textarea:focus {
+    box-shadow: var(--shadow-neu-in-sm), 0 0 0 2px rgba(142, 114, 199, 0.18);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__field textarea {
+    min-height: 180px;
+    resize: vertical;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__submit {
+    justify-self: start;
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: 14px 26px;
+    background: linear-gradient(145deg, #9a80d1, #8265bd);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: var(--shadow-neu-accent);
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  #article-neu-{{ section.id }} .article-neu__submit:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.03);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__submit:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  #article-neu-{{ section.id }} .article-neu__errors .errors,
+  #article-neu-{{ section.id }} .article-neu__errors ul {
+    margin: 0;
+    padding: 14px 18px;
+    list-style: none;
+    border-radius: var(--radius-md);
+    background: #efe6e6;
+    color: #8e4343;
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  /* ─── Mobile overrides ─── */
+  @media screen and (max-width: 989px) {
+    #article-neu-{{ section.id }} {
+      padding: 20px 12px 40px;
+    }
+
+    #article-neu-{{ section.id }} .article-neu__media,
+    #article-neu-{{ section.id }} .article-neu__header,
+    #article-neu-{{ section.id }} .article-neu__content,
+    #article-neu-{{ section.id }} .article-neu__comments-section {
+      border-radius: 24px;
+    }
+
+    #article-neu-{{ section.id }} .article-neu__media {
+      padding: 10px;
+    }
+
+    #article-neu-{{ section.id }} .article-neu__header,
+    #article-neu-{{ section.id }} .article-neu__content,
+    #article-neu-{{ section.id }} .article-neu__comments-section {
+      padding: 22px;
+    }
+
+    #article-neu-{{ section.id }} .article-neu__field input,
+    #article-neu-{{ section.id }} .article-neu__field textarea {
+      box-shadow: var(--shadow-neu-in-sm);
+    }
+
+    #article-neu-{{ section.id }} .article-neu__submit {
+      width: 100%;
+      justify-self: stretch;
+    }
+  }
+</style>
+
+<section id="article-neu-{{ section.id }}" class="article-neu">
+  <div class="article-neu__wrapper{% unless article.image %} article-neu__wrapper--no-image{% endunless %}">
+    {%- comment -%} ── STICKY COLUMN: Image only (sticky on desktop) ── {%- endcomment -%}
+    {% if article.image %}
+      <div class="article-neu__sticky-col">
+        <div class="article-neu__media">
+          {{
+            article.image
+            | image_url: width: 1400
+            | image_tag: class: 'article-neu__image', loading: 'lazy'
+          }}
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} ── TEXT COLUMN: Header on top → scrollable content + comments ── {%- endcomment -%}
+    <div class="article-neu__text-col">
+      <header class="article-neu__header">
+        <p class="article-neu__eyebrow">{{ blog.title }}</p>
+
+        <h1 class="article-neu__title">{{ article.title }}</h1>
+
+        {% assign date = article.published_at | time_tag: format: 'date' %}
+        <div class="article-neu__meta">
+          {{ 'blog.article_metadata_html' | t: date: date, author: article.author }}
+        </div>
+
+        {% if article.tags.size > 0 %}
+          <div class="article-neu__tags">
+            {% for tag in article.tags %}
+              <a
+                class="article-neu__tag"
+                href="{{ blog.url }}/tagged/{{ tag | handle }}"
+              >
+                {{ tag }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </header>
+
+      <div class="article-neu__content rte">
+        {{ article.content }}
+      </div>
+
+      {% if blog.comments_enabled? %}
+        <section class="article-neu__comments-section">
+          <div class="article-neu__section-head">
+            <h2>{{ 'blog.article_comments' | t }}</h2>
+          </div>
+
+          <div id="comments" class="article-neu__comments-list">
+            {% paginate article.comments by 10 %}
+              {% for comment in article.comments %}
+                <article class="article-neu__comment">
+                  <div class="article-neu__comment-top">
+                    <p class="article-neu__comment-author">{{ comment.author }}</p>
+                    <p class="article-neu__comment-date">
+                      {{ comment.created_at | time_tag: format: 'date' }}
+                    </p>
+                  </div>
+                  <div class="article-neu__comment-body">
+                    {{ comment.content }}
+                  </div>
+                </article>
+              {% endfor %}
+
+              {% if paginate.pages > 1 %}
+                <div class="article-neu__pagination">
+                  {{ paginate | default_pagination: anchor: 'comments' }}
+                </div>
+              {% endif %}
+            {% endpaginate %}
+          </div>
+
+          <hr class="article-neu__form-divider">
+
+          {% form 'new_comment', article, class: 'article-neu__form' %}
+            <h2 class="article-neu__form-title">{{ 'blog.comment_form_title' | t }}</h2>
+
+            <div class="article-neu__errors">
+              {{ form.errors | default_errors }}
+            </div>
+
+            <div class="article-neu__field">
+              <label for="CommentAuthor-{{ section.id }}">
+                {{- 'blog.comment_form_name' | t -}}
+              </label>
+              <input
+                type="text"
+                name="comment[author]"
+                id="CommentAuthor-{{ section.id }}"
+                value="{{ form.author }}"
+                required
+              >
+            </div>
+
+            <div class="article-neu__field">
+              <label for="CommentEmail-{{ section.id }}">
+                {{- 'blog.comment_form_email' | t -}}
+              </label>
+              <input
+                type="email"
+                name="comment[email]"
+                id="CommentEmail-{{ section.id }}"
+                value="{{ form.email }}"
+                required
+              >
+            </div>
+
+            <div class="article-neu__field">
+              <label for="CommentBody-{{ section.id }}">
+                {{- 'blog.comment_form_body' | t -}}
+              </label>
+              <textarea
+                name="comment[body]"
+                id="CommentBody-{{ section.id }}"
+                required
+              >{{ form.body }}</textarea>
+            </div>
+
+            <button type="submit" class="article-neu__submit">
+              {{ 'blog.comment_form_submit' | t }}
+            </button>
+          {% endform %}
+        </section>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var section = document.getElementById('article-neu-{{ section.id }}');
+    if (!section) return;
+
+    // Walk up the DOM and clear any overflow that breaks sticky
+    var stickyCol = section.querySelector('.article-neu__sticky-col');
+    if (stickyCol) {
+      var el = stickyCol.parentElement;
+      while (el && el !== document.body) {
+        var cs = window.getComputedStyle(el);
+        if (
+          cs.overflow === 'hidden' ||
+          cs.overflow === 'clip' ||
+          cs.overflow === 'auto' ||
+          cs.overflow === 'scroll' ||
+          cs.overflowY === 'hidden' ||
+          cs.overflowY === 'clip' ||
+          cs.overflowY === 'auto' ||
+          cs.overflowY === 'scroll'
+        ) {
+          el.style.setProperty('overflow', 'visible', 'important');
+          el.style.setProperty('overflow-y', 'visible', 'important');
+        }
+        el = el.parentElement;
+      }
+    }
+
+    // Detect sticky header height and set as offset
+    function setStickyOffset() {
+      var offset = 20; // fallback padding from top
+      var header =
+        document.querySelector('.shopify-section-header-sticky') ||
+        document.querySelector('.header-wrapper--sticky') ||
+        document.querySelector('sticky-header') ||
+        document.querySelector('header.site-header') ||
+        document.querySelector('#shopify-section-header');
+
+      if (header) {
+        var rect = header.getBoundingClientRect();
+        if (rect.height > 0 && rect.height < window.innerHeight / 2) {
+          offset = rect.height + 12;
+        }
+      }
+      section.style.setProperty('--sticky-offset', offset + 'px');
+    }
+
+    setStickyOffset();
+    window.addEventListener('resize', setStickyOffset);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "t:general.article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Text Muted",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position (desktop)",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left",
+      "info": "Choose which side the article image sticks to on desktop. The header and text content appear on the opposite side and scroll naturally. Mobile always stacks top-to-bottom."
+    }
+  ]
+}
+{% endschema %}

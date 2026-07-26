@@ -1,0 +1,263 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_slider_jdgwch": {
+      "type": "hero-slider",
+      "blocks": {
+        "slide_cCRxme": {
+          "type": "slide",
+          "settings": {
+            "badge_text": "NEW · SPRING COLLECTION 2026",
+            "heading": "Robot toys,<br><em>softly</em><br>engineered.",
+            "description": "Tech builds friendly, minimalist companions for curious minds. Six models, one obsession — the quiet joy of a machine that fits your desk, your kid, your life.",
+            "button_text_1": "Shop the catalogue",
+            "button_url_1": "",
+            "button_text_2": "Watch the film",
+            "button_url_2": "",
+            "card_label": "MODEL",
+            "card_title": "PEBBLE · Ceramic White",
+            "status_text": "Ready to ship",
+            "stat_1_value": "72k",
+            "stat_1_label": "LITTLE OWNERS",
+            "stat_2_value": "4.9",
+            "stat_2_icon": "star",
+            "stat_2_label": "DESIGN REVIEW AVG",
+            "stat_3_value": "24 mo",
+            "stat_3_label": "WARRANTY"
+          }
+        },
+        "slide_hGWpKU": {
+          "type": "slide",
+          "settings": {
+            "badge_text": "NEW · SUMMER COLLECTION 2026",
+            "heading": "Drone kits,<br><em>gently</em><br>assembled.",
+            "description": "Precision-crafted micro drones designed for learning and play. Every piece snaps together — no tools, no frustration, just flight.",
+            "button_text_1": "Shop the catalogue",
+            "button_url_1": "",
+            "button_text_2": "Watch the film",
+            "button_url_2": "",
+            "card_label": "MODEL",
+            "card_title": "SWIFT · Matte Black",
+            "status_text": "Pre-order",
+            "stat_1_value": "38k",
+            "stat_1_label": "PILOTS WORLDWIDE",
+            "stat_2_value": "4.8",
+            "stat_2_icon": "star",
+            "stat_2_label": "USER RATING AVG",
+            "stat_3_value": "18 mo",
+            "stat_3_label": "WARRANTY"
+          }
+        },
+        "slide_fBwDxE": {
+          "type": "slide",
+          "settings": {
+            "badge_text": "FEATURED · EDITOR'S PICK",
+            "heading": "Smart blocks,<br><em>boldly</em><br>imagined.",
+            "description": "Magnetic building blocks with embedded sensors. They light up, they respond, they teach — all through the magic of play.",
+            "button_text_1": "Shop the catalogue",
+            "button_url_1": "",
+            "button_text_2": "Watch the film",
+            "button_url_2": "",
+            "card_label": "MODEL",
+            "card_title": "CUBO · Ocean Blue",
+            "status_text": "In stock",
+            "stat_1_value": "105k",
+            "stat_1_label": "HAPPY BUILDERS",
+            "stat_2_value": "4.7",
+            "stat_2_icon": "star",
+            "stat_2_label": "PARENT REVIEW AVG",
+            "stat_3_value": "36 mo",
+            "stat_3_label": "WARRANTY"
+          }
+        }
+      },
+      "block_order": [
+        "slide_cCRxme",
+        "slide_hGWpKU",
+        "slide_fBwDxE"
+      ],
+      "name": "Hero Slider",
+      "settings": {
+        "autoplay_speed": 5
+      }
+    },
+    "product_tabs_zR4bmN": {
+      "type": "product-tabs",
+      "blocks": {
+        "tab_MXephB": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "All",
+            "collection": "best-sellers"
+          }
+        },
+        "tab_rFkWLn": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Humanoid",
+            "collection": "best-sellers"
+          }
+        },
+        "tab_yafhny": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Home",
+            "collection": "best-sellers"
+          }
+        },
+        "tab_mVbAwL": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Aerial",
+            "collection": "best-sellers"
+          }
+        },
+        "tab_Q4TrX6": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Industrial",
+            "collection": "best-sellers"
+          }
+        }
+      },
+      "block_order": [
+        "tab_MXephB",
+        "tab_rFkWLn",
+        "tab_yafhny",
+        "tab_mVbAwL",
+        "tab_Q4TrX6"
+      ],
+      "name": "Product Tabs",
+      "settings": {
+        "subheading": "COLLECTION",
+        "heading": "The Catalogue",
+        "cards_per_row": 4
+      }
+    },
+    "newsletter_bFXYmn": {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "settings": {
+        "heading": "First look. First drops.",
+        "subheading": "Join 12,400 collectors who get our field notes and early access to new models — no noise, twice a month.",
+        "placeholder": "you@studio.com"
+      }
+    },
+    "image_with_text_Tgz73w": {
+      "type": "image-with-text",
+      "blocks": {
+        "subheading_g39ygL": {
+          "type": "subheading",
+          "settings": {
+            "subheading": "Discover our latest collection",
+            "text_color": "#333333"
+          }
+        },
+        "heading_B7gAMd": {
+          "type": "heading",
+          "settings": {
+            "heading": "First look. First drops.",
+            "text_color": "#000000"
+          }
+        },
+        "text_ctLAVP": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Join 12,400 collectors who get our field notes and early access to new models — no noise, twice a month.</p>",
+            "text_color": "#555555"
+          }
+        },
+        "button_bPQXPn": {
+          "type": "button",
+          "settings": {
+            "button_label": "Shop Now",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "subheading_g39ygL",
+        "heading_B7gAMd",
+        "text_ctLAVP",
+        "button_bPQXPn"
+      ],
+      "name": "Image with Text",
+      "settings": {
+        "layout": "image_right",
+        "image": "shopify://shop_images/Longsleeve_10.png",
+        "section_bg": "#e6e9ee",
+        "bg_color": "#ecedf2",
+        "padding_top": 50,
+        "padding_bottom": 50
+      }
+    },
+    "multi_service_FAjVDz": {
+      "type": "multi-service",
+      "blocks": {
+        "service_DNYn9H": {
+          "type": "service",
+          "settings": {
+            "icon_name": "bolt",
+            "heading": "48-Hour Cell",
+            "description": "Silicon-anode pack rated for two full days of active operation.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_JweQVG": {
+          "type": "service",
+          "settings": {
+            "icon_name": "shield",
+            "heading": "IP67 Chassis",
+            "description": "Sealed against dust and momentary immersion. Studio to sidewalk.",
+            "button_label": "",
+            "button_link": ""
+          }
+        },
+        "service_zFQ8p6": {
+          "type": "service",
+          "settings": {
+            "icon_name": "heart",
+            "heading": "Quiet Cortex",
+            "description": "On-device intelligence with a 32 dB acoustic profile.",
+            "button_label": "",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "service_DNYn9H",
+        "service_JweQVG",
+        "service_zFQ8p6"
+      ],
+      "name": "Multi Services",
+      "settings": {
+        "heading": "Our Services",
+        "subtitle": "Everything you need, engineered with care.",
+        "heading_alignment": "center",
+        "heading_size": 36,
+        "columns_desktop": 3,
+        "gap": 28,
+        "card_radius": 20,
+        "max_width": 1400,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "hero_slider_jdgwch",
+    "product_tabs_zR4bmN",
+    "newsletter_bFXYmn",
+    "image_with_text_Tgz73w",
+    "multi_service_FAjVDz"
+  ]
+}

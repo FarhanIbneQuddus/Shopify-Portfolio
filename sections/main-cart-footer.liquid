@@ -1,0 +1,641 @@
+{% render 'neu-settings', section: section %}
+
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+{{ 'component-totals.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* ============================================
+     NEUMORPHISM CART FOOTER
+     ============================================ */
+  #main-cart-footer.gradient {
+    background: var(--neu-bg) !important;
+    color: var(--neu-text);
+  }
+
+  #main-cart-footer .page-width {
+    max-width: 1400px;
+    padding: 0;
+  }
+
+  #main-cart-footer .cart__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: none;
+    margin-top: 2rem;
+  }
+
+  /* ============================================
+     CART NOTE
+     ============================================ */
+  #main-cart-footer .cart__note {
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    padding: 1.75rem 2rem;
+    box-shadow: var(--shadow-neu-out);
+    flex: 1 1 45%;
+    max-width: 100%;
+    margin: 0;
+    position: relative;
+  }
+
+  #main-cart-footer .cart__note label {
+    color: var(--neu-text);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: block;
+    letter-spacing: 0.02em;
+  }
+
+  #main-cart-footer .cart__note .text-area {
+    background: var(--neu-bg);
+    border: none;
+    border-radius: {{section.settings.neu_radius}}px;
+    box-shadow: var(--shadow-neu-in-sm);
+    color: var(--neu-text);
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    transition: all 0.25s ease;
+    font-family: inherit;
+  }
+
+  #main-cart-footer .cart__note .text-area:focus,
+  #main-cart-footer .cart__note .text-area:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-neu-in-sm);
+  }
+
+  #main-cart-footer .cart__note .text-area::placeholder {
+    color: var(--neu-text-muted);
+    opacity: 0.7;
+  }
+
+  #main-cart-footer .cart__note:after,
+  #main-cart-footer .cart__note:before {
+    display: none;
+  }
+
+  /* ============================================
+     CART BLOCKS (totals + checkout container)
+     ============================================ */
+  #main-cart-footer .cart__blocks {
+    background: var(--neu-bg);
+    border-radius: var(--neu-radius);
+    padding: 2rem 2.25rem;
+    box-shadow: var(--neu-shadow-strong);
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ============================================
+     DISCOUNTS
+     ============================================ */
+  #main-cart-footer .discounts {
+    margin: 0;
+    padding: 0;
+  }
+
+  #main-cart-footer .discounts__discount {
+    color: var(--neu-accent);
+    background: var(--neu-bg);
+    padding: 0.5rem 1rem;
+    border-radius: {{section.settings.neu_radius}}px;
+    box-shadow: var(--shadow-neu-in-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  #main-cart-footer .discounts__discount svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ============================================
+     TOTALS
+     ============================================ */
+  #main-cart-footer .totals {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--neu-bg);
+    padding: 1.25rem 1.5rem;
+    border-radius: 50px;
+    box-shadow: var(--shadow-neu-in-sm);
+    border: none;
+    margin: 0;
+    transition: all 0.3s ease;
+  }
+
+  #main-cart-footer .totals__total {
+    color: var(--neu-text);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  #main-cart-footer .totals__total-value {
+    color: var(--neu-accent);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: -0.01em;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Subtle update animation */
+  #main-cart-footer .totals__total-value.updating {
+    opacity: 0.4;
+  }
+
+  /* ============================================
+     TAX NOTE
+     ============================================ */
+  #main-cart-footer .tax-note {
+    color: var(--neu-text-muted);
+    font-size: 0.85rem;
+    text-align: right;
+    display: block;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  #main-cart-footer .tax-note a {
+    color: var(--neu-accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  #main-cart-footer .tax-note a:hover {
+    color: var(--neu-accent-hover);
+  }
+
+  /* ============================================
+     CHECKOUT BUTTON
+     ============================================ */
+  #main-cart-footer .cart__ctas {
+    margin: 0;
+    display: block;
+    width: 100%;
+  }
+
+  #main-cart-footer .cart__checkout-button {
+    background: var(--neu-accent);
+    color: white !important;
+    border: none;
+    border-radius: 50px;
+    padding: 1.25rem 2.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: var(--neu-shadow-strong);
+    transition: all 0.3s ease;
+    width: 100%;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    text-transform: uppercase;
+    min-height: unset;
+  }
+
+  #main-cart-footer .cart__checkout-button:active {
+    box-shadow: var(--shadow-neu-in-sm) !important;
+    background: var(--neu-accent-hover);
+    transform: scale(0.98);
+    color: white !important;
+  }
+
+  #main-cart-footer .cart__checkout-button:disabled,
+  #main-cart-footer .cart__checkout-button[disabled] {
+    background: var(--neu-bg);
+    color: var(--neu-text-muted) !important;
+    box-shadow: var(--shadow-neu-in-sm);
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  #main-cart-footer .cart__checkout-button:before,
+  #main-cart-footer .cart__checkout-button:after {
+    display: none;
+  }
+
+  /* ============================================
+     DYNAMIC CHECKOUT BUTTONS (PayPal, Shop Pay, etc.)
+     ============================================ */
+  #main-cart-footer .cart__dynamic-checkout-buttons {
+    margin-top: 0.5rem;
+  }
+
+  #main-cart-footer .additional-checkout-buttons {
+    background: var(--neu-bg);
+    border-radius: 50px;
+    padding: 1rem;
+    box-shadow: var(--shadow-neu-in-sm);
+    text-align: center;
+  }
+
+  /* ============================================
+     CART ERRORS
+     ============================================ */
+  #main-cart-footer #cart-errors {
+    color: var(--neu-danger);
+    background: var(--neu-bg);
+    border-radius: 50px;
+    box-shadow: var(--shadow-neu-in-sm);
+    padding: 0 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  #main-cart-footer #cart-errors:empty {
+    display: none;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  /* ============================================
+     EMPTY STATE
+     ============================================ */
+  #main-cart-footer.is-empty {
+    display: none;
+  }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media screen and (max-width: 989px) {
+    #main-cart-footer .cart__footer {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    #main-cart-footer .cart__note,
+    #main-cart-footer .cart__blocks {
+      flex: 1 1 100%;
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #main-cart-footer .cart__footer {
+      margin-top: 1rem;
+    }
+
+    #main-cart-footer .cart__note {
+      padding: 1.25rem 1.5rem;
+    }
+
+    #main-cart-footer .cart__blocks {
+      padding: 1.5rem;
+      gap: 1.25rem;
+    }
+
+    #main-cart-footer .totals {
+      padding: 1rem 1.25rem;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+
+    #main-cart-footer .totals__total-value {
+      font-size: 1.35rem;
+    }
+
+    #main-cart-footer .tax-note {
+      text-align: left;
+    }
+
+    #main-cart-footer .cart__checkout-button {
+      padding: 1.1rem 2rem;
+      font-size: 1rem;
+    }
+  }
+{%- endstyle -%}
+
+<div
+  class="gradient color-{{ section.settings.color_scheme }}{% if cart == empty %} is-empty{% endif %}"
+  id="main-cart-footer"
+  data-id="{{ section.id }}"
+>
+  <div class="page-width">
+    <div class="cart__footer isolate section-{{ section.id }}-padding">
+      {%- if settings.show_cart_note -%}
+        <cart-note class="cart__note field">
+          <label for="Cart-note">Order special instructions</label>
+          <textarea
+            class="text-area field__input"
+            name="note"
+            form="cart"
+            id="Cart-note"
+            placeholder="Order special instructions"
+          >{{ cart.note }}</textarea>
+        </cart-note>
+      {%- endif -%}
+
+      <div class="cart__blocks">
+        {% for block in section.blocks %}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+            {%- when 'subtotal' -%}
+              <div class="js-contents" {{ block.shopify_attributes }}>
+                <div>
+                  {%- if cart.cart_level_discount_applications.size > 0 -%}
+                    <ul class="discounts list-unstyled" role="list" aria-label="Discount">
+                      {%- for discount in cart.cart_level_discount_applications -%}
+                        <li class="discounts__discount discounts__discount--position">
+                          {{- 'icon-discount.svg' | inline_asset_content -}}
+                          {{ discount.title | escape }}
+                          (-{{ discount.total_allocated_amount | money }})
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                </div>
+
+                <div class="totals">
+                  <h2 class="totals__total">Estimated total</h2>
+                  <p class="totals__total-value"><cpc class='cart_total_price'>{{ cart.total_price | money_with_currency }}</cpc></p>
+                </div>
+
+                <small class="tax-note caption-large rte">
+                  {%- if cart.duties_included and cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      Duties and taxes are included. Shipping is calculated at checkout.
+                    {%- else -%}
+                      Duties and taxes are included. Shipping is calculated at checkout. <a href="{{ shop.shipping_policy.url }}">Shipping policy</a>
+                    {%- endif -%}
+                  {%- elsif cart.duties_included == false and cart.taxes_included -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      Taxes are included. Shipping is calculated at checkout.
+                    {%- else -%}
+                      Taxes are calculated at checkout. <a href="{{ shop.shipping_policy.url }}">Shipping policy</a>
+                    {%- endif -%}
+                  {%- elsif cart.duties_included and cart.taxes_included == false -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      Duties are included. Taxes are calculated at checkout.
+                    {%- else -%}
+                      Duties are included. Taxes are calculated at checkout. <a href="{{ shop.shipping_policy.url }}">Shipping policy</a>
+                    {%- endif -%}
+                  {%- elsif cart.duties_included == false and cart.taxes_included == false -%}
+                    {%- if shop.shipping_policy.body == blank -%}
+                      Shipping and taxes are calculated at checkout.
+                    {%- else -%}
+                      Shipping and taxes are calculated at checkout. <a href="{{ shop.shipping_policy.url }}">Shipping policy</a>
+                    {%- endif -%}
+                  {%- endif -%}
+                </small>
+              </div>
+            {%- else -%}
+              <div class="cart__ctas" {{ block.shopify_attributes }}>
+                <button
+                  type="submit"
+                  id="checkout"
+                  class="cart__checkout-button button"
+                  name="checkout"
+                  {% if cart == empty %}
+                    disabled
+                  {% endif %}
+                  form="cart"
+                >
+                  Check out
+                </button>
+              </div>
+
+              {%- if additional_checkout_buttons -%}
+                <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                  {{ content_for_additional_checkout_buttons }}
+                </div>
+              {%- endif -%}
+          {%- endcase -%}
+        {% endfor %}
+
+        <div id="cart-errors"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const footerSectionId = {{ section.id | json }};
+
+    // Fetch and re-render this footer section
+    async function refreshCartFooter() {
+      const totalValueEl = document.querySelector('#main-cart-footer .totals__total-value');
+      if (totalValueEl) totalValueEl.classList.add('updating');
+
+      try {
+        const response = await fetch(`${window.location.pathname}?section_id=${footerSectionId}`);
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+
+        const newFooter = doc.querySelector('#main-cart-footer');
+        const currentFooter = document.querySelector('#main-cart-footer');
+
+        if (newFooter && currentFooter) {
+          // Update the totals content
+          const newTotals = newFooter.querySelector('.js-contents');
+          const currentTotals = currentFooter.querySelector('.js-contents');
+          if (newTotals && currentTotals) {
+            currentTotals.innerHTML = newTotals.innerHTML;
+          }
+
+          // Update empty class state
+          if (newFooter.classList.contains('is-empty')) {
+            currentFooter.classList.add('is-empty');
+          } else {
+            currentFooter.classList.remove('is-empty');
+          }
+
+          // Update checkout button disabled state
+          const newCheckoutBtn = newFooter.querySelector('#checkout');
+          const currentCheckoutBtn = currentFooter.querySelector('#checkout');
+          if (newCheckoutBtn && currentCheckoutBtn) {
+            if (newCheckoutBtn.hasAttribute('disabled')) {
+              currentCheckoutBtn.setAttribute('disabled', '');
+            } else {
+              currentCheckoutBtn.removeAttribute('disabled');
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Cart footer refresh failed:', err);
+      } finally {
+        const updatedTotal = document.querySelector('#main-cart-footer .totals__total-value');
+        if (updatedTotal) updatedTotal.classList.remove('updating');
+      }
+    }
+
+    // Listen for quantity input changes (Shopify's cart-items dispatches these)
+    function attachCartListeners() {
+      // Watch quantity input changes
+      document.addEventListener('change', function (e) {
+        if (
+          e.target &&
+          (e.target.matches('.quantity__input') ||
+            e.target.closest('quantity-input'))
+        ) {
+          setTimeout(refreshCartFooter, 500);
+        }
+      });
+
+      // Watch quantity button clicks (+/-)
+      document.addEventListener('click', function (e) {
+        const target = e.target.closest('.quantity__button, cart-remove-button .button, cart-remove-button a');
+        if (target) {
+          setTimeout(refreshCartFooter, 600);
+        }
+      });
+
+      // Listen to Shopify's built-in cart update events if available
+      document.addEventListener('cart:updated', refreshCartFooter);
+      document.addEventListener('cart:refresh', refreshCartFooter);
+
+      // Hook into fetch to detect cart AJAX updates
+      const originalFetch = window.fetch;
+      window.fetch = function (...args) {
+        const result = originalFetch.apply(this, args);
+        const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+        if (url.includes('/cart/change') || url.includes('/cart/update') || url.includes('/cart/add')) {
+          result.then(() => setTimeout(refreshCartFooter, 300));
+        }
+        return result;
+      };
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', attachCartListeners);
+    } else {
+      attachCartListeners();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Subtotal",
+  "class": "cart__footer-wrapper",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Neuromatic Colors"
+    },
+    {
+      "type": "color",
+      "id": "neu_bg",
+      "label": "Background",
+      "default": "#e6e9ee"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_dark",
+      "label": "Shadow Dark",
+      "default": "#4f4e4e"
+    },
+    {
+      "type": "color",
+      "id": "neu_shadow_light",
+      "label": "Shadow Light",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "neu_text",
+      "label": "Text Color",
+      "default": "#2c3e50"
+    },
+    {
+      "type": "color",
+      "id": "neu_text_muted",
+      "label": "Muted Text",
+      "default": "#8b95a3"
+    },
+    {
+      "type": "color",
+      "id": "neu_accent",
+      "label": "Accent",
+      "default": "#7d3fbf"
+    },
+    {
+      "type": "header",
+      "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },    
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "subtotal",
+      "name": "Subtotal price",
+      "limit": 1
+    },
+    {
+      "type": "buttons",
+      "name": "Checkout button",
+      "limit": 1
+    },
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}

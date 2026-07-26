@@ -1,0 +1,83 @@
+{%- comment -%}
+  Neumorphic Settings — outputs scoped CSS custom properties from section settings.
+
+  Usage in any section:
+    {% render 'neu-settings', section: section %}
+
+  Only customizes colors, radius, and shadow intensity.
+  Shadow geometry stays hardcoded (matches critical.css :root).
+{%- endcomment -%}
+
+{%- liquid
+  assign neu_bg            = section.settings.neu_bg            | default: '#e6e9ee'
+  assign neu_shadow_dark   = section.settings.neu_shadow_dark   | default: '#4f4e4e'
+  assign neu_shadow_light  = section.settings.neu_shadow_light  | default: '#ffffff'
+  assign neu_text          = section.settings.neu_text          | default: '#2c3e50'
+  assign neu_text_muted    = section.settings.neu_text_muted    | default: '#8b95a3'
+  assign neu_accent        = section.settings.neu_accent        | default: '#7d3fbf'
+  assign neu_radius        = section.settings.neu_radius        | default: 24
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    background: var(--neu-bg);
+
+    /* ── Base Colors ── */
+    --neu-bg: {{ neu_bg }};
+    --neu-shadow-dark: {{ neu_shadow_dark }};
+    --neu-shadow-light: {{ neu_shadow_light }};
+    --neu-text: {{ neu_text }};
+    --neu-text-muted: {{ neu_text_muted }};
+    --neu-accent: {{ neu_accent }};
+    --neu-radius: {{ neu_radius }}px;
+    --neu-accent-rgb: {{ neu_accent | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+
+    /* ── Canonical Shadow System (colors only, geometry from :root) ── */
+    --neu-shadow-strong: inset 1.125vw 1.125vw 1.55vw -.0625vw var(--neu-shadow-light), inset -.5vw -.5625vw 1.25625vw rgb(from var(--neu-shadow-dark) r g b / 0.25), .125vw .1875vw .4375vw rgb(from var(--neu-shadow-dark) r g b / 0.2), .4375vw .625vw .8125vw rgb(from var(--neu-shadow-dark) r g b / 0.17), 1.0625vw 1.4375vw 1.0625vw rgb(from var(--neu-shadow-dark) r g b / 0.1), 1.8125vw 2.5625vw 1.25vw rgb(from var(--neu-shadow-dark) r g b / 0.03);
+
+    --shadow-neu-out: 12px 12px 28px {{ neu_shadow_dark }}, -12px -12px 28px {{ neu_shadow_light }};
+    --shadow-neu-out-sm: 6px 6px 14px {{ neu_shadow_dark }}, -6px -6px 14px {{ neu_shadow_light }};
+
+    --shadow-neu-in: inset 8px 8px 18px {{ neu_shadow_dark }}, inset -8px -8px 18px {{ neu_shadow_light }};
+    --shadow-neu-in-sm: inset 4px 4px 10px {{ neu_shadow_dark }}, inset -4px -4px 10px {{ neu_shadow_light }};
+    --shadow-neu-in-xs: inset 2px 2px 4px {{ neu_shadow_dark }}, inset -1px -1px 3px {{ neu_shadow_light }};
+
+    --shadow-neu-accent: 8px 8px 20px {{ neu_shadow_dark }}, -8px -8px 20px {{ neu_shadow_light }};
+    --shadow-neu-accent-sm: 6px 6px 16px {{ neu_shadow_dark }}, -6px -6px 16px {{ neu_shadow_light }};
+
+    --shadow-neu-card:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.9),
+      inset -1px -1px 0 rgba(200, 204, 209, 0.4),
+      6px 6px 16px rgba(163, 177, 198, 0.45),
+      -6px -6px 16px rgba(255, 255, 255, 0.9),
+      18px 22px 40px rgba(163, 177, 198, 0.25);
+    --shadow-neu-card-hover:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.9),
+      inset -1px -1px 0 rgba(200, 204, 209, 0.4),
+      8px 10px 22px rgba(163, 177, 198, 0.55),
+      -8px -8px 20px rgba(255, 255, 255, 1),
+      24px 28px 50px rgba(163, 177, 198, 0.3);
+    --shadow-neu-card-inset:
+      inset 5px 5px 12px rgba(163, 177, 198, 0.45),
+      inset -5px -5px 12px rgba(255, 255, 255, 0.95);
+
+    --shadow-neu-btn-inset: inset 3px 3px 6px {{ neu_accent }}, inset -3px -3px 6px {{ neu_accent }};
+    --shadow-neu-btn-inset-lg: inset 4px 4px 8px {{ neu_accent }}, inset -4px -4px 8px {{ neu_accent }};
+
+    --shadow-neu-focus: var(--shadow-neu-accent), 0 0 0 3px {{ neu_accent }}2e;
+    --shadow-neu-success: 8px 8px 20px #a0c9b3, -8px -8px 20px {{ neu_shadow_light }};
+
+    --shadow-glow-accent: 0 0 8px {{ neu_accent }}80;
+    --shadow-glow-red: 0 0 8px rgba(232, 69, 60, 0.5);
+    --shadow-glow-green: 0 0 4px rgba(34, 197, 94, 0.6);
+
+    --shadow-neu-link: inset 0 -1px 0 {{ neu_accent }}59;
+    --shadow-neu-link-hover: inset 0 -2px 0 {{ neu_accent }}73;
+
+    --shadow-neu-sidebar: 6px 0 30px rgba(163, 177, 198, 0.3);
+    --shadow-neu-drawer: 10px 0 30px rgba(0, 0, 0, 0.1);
+    --shadow-neu-drawer-right: -10px 0 30px rgba(0, 0, 0, 0.1);
+    --shadow-neu-badge: 2px 2px 4px rgba(0, 0, 0, 0.15);
+    --shadow-dropdown: 0 8px 30px rgba(163, 177, 198, 0.4), 0 2px 6px rgba(163, 177, 198, 0.2);
+  }
+</style>
