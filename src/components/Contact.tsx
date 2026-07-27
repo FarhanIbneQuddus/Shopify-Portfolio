@@ -92,6 +92,29 @@ export default function Contact() {
 
       if (error) throw error;
 
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`;
+      const apiHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (import.meta.env.VITE_SUPABASE_ANON_KEY) {
+        apiHeaders['Authorization'] = `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`;
+      }
+
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: apiHeaders,
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Saved, but email notification failed. Please check back later.');
+      }
+
+      const data = await res.json();
+      if (data?.error) {
+        throw new Error('Saved, but email notification failed. Please check back later.');
+      }
+
       setStatus('success');
       setName('');
       setEmail('');
@@ -239,18 +262,17 @@ export default function Contact() {
                 <div key={item.label}>{content}</div>
               );
             })}
-
-            <HoverCard
+          </div>
+        </div>
+        <HoverCard
               className="info-card p-5 rounded-xl border"
-              style={{ background: 'rgba(59,130,246,0.05)', borderColor: 'rgba(59,130,246,0.2)' }}
+              style={{ background: 'rgba(59,130,246,0.05)', borderColor: 'rgba(59,130,246,0.2)', marginTop: '40px' }}
             >
               <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>
                 Currently available for freelance work and full-time opportunities. Whether it's a
                 Shopify store customization or a full-stack build, let's make it happen.
               </p>
             </HoverCard>
-          </div>
-        </div>
       </div>
     </section>
   );
