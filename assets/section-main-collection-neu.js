@@ -12,19 +12,20 @@
     }
 
     bindAll() {
-      this.gridWrap = this.root.querySelector('[data-grid-wrap]');
+      this.inner        = this.root.querySelector('.neu-collection__inner');
+      this.gridWrap     = this.root.querySelector('[data-grid-wrap]');
       this.filterToggle = this.root.querySelector('[data-filter-toggle]');
-      this.filterBadge = this.root.querySelector('[data-filter-badge]');
-      this.filterPanel = this.root.querySelector('[data-filter-panel]');
+      this.filterBadge  = this.root.querySelector('[data-filter-badge]');
+      this.filterPanel  = this.root.querySelector('[data-filter-panel]');
       this.filterOverlay = this.root.querySelector('[data-filter-overlay]');
-      this.filterClose = this.root.querySelector('[data-filter-close]');
-      this.filterForm = this.root.querySelector('[data-neu-filter-form]');
+      this.filterClose  = this.root.querySelector('[data-filter-close]');
+      this.filterForm   = this.root.querySelector('[data-neu-filter-form]');
       this.filterHeaders = this.root.querySelectorAll('[data-filter-header]');
-      this.dropdowns = this.root.querySelectorAll('[data-dropdown]');
-      this.sortValue = this.root.querySelector('[data-sort-value]');
-      this.sortOptions = this.root.querySelectorAll('[data-sort-option]');
+      this.dropdowns    = this.root.querySelectorAll('[data-dropdown]');
+      this.sortValue    = this.root.querySelector('[data-sort-value]');
+      this.sortOptions  = this.root.querySelectorAll('[data-sort-option]');
       this.tagCheckboxes = this.root.querySelectorAll('[data-tag-checkbox]');
-      this.tagSearch = this.root.querySelector('[data-tag-search]');
+      this.tagSearch    = this.root.querySelector('[data-tag-search]');
       this.tagsCountBadge = this.root.querySelector('[data-tags-count]');
       this.tagChipsContainer = this.root.querySelector('[data-tag-chips-container]');
       this.activeChipsWrap = this.root.querySelector('[data-active-chips]');
@@ -32,11 +33,11 @@
       this.clearAllInlineLink = this.root.querySelector('[data-clear-all-inline]');
 
       // Product grid / tag-filtering targets
-      this.productGrid = this.root.querySelector('#product-grid');
-      this.gridItems = this.root.querySelectorAll('[data-product-tags]');
+      this.productGrid  = this.root.querySelector('#product-grid');
+      this.gridItems    = this.root.querySelectorAll('[data-product-tags]');
       this.tagEmptyState = this.root.querySelector('[data-tag-empty-state]');
-      this.countNum = this.root.querySelector('[data-count-num]');
-      this.countLabel = this.root.querySelector('[data-count-label]');
+      this.countNum     = this.root.querySelector('[data-count-num]');
+      this.countLabel   = this.root.querySelector('[data-count-label]');
     }
 
     init() {
@@ -49,10 +50,38 @@
       this.initTagCheckboxes();
       this.initAddToCart();
       this.initClearAll();
+      this.initScrollShadow();
       this.syncTagsFromUrl();
       this.renderTagChips();
       this.updateFilterBadge();
       this.applyTagFilters();
+    }
+
+    /* ==========================================================
+       SCROLL SHADOW — toggles is-scrolled on the inner container
+    ========================================================== */
+    initScrollShadow() {
+      if (!this.inner) return;
+
+      const update = () => {
+        if (this.inner.scrollTop > 4) this.inner.classList.add('is-scrolled');
+        else                          this.inner.classList.remove('is-scrolled');
+      };
+
+      // Throttle with rAF
+      let ticking = false;
+      this._scrollHandler = () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      };
+
+      this.inner.addEventListener('scroll', this._scrollHandler, { passive: true });
+      update();
     }
 
     /* ==========================================================
@@ -63,12 +92,9 @@
       return params.getAll(TAG_PARAM);
     }
 
-    /**
-     * Check the tag checkboxes based on the URL params.
-     */
     syncTagsFromUrl() {
       const selected = this.getSelectedTagsFromUrl();
-      const lowered = selected.map((t) => t.toLowerCase());
+      const lowered  = selected.map((t) => t.toLowerCase());
       this.tagCheckboxes.forEach((cb) => {
         const val = (cb.dataset.tagValue || cb.value || '').toLowerCase();
         cb.checked = lowered.includes(val);
@@ -118,28 +144,16 @@
       return tags;
     }
 
-    /**
-     * Keep the URL (and browser history) in sync with checked tags
-     * without triggering a page reload, so the state stays shareable/bookmarkable.
-     */
     updateUrlTags() {
       const params = new URLSearchParams(window.location.search);
       params.delete(TAG_PARAM);
       this.getCheckedTags().forEach((t) => params.append(TAG_PARAM, t));
-      const qs = params.toString();
+      const qs  = params.toString();
       const url = this.collectionUrl + (qs ? `?${qs}` : '');
       window.history.replaceState({}, '', url);
     }
 
-    /**
-     * Show/hide already-rendered product cards based on selected tags.
-     * Multiple selected tags are combined with OR logic (matches any).
-     *
-     * FIXED: Both the selected tags and the product tags are lowercased
-     * before comparison so "Caps" matches "caps", etc.
-     */
     applyTagFilters() {
-      // Re-query in case the grid markup was just replaced (e.g. after a native filter fetch)
       this.gridItems = this.root.querySelectorAll('[data-product-tags]');
 
       const selected = this.getCheckedTags().map((t) => t.toLowerCase().trim());
@@ -172,7 +186,7 @@
     }
 
     updateCount(count) {
-      if (this.countNum) this.countNum.textContent = count;
+      if (this.countNum)   this.countNum.textContent   = count;
       if (this.countLabel) this.countLabel.textContent = count === 1 ? 'Product' : 'Products';
     }
 
@@ -204,22 +218,19 @@
         )
         .join('');
 
-      // Show/hide chips wrapper based on any active filters
       const hasChips =
         tags.length > 0 ||
         (this.activeChipsWrap && this.activeChipsWrap.querySelectorAll('.neu-chip').length > 1);
 
       if (this.activeChipsWrap) {
         if (hasChips) this.activeChipsWrap.removeAttribute('hidden');
-        else this.activeChipsWrap.setAttribute('hidden', '');
+        else          this.activeChipsWrap.setAttribute('hidden', '');
       }
 
-      // Attach removal handlers
       this.tagChipsContainer.querySelectorAll('[data-remove-tag]').forEach((chip) => {
         chip.addEventListener('click', (e) => {
           e.preventDefault();
-          const val = chip.dataset.tagValue;
-          this.removeTag(val);
+          this.removeTag(chip.dataset.tagValue);
         });
       });
     }
@@ -235,7 +246,7 @@
     }
 
     /* ==========================================================
-       FILTER BADGE COUNT (includes tags)
+       FILTER BADGE COUNT
     ========================================================== */
     updateFilterBadge() {
       if (!this.filterBadge) return;
@@ -267,13 +278,12 @@
         return;
       }
 
-      // Fallback
-      const params = new URLSearchParams(window.location.search);
-      const all = params.getAll(TAG_PARAM);
+      const params   = new URLSearchParams(window.location.search);
+      const all      = params.getAll(TAG_PARAM);
       const filtered = all.filter((t) => t.toLowerCase() !== String(tagValue).toLowerCase());
       params.delete(TAG_PARAM);
       filtered.forEach((t) => params.append(TAG_PARAM, t));
-      const qs = params.toString();
+      const qs  = params.toString();
       const url = this.collectionUrl + (qs ? `?${qs}` : '');
       window.history.replaceState({}, '', url);
       this.syncTagsFromUrl();
@@ -309,7 +319,7 @@
       if (!this.filterToggle || !this.filterPanel) return;
 
       this.filterToggle.addEventListener('click', () => this.openSidebar());
-      if (this.filterClose) this.filterClose.addEventListener('click', () => this.closeSidebar());
+      if (this.filterClose)   this.filterClose.addEventListener('click',   () => this.closeSidebar());
       if (this.filterOverlay) this.filterOverlay.addEventListener('click', () => this.closeSidebar());
 
       document.addEventListener('keydown', (e) => {
@@ -351,11 +361,11 @@
       this.filterHeaders.forEach((header) => {
         header.addEventListener('click', () => {
           const expanded = header.getAttribute('aria-expanded') === 'true';
-          header.setAttribute('aria-expanded', !expanded);
+          header.setAttribute('aria-expanded', String(!expanded));
           const group = header.closest('[data-filter-group]');
           if (group) {
             if (expanded) group.setAttribute('data-collapsed', '');
-            else group.removeAttribute('data-collapsed');
+            else          group.removeAttribute('data-collapsed');
           }
         });
       });
@@ -431,12 +441,12 @@
     initTagSearch() {
       if (!this.tagSearch) return;
       this.tagSearch.addEventListener('input', () => {
-        const q = this.tagSearch.value.trim().toLowerCase();
+        const q     = this.tagSearch.value.trim().toLowerCase();
         const items = this.root.querySelectorAll('[data-tag-item]');
         items.forEach((item) => {
           const name = item.dataset.tagName || '';
           if (!q || name.includes(q)) item.removeAttribute('hidden');
-          else item.setAttribute('hidden', '');
+          else                         item.setAttribute('hidden', '');
         });
       });
     }
@@ -446,7 +456,6 @@
     ========================================================== */
     initFilterFormSubmit() {
       if (!this.filterForm) return;
-
       this.filterForm.addEventListener('submit', (e) => {
         e.preventDefault();
         this.submitFilters();
@@ -458,12 +467,10 @@
 
       const params = new URLSearchParams();
 
-      // Preserve sort_by
       const currentParams = new URLSearchParams(window.location.search);
       const sortBy = currentParams.get('sort_by');
       if (sortBy) params.set('sort_by', sortBy);
 
-      // Collect tag checkboxes
       this.tagCheckboxes.forEach((cb) => {
         if (cb.checked) {
           const val = cb.dataset.tagValue || cb.value;
@@ -471,13 +478,12 @@
         }
       });
 
-      // Collect all other named form inputs (real Shopify filters)
       const otherInputs = this.filterForm.querySelectorAll(
         'input[name]:not([data-tag-checkbox]):not([data-sort-input]), select[name]'
       );
       otherInputs.forEach((input) => {
         if (input.type === 'checkbox' && !input.checked) return;
-        if (input.value === '' || input.value === null) return;
+        if (input.value === '' || input.value === null)  return;
         params.append(input.name, input.value);
       });
 
@@ -494,7 +500,7 @@
       fetch(url)
         .then((res) => res.text())
         .then((html) => {
-          const parsed = new DOMParser().parseFromString(html, 'text/html');
+          const parsed  = new DOMParser().parseFromString(html, 'text/html');
           const newRoot = parsed.querySelector('[data-neu-collection]');
           if (!newRoot) {
             window.location.href = url;
@@ -514,9 +520,12 @@
       this.bindAll();
       this.init();
 
-      if (this.gridWrap) {
-        const y = this.gridWrap.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+      // Scroll the inner container back to the top of the grid
+      if (this.inner && this.gridWrap) {
+        const headerEl     = this.root.querySelector('.neu-collection__header');
+        const headerHeight = headerEl ? headerEl.offsetHeight : 0;
+        const gridTop      = this.gridWrap.offsetTop;
+        this.inner.scrollTo({ top: Math.max(0, gridTop - headerHeight - 16), behavior: 'smooth' });
       }
     }
 
@@ -587,9 +596,9 @@
         };
         document.addEventListener('neu-cart:ready', onReady);
 
-        const drawer = document.querySelector('[data-cart-drawer]');
+        const drawer  = document.querySelector('[data-cart-drawer]');
         const overlay = document.querySelector('[data-cart-overlay]');
-        if (drawer) drawer.classList.add('is-open');
+        if (drawer)  drawer.classList.add('is-open');
         if (overlay) overlay.classList.add('is-open');
         document.body.style.overflow = 'hidden';
       }
@@ -613,6 +622,9 @@
     }
   }
 
+  /* ==========================================================
+     BOOT
+  ========================================================== */
   function init() {
     document.querySelectorAll('[data-neu-collection]').forEach((root) => {
       if (root.dataset.neuInit === 'true') return;
