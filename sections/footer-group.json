@@ -11,15 +11,72 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
-    "footer": {
+    "footer_KcYwgQ": {
       "type": "footer",
+      "blocks": {
+        "brand_MkCbtC": {
+          "type": "brand",
+          "settings": {
+            "brand_name": "NEUBOT",
+            "tagline": "Machines with a softer surface. Made in Kyoto & Zürich."
+          }
+        },
+        "link_column_yQHRLm": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Quick Links",
+            "menu": ""
+          }
+        },
+        "link_column_4kKcmF": {
+          "type": "link_column",
+          "settings": {
+            "heading": "Quick Links",
+            "menu": ""
+          }
+        },
+        "newsletter_QyBQmQ": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "STAY CONNECTED",
+            "newsletter_text": "Subscribe to get updates.",
+            "placeholder": "Enter your email",
+            "show_social": true,
+            "facebook_url": "",
+            "instagram_url": "",
+            "twitter_url": "",
+            "tiktok_url": "",
+            "youtube_url": "",
+            "pinterest_url": "",
+            "snapchat_url": "",
+            "linkedin_url": "",
+            "github_url": "",
+            "tumblr_url": "",
+            "vimeo_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand_MkCbtC",
+        "link_column_yQHRLm",
+        "link_column_4kKcmF",
+        "newsletter_QyBQmQ"
+      ],
+      "name": "Footer",
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "neu_bg": "#e6e9ee",
+        "neu_shadow_dark": "#4f4e4e",
+        "neu_shadow_light": "#ffffff",
+        "neu_text": "#2c3e50",
+        "neu_text_muted": "#8b95a3",
+        "neu_radius": 24,
+        "show_bottom_bar": true,
+        "copyright_text": "NEUBOT Systems",
+        "locations_text": "Kyoto · Zürich · San Francisco"
       }
     }
   },
   "order": [
-    "footer"
+    "footer_KcYwgQ"
   ]
 }
