@@ -83,7 +83,7 @@
 }
 
 .neu-card__title {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -97,11 +97,11 @@
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: wrap;
+  white-space: nowrap; /* Changed from wrap to nowrap */
 }
 
 .neu-card__price {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 400;
   color: var(--neu-text);
   white-space: nowrap;
@@ -114,7 +114,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 6px;
+  margin-top: auto;
   width: 100%;
 }
 
@@ -135,7 +135,7 @@
   box-shadow: var(--shadow-neu-out-sm);
   color: var(--neu-text);
   text-decoration: none;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   transition: box-shadow 0.2s ease, color 0.2s ease;
 }
@@ -283,6 +283,7 @@
 }
 
 /* ── MOBILE ── */
+/* ── MOBILE ── */
 @media (max-width: 550px) {
   .neu-card {
     border-radius: 20px;
@@ -305,6 +306,13 @@
     align-items: flex-start;
     gap: 4px;
     padding: 0 2px;
+    width: 100%; /* Ensures children constrain properly */
+  }
+
+  /* FORCE FULL WIDTH FOR TRUNCATION CONTAINER */
+  .neu-card__info-text {
+    width: 100%;
+    max-width: 100%;
   }
 
   .neu-card__type {
@@ -314,7 +322,16 @@
 
   .neu-card__title,
   .neu-card__price {
-    font-size: 17px;
+    font-size: 14px;
+  }
+
+  /* FORCE SINGLE LINE WITH ELLIPSIS (...) */
+  .neu-card__title a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
   }
 
   .neu-card__price {
