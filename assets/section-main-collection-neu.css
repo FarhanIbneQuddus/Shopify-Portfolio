@@ -564,7 +564,7 @@
   height: 20px;
   border-radius: 6px;
   background: var(--neu-bg);
-  box-shadow: var(--shadow-neu-out-sm);
+  box-shadow: var(--neu-shadow-strong);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -946,7 +946,7 @@
     gap: 8px;
     padding: 0;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
 
   .neu-collection__toolbar-left,
