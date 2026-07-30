@@ -1,0 +1,205 @@
+{% comment %}
+  ════════════════════════════════════════════════════════════
+  Site Click Sound  —  controlled from Theme Settings
+  ════════════════════════════════════════════════════════════
+{% endcomment %}
+
+{%- if settings.sound_enabled and settings.sound_file_url != blank -%}
+
+{%- liquid
+  assign position = settings.sound_toggle_position | default: 'bottom-right'
+  assign volume   = settings.sound_volume | default: 25
+  assign default_on = settings.sound_default_on
+-%}
+
+<style>
+  /* ── Base toggle button ─────────────────────────────── */
+  .site-sound-toggle {
+    position: fixed;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #111;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .site-sound-toggle.is-enabled {
+    background: #111;
+    color: #fff;
+  }
+
+  .site-sound-toggle__icon {
+    font-size: 16px;
+  }
+
+  /* ── Position variants ──────────────────────────────── */
+  .site-sound-toggle--bottom-right { bottom: 20px; right: 20px; }
+  .site-sound-toggle--bottom-left  { bottom: 20px; left: 20px;  }
+  .site-sound-toggle--top-right    { top: 20px;    right: 20px; }
+  .site-sound-toggle--top-left     { top: 20px;    left: 20px;  }
+
+  /* ── Mobile adjustments ─────────────────────────────── */
+  @media screen and (max-width: 749px) {
+    .site-sound-toggle {
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+    .site-sound-toggle--bottom-right { bottom: 12px; right: 12px; }
+    .site-sound-toggle--bottom-left  { bottom: 12px; left: 12px;  }
+    .site-sound-toggle--top-right    { top: 12px;    right: 12px; }
+    .site-sound-toggle--top-left     { top: 12px;    left: 12px;  }
+  }
+</style>
+
+<div class="site-sound-toggle-wrap">
+  <button
+    id="site-sound-toggle"
+    class="site-sound-toggle site-sound-toggle--{{ position }}"
+    type="button"
+    aria-pressed="false"
+    aria-label="Turn click sounds on"
+    data-sound-url="{{ settings.sound_file_url }}"
+    data-sound-volume="{{ volume }}"
+    data-sound-default-on="{{ default_on }}"
+  >
+    <span class="site-sound-toggle__icon" aria-hidden="true">🔇</span>
+    <span class="site-sound-toggle__text">Sound off</span>
+  </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var toggle = document.getElementById('site-sound-toggle');
+  if (!toggle) return;
+
+  /* ── Config from data attributes (set by Liquid) ─── */
+  var STORAGE_KEY = 'site_click_sound_enabled';
+  var soundUrl    = toggle.dataset.soundUrl;
+  var volume      = parseInt(toggle.dataset.soundVolume, 10) / 100 || 0.25;
+  var defaultOn   = toggle.dataset.soundDefaultOn === 'true';
+
+  /* ── Audio setup ─────────────────────────────────── */
+  var baseAudio   = new Audio(soundUrl);
+  baseAudio.preload = 'auto';
+  baseAudio.load();
+
+  /* ── Determine initial state ─────────────────────── */
+  var stored  = localStorage.getItem(STORAGE_KEY);
+  var enabled = stored !== null ? stored === 'true' : defaultOn;
+
+  /* ── DOM refs ────────────────────────────────────── */
+  var textEl = toggle.querySelector('.site-sound-toggle__text');
+  var iconEl = toggle.querySelector('.site-sound-toggle__icon');
+
+  /* ── Debounce guard ──────────────────────────────── */
+  var lastPlayTime = 0;
+  var DEBOUNCE_MS  = 60;
+
+  /* ── UI update ───────────────────────────────────── */
+  function updateUI() {
+    toggle.classList.toggle('is-enabled', enabled);
+    toggle.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+    toggle.setAttribute(
+      'aria-label',
+      enabled ? 'Turn click sounds off' : 'Turn click sounds on'
+    );
+    if (textEl) textEl.textContent = enabled ? 'Sound on'  : 'Sound off';
+    if (iconEl) iconEl.textContent = enabled ? '🔊' : '🔇';
+  }
+
+  /* ── Play sound (debounced) ──────────────────────── */
+  function playClickSound() {
+    if (!enabled) return;
+    var now = Date.now();
+    if (now - lastPlayTime < DEBOUNCE_MS) return;
+    lastPlayTime = now;
+
+    var sound    = baseAudio.cloneNode(true);
+    sound.volume = volume;
+    sound.currentTime = 0;
+    var p = sound.play();
+    if (p !== undefined) p.catch(function () {});
+  }
+
+  /* ── Excluded selectors ──────────────────────────── */
+  var EXCLUDED = [
+    '#site-sound-toggle',
+    '[data-no-click-sound]',
+    'input[type="text"]',
+    'input[type="email"]',
+    'input[type="password"]',
+    'input[type="number"]',
+    'input[type="search"]',
+    'input[type="tel"]',
+    'input[type="url"]',
+    'textarea',
+    'select',
+    'label',
+    '.shopify-consent-form',
+    '[contenteditable]'
+  ].join(',');
+
+  /* ── Interactive selectors ───────────────────────── */
+  var INTERACTIVE = [
+    'button',
+    'a',
+    '[role="button"]',
+    'input[type="button"]',
+    'input[type="submit"]',
+    'input[type="reset"]',
+    'input[type="checkbox"]',
+    'input[type="radio"]',
+    'summary',
+    '[tabindex="0"]',
+    '[aria-controls]',
+    '[aria-expanded]',
+    '.slider-button',
+    '.pagination__item',
+    '.thumbnail',
+    '[data-media-id]'
+  ].join(',');
+
+  /* ── Click handler (all clicks) ──────────────────── */
+  document.addEventListener('click', function (e) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest(EXCLUDED)) return;
+    playClickSound();
+  }, true);
+
+  /* ── Mousedown handler (interactive only) ────────── */
+  document.addEventListener('mousedown', function (e) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest(EXCLUDED)) return;
+    if (e.target.closest(INTERACTIVE)) playClickSound();
+  }, true);
+
+  /* ── Touchstart handler (interactive only) ────────── */
+  document.addEventListener('touchstart', function (e) {
+    if (!(e.target instanceof Element)) return;
+    if (e.target.closest(EXCLUDED)) return;
+    if (e.target.closest(INTERACTIVE)) playClickSound();
+  }, { capture: true, passive: true });
+
+  /* ── Toggle button ───────────────────────────────── */
+  toggle.addEventListener('click', function () {
+    enabled = !enabled;
+    localStorage.setItem(STORAGE_KEY, enabled ? 'true' : 'false');
+    updateUI();
+    if (enabled) playClickSound();
+  });
+
+  /* ── Init ─────────────────────────────────────────── */
+  updateUI();
+});
+</script>
+
+{%- endif -%}

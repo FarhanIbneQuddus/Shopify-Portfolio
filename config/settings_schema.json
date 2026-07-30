@@ -62,5 +62,58 @@
         "default": 20
       }
     ]
+  },
+  {
+    "name": "Site Click Sound",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Click Sound Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "sound_enabled",
+        "label": "Enable click sound feature",
+        "default": false,
+        "info": "Master switch — when off, the sound toggle button and all click sounds are completely removed from the storefront."
+      },
+      {
+        "type": "url",
+        "id": "sound_file_url",
+        "label": "Sound file URL",
+        "info": "Upload your .mp3 or .wav file to Settings → Files, copy its URL, and paste it here."
+      },
+      {
+        "type": "range",
+        "id": "sound_volume",
+        "label": "Sound volume",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "default": 25,
+        "unit": "%",
+        "info": "Controls how loud the click sound plays."
+      },
+      {
+        "type": "select",
+        "id": "sound_toggle_position",
+        "label": "Toggle button position",
+        "default": "bottom-right",
+        "options": [
+          { "value": "bottom-right", "label": "Bottom Right" },
+          { "value": "bottom-left", "label": "Bottom Left" },
+          { "value": "top-right", "label": "Top Right" },
+          { "value": "top-left", "label": "Top Left" }
+        ],
+        "info": "Where the sound on/off button appears on the storefront."
+      },
+      {
+        "type": "checkbox",
+        "id": "sound_default_on",
+        "label": "Sound on by default for new visitors",
+        "default": false,
+        "info": "If checked, sound will be ON the first time a visitor arrives (before they toggle it). Returning visitors keep their own preference."
+      }
+    ]
   }
 ]
