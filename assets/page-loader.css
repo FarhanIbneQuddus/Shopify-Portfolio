@@ -1,0 +1,271 @@
+/* ==========================================================================
+   Page Loader — Fast Neumorphic Transition Loader
+   Controlled by settings_schema.json → Theme Settings > Page Loader
+   ========================================================================== */
+
+:root {
+  --neu-surface: #e8e8e8;
+  --neu-shadow-dark: #4f4e4e;
+  --neu-shadow-light: #ffffff;
+  --neu-text: #2c3e50;
+  --neu-text-muted: #8b95a3;
+  --neu-accent: #7d3fbf;
+  --neu-radius: 24px;
+  --neu-accent-rgb: 125, 63, 191;
+}
+
+/* ── Scroll lock while loader is visible ───────────────────────────────── */
+html.page-loader-active,
+html.page-loader-active body {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* ── Full-screen overlay ───────────────────────────────────────────────── */
+#page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: var(--neu-surface);
+  overflow: hidden;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+/* ── Hidden state ──────────────────────────────────────────────────────── 
+   The inline script removes aria-hidden synchronously on transitions.
+   On non-transitions this stays, so the loader never renders at all. */
+#page-loader[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* ── Neumorphic circle ─────────────────────────────────────────────────── */
+#page-loader__surface {
+  --size: clamp(150px, 25vw, 240px);
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: var(--neu-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  /* Raised neumorphic shadow */
+  box-shadow:
+    inset 1.125vw 1.125vw 1.55vw -0.0625vw var(--neu-shadow-light),
+    inset -0.5vw -0.5625vw 1.25625vw rgb(from var(--neu-shadow-dark) r g b / 0.25),
+    0.125vw 0.1875vw 0.4375vw rgb(from var(--neu-shadow-dark) r g b / 0.2),
+    0.4375vw 0.625vw 0.8125vw rgb(from var(--neu-shadow-dark) r g b / 0.17),
+    1.0625vw 1.4375vw 1.0625vw rgb(from var(--neu-shadow-dark) r g b / 0.1),
+    1.8125vw 2.5625vw 1.25vw rgb(from var(--neu-shadow-dark) r g b / 0.03);
+
+  opacity: 0;
+  transform: scale(0.9) translateZ(0);
+  will-change: opacity, transform, box-shadow;
+  transition: box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Pressed inset shadow state */
+#page-loader__surface.is-pressed {
+  box-shadow:
+    inset 0.4375vw 0.625vw 1.2vw rgb(from var(--neu-shadow-dark) r g b / 0.28),
+    inset 0.125vw 0.1875vw 0.4375vw rgb(from var(--neu-shadow-dark) r g b / 0.18),
+    inset -0.3vw -0.4vw 0.8vw var(--neu-shadow-light),
+    0.0625vw 0.0625vw 0.25vw rgb(from var(--neu-shadow-dark) r g b / 0.08);
+}
+
+/* ── Rotating accent glow ring ─────────────────────────────────────────── */
+#page-loader__surface::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgb(var(--neu-accent-rgb) / 0.15) 25%,
+    transparent 50%,
+    rgb(var(--neu-accent-rgb) / 0.08) 75%,
+    transparent 100%
+  );
+  opacity: 0;
+  animation: ring-spin 2s linear infinite;
+  pointer-events: none;
+  will-change: transform;
+}
+
+#page-loader__surface.is-active::before {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+@keyframes ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Ripple burst on completion ────────────────────────────────────────── */
+#page-loader__surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgb(var(--neu-accent-rgb) / 0);
+  pointer-events: none;
+  opacity: 0;
+}
+
+#page-loader__surface.is-burst::after {
+  animation: ripple-burst 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes ripple-burst {
+  0% {
+    transform: scale(1);
+    border-color: rgb(var(--neu-accent-rgb) / 0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.6);
+    border-color: rgb(var(--neu-accent-rgb) / 0);
+    opacity: 0;
+  }
+}
+
+/* ── SVG progress arc ──────────────────────────────────────────────────── */
+#page-loader__progress-ring {
+  position: absolute;
+  inset: -3px;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+#page-loader__progress-circle {
+  fill: none;
+  stroke: var(--neu-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 565.48;
+  stroke-dashoffset: 565.48;
+  filter: drop-shadow(0 0 5px rgb(var(--neu-accent-rgb) / 0.35));
+}
+
+/* ── Number display ────────────────────────────────────────────────────── */
+#page-loader__number-wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+#page-loader__number {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: var(--neu-text);
+  letter-spacing: -0.03em;
+  user-select: none;
+  line-height: 1;
+  display: inline-flex;
+  overflow: hidden;
+
+  text-shadow:
+    1px 1px 2px rgb(from var(--neu-shadow-dark) r g b / 0.35),
+    -1px -1px 2px var(--neu-shadow-light);
+}
+
+#page-loader__number.is-complete {
+  color: var(--neu-accent);
+  transition: color 0.2s ease;
+}
+
+/* ── Individual digit roll ─────────────────────────────────────────────── */
+.loader-digit {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.loader-digit.is-rolling {
+  animation: digit-roll 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes digit-roll {
+  0% {
+    transform: translateY(45%);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ── Percent symbol ────────────────────────────────────────────────────── */
+#page-loader__percent {
+  font-weight: 600;
+  font-size: 0.42em;
+  color: var(--neu-text-muted);
+  margin-left: 0.1em;
+  opacity: 0.7;
+  user-select: none;
+  align-self: center;
+  text-shadow:
+    1px 1px 2px rgb(from var(--neu-shadow-dark) r g b / 0.2),
+    -1px -1px 2px var(--neu-shadow-light);
+}
+
+#page-loader__percent.is-complete {
+  color: var(--neu-accent);
+  transition: color 0.2s ease;
+}
+
+/* ── Checkmark overlay ─────────────────────────────────────────────────── */
+#page-loader__check {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.5);
+  will-change: opacity, transform;
+}
+
+#page-loader__check svg {
+  width: 36%;
+  height: 36%;
+}
+
+#page-loader__check-path {
+  fill: none;
+  stroke: var(--neu-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  filter: drop-shadow(0 0 6px rgb(var(--neu-accent-rgb) / 0.45));
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  #page-loader *,
+  #page-loader *::before,
+  #page-loader *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

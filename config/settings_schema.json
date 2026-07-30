@@ -179,5 +179,35 @@
         "info": "If a visitor previously enabled music, try to resume it automatically on next visit. First-time visitors always need to click the button (browser rules)."
       }
     ]
+  },
+  {
+    "name": "Page Loader",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Page Transition Loader"
+      },
+      {
+        "type": "paragraph",
+        "content": "A neumorphic loading animation that appears when visitors navigate between pages. It does not appear on page reloads or direct URL visits."
+      },
+      {
+        "type": "checkbox",
+        "id": "loader_enable",
+        "label": "Enable page transition loader",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "loader_extra_delay",
+        "label": "Extra display time",
+        "info": "Additional time (in milliseconds) the loader stays visible after the page finishes loading. 0 is the fastest. Higher values create a more dramatic entrance.",
+        "min": 0,
+        "max": 1500,
+        "step": 100,
+        "default": 0,
+        "unit": "ms"
+      }
+    ]
   }
 ]

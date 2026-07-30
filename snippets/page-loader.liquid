@@ -1,0 +1,78 @@
+{% comment %}
+  snippets/page-loader.liquid
+  ─────────────────────────────────────────────────────────
+  Neumorphic page transition loader.
+  Controlled via Theme Settings > Page Loader:
+    • loader_enable      (checkbox)
+    • loader_extra_delay (range 0–1500ms)
+
+  USAGE — place ONCE in layout/theme.liquid right after <body>:
+    {% render 'page-loader' %}
+{% endcomment %}
+
+{% if settings.loader_enable %}
+
+  {{ 'page-loader.css' | asset_url | stylesheet_tag }}
+
+  <div id="page-loader"
+       aria-hidden="true"
+       data-loader-enabled="true"
+       data-extra-delay="{{ settings.loader_extra_delay | default: 0 }}">
+
+    <div id="page-loader__surface">
+
+      <svg id="page-loader__progress-ring"
+           viewBox="0 0 184 184"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-hidden="true">
+        <circle id="page-loader__progress-circle"
+                cx="92" cy="92" r="90" />
+      </svg>
+
+      <div id="page-loader__number-wrap">
+        <span id="page-loader__number">0</span>
+        <span id="page-loader__percent">%</span>
+      </div>
+
+      <div id="page-loader__check">
+        <svg viewBox="0 0 52 52"
+             xmlns="http://www.w3.org/2000/svg"
+             aria-hidden="true">
+          <path id="page-loader__check-path"
+                d="M14 27 l8 8 16 -18" />
+        </svg>
+      </div>
+
+    </div>
+  </div>
+
+  {% comment %}
+    ─────────────────────────────────────────────────────────────────
+    CRITICAL: This inline script runs IMMEDIATELY, before the browser
+    paints any page content. It checks the sessionStorage flag and
+    shows the loader overlay SYNCHRONOUSLY so there is zero flash
+    of the underlying page.
+
+    This must be inline (not in an external file) and must NOT
+    have defer or async. It is intentionally tiny (~300 bytes).
+    ─────────────────────────────────────────────────────────────────
+  {% endcomment %}
+  <script>
+    (function(){
+      try {
+        if (sessionStorage.getItem('page-loader-nav') === '1') {
+          var l = document.getElementById('page-loader');
+          if (l) {
+            l.removeAttribute('aria-hidden');
+            l.style.display = '';
+            document.documentElement.classList.add('page-loader-active');
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="{{ 'page-loader.js' | asset_url }}" defer></script>
+
+{% endif %}
