@@ -26,8 +26,6 @@
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
-  scroll-behavior: smooth;
-  overscroll-behavior: contain;
 
   scrollbar-width: none;
   scrollbar-color: rgba(163, 177, 198, 0.45) transparent;
@@ -866,6 +864,7 @@
   height: 40px;
   padding: 0 10px;
   border-radius: 999px;
+  box-shadow: var(--neu-shadow-strong);
   background: var(--neu-bg);
   color: var(--neu-text);
   text-decoration: none;

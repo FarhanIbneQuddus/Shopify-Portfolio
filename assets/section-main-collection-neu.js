@@ -60,15 +60,22 @@
     /* ==========================================================
        SCROLL SHADOW — toggles is-scrolled on the inner container
     ========================================================== */
+        /* ==========================================================
+       SCROLL BEHAVIOR — shadow + release to page at edges
+    ========================================================== */
+        /* ==========================================================
+       SCROLL BEHAVIOR — shadow + smooth release to page at edges
+    ========================================================== */
     initScrollShadow() {
       if (!this.inner) return;
+
+      const EDGE_THRESHOLD = 2;
 
       const update = () => {
         if (this.inner.scrollTop > 4) this.inner.classList.add('is-scrolled');
         else                          this.inner.classList.remove('is-scrolled');
       };
 
-      // Throttle with rAF
       let ticking = false;
       this._scrollHandler = () => {
         if (!ticking) {
@@ -81,6 +88,95 @@
       };
 
       this.inner.addEventListener('scroll', this._scrollHandler, { passive: true });
+
+      /* --------------------------------------------------------
+         WHEEL RELEASE — smooth, accumulated, rAF-driven
+      -------------------------------------------------------- */
+      let pendingDelta = 0;
+      let rafId        = null;
+
+      const flushPageScroll = () => {
+        if (Math.abs(pendingDelta) < 0.5) {
+          pendingDelta = 0;
+          rafId = null;
+          return;
+        }
+        // Apply the accumulated delta in one smooth frame
+        window.scrollBy(0, pendingDelta);
+        pendingDelta = 0;
+        rafId = null;
+      };
+
+      this._wheelHandler = (e) => {
+        const atTop    = this.inner.scrollTop <= EDGE_THRESHOLD;
+        const atBottom =
+          this.inner.scrollTop + this.inner.clientHeight >=
+          this.inner.scrollHeight - EDGE_THRESHOLD;
+
+        const scrollingDown = e.deltaY > 0;
+        const scrollingUp   = e.deltaY < 0;
+
+        if ((atBottom && scrollingDown) || (atTop && scrollingUp)) {
+          e.preventDefault();
+
+          // Accumulate delta, apply once per frame → matches native scroll feel
+          pendingDelta += e.deltaY;
+          if (rafId === null) {
+            rafId = window.requestAnimationFrame(flushPageScroll);
+          }
+        }
+      };
+
+      this.inner.addEventListener('wheel', this._wheelHandler, { passive: false });
+
+      /* --------------------------------------------------------
+         TOUCH RELEASE — smooth for mobile
+      -------------------------------------------------------- */
+      this._touchStartY  = null;
+      this._touchLastY   = null;
+
+      this._touchStartHandler = (e) => {
+        if (e.touches && e.touches.length === 1) {
+          this._touchStartY = e.touches[0].clientY;
+          this._touchLastY  = this._touchStartY;
+        }
+      };
+
+      this._touchMoveHandler = (e) => {
+        if (this._touchLastY === null || !e.touches || e.touches.length !== 1) return;
+
+        const currentY = e.touches[0].clientY;
+        const deltaY   = this._touchLastY - currentY;
+
+        const atTop    = this.inner.scrollTop <= EDGE_THRESHOLD;
+        const atBottom =
+          this.inner.scrollTop + this.inner.clientHeight >=
+          this.inner.scrollHeight - EDGE_THRESHOLD;
+
+        const scrollingDown = deltaY > 0;
+        const scrollingUp   = deltaY < 0;
+
+        if ((atBottom && scrollingDown) || (atTop && scrollingUp)) {
+          e.preventDefault();
+
+          pendingDelta += deltaY;
+          if (rafId === null) {
+            rafId = window.requestAnimationFrame(flushPageScroll);
+          }
+        }
+
+        this._touchLastY = currentY;
+      };
+
+      this._touchEndHandler = () => {
+        this._touchStartY = null;
+        this._touchLastY  = null;
+      };
+
+      this.inner.addEventListener('touchstart', this._touchStartHandler, { passive: true });
+      this.inner.addEventListener('touchmove',  this._touchMoveHandler,  { passive: false });
+      this.inner.addEventListener('touchend',   this._touchEndHandler,   { passive: true });
+
       update();
     }
 
