@@ -115,5 +115,69 @@
         "info": "If checked, sound will be ON the first time a visitor arrives (before they toggle it). Returning visitors keep their own preference."
       }
     ]
+  },
+  {
+    "name": "Background Music",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Background Music Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "music_enabled",
+        "label": "Enable background music feature",
+        "default": false,
+        "info": "Master switch — when off, the music toggle button and audio are completely removed from the storefront."
+      },
+      {
+        "type": "url",
+        "id": "music_file_url",
+        "label": "Music file URL",
+        "info": "Upload your .mp3 or .wav file to Settings → Files, copy its URL, and paste it here."
+      },
+      {
+        "type": "range",
+        "id": "music_volume",
+        "label": "Music volume",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "default": 50,
+        "unit": "%",
+        "info": "Controls how loud the background music plays."
+      },
+      {
+        "type": "select",
+        "id": "music_toggle_position",
+        "label": "Toggle button position",
+        "default": "bottom-right",
+        "options": [
+          { "value": "bottom-right", "label": "Bottom Right" },
+          { "value": "bottom-left", "label": "Bottom Left" },
+          { "value": "top-right", "label": "Top Right" },
+          { "value": "top-left", "label": "Top Left" }
+        ],
+        "info": "Where the music on/off button appears on the storefront."
+      },
+      {
+        "type": "range",
+        "id": "music_toggle_offset",
+        "label": "Distance from click sound button",
+        "min": 0,
+        "max": 300,
+        "step": 10,
+        "default": 140,
+        "unit": "px",
+        "info": "How far away from the edge (or click sound button) this button sits. Useful when both buttons are in the same corner."
+      },
+      {
+        "type": "checkbox",
+        "id": "music_autoplay",
+        "label": "Try to autoplay for returning visitors",
+        "default": true,
+        "info": "If a visitor previously enabled music, try to resume it automatically on next visit. First-time visitors always need to click the button (browser rules)."
+      }
+    ]
   }
 ]

@@ -1,0 +1,208 @@
+{% comment %}
+  ════════════════════════════════════════════════════════════
+  Background Music  —  controlled from Theme Settings
+  ════════════════════════════════════════════════════════════
+{% endcomment %}
+
+{%- if settings.music_enabled and settings.music_file_url != blank -%}
+
+{%- liquid
+  assign position   = settings.music_toggle_position | default: 'bottom-right'
+  assign volume     = settings.music_volume | default: 50
+  assign offset     = settings.music_toggle_offset | default: 140
+  assign autoplay   = settings.music_autoplay
+-%}
+
+<style>
+  /* ── Base toggle button ─────────────────────────── */
+  .store-music-toggle {
+    position: fixed;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #111;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .store-music-toggle.is-on {
+    background: #111;
+    color: #fff;
+  }
+
+  .store-music-toggle__icon {
+    font-size: 16px;
+  }
+
+  /* ── Position variants (with configurable offset) ── */
+  .store-music-toggle--bottom-right { bottom: 20px; right: {{ offset }}px; }
+  .store-music-toggle--bottom-left  { bottom: 20px; left:  {{ offset }}px; }
+  .store-music-toggle--top-right    { top: 20px;    right: {{ offset }}px; }
+  .store-music-toggle--top-left     { top: 20px;    left:  {{ offset }}px; }
+
+  /* ── Mobile adjustments ─────────────────────────── */
+  @media screen and (max-width: 749px) {
+    .store-music-toggle {
+      padding: 9px 12px;
+      font-size: 13px;
+    }
+    .store-music-toggle--bottom-right { bottom: 12px; right: {{ offset | divided_by: 1.4 | round }}px; }
+    .store-music-toggle--bottom-left  { bottom: 12px; left:  {{ offset | divided_by: 1.4 | round }}px; }
+    .store-music-toggle--top-right    { top: 12px;    right: {{ offset | divided_by: 1.4 | round }}px; }
+    .store-music-toggle--top-left     { top: 12px;    left:  {{ offset | divided_by: 1.4 | round }}px; }
+  }
+</style>
+
+<button
+  id="store-music-toggle"
+  class="store-music-toggle store-music-toggle--{{ position }}"
+  type="button"
+  aria-pressed="false"
+  aria-label="Turn background music on"
+  data-no-click-sound
+  data-music-volume="{{ volume }}"
+  data-music-autoplay="{{ autoplay }}"
+>
+  <span class="store-music-toggle__icon" aria-hidden="true">🎵</span>
+  <span class="store-music-toggle__text">Music: Off</span>
+</button>
+
+<audio id="store-music" loop preload="auto" playsinline>
+  <source src="{{ settings.music_file_url }}" type="audio/mpeg">
+</audio>
+
+<script>
+(function () {
+  if (window.__storeMusicInit) return;
+  window.__storeMusicInit = true;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var audio  = document.getElementById('store-music');
+    var button = document.getElementById('store-music-toggle');
+    if (!audio || !button) return;
+
+    /* ── Config from data attributes ──────────────── */
+    var volume    = parseInt(button.dataset.musicVolume, 10) / 100 || 0.5;
+    var autoplay  = button.dataset.musicAutoplay === 'true';
+
+    /* ── Storage keys ─────────────────────────────── */
+    var ENABLE_KEY = 'store_music_enabled';
+    var TIME_KEY   = 'store_music_time';
+
+    /* ── State ────────────────────────────────────── */
+    var saveInterval = null;
+    var wantedOn    = localStorage.getItem(ENABLE_KEY) === 'true';
+    var savedTime   = parseFloat(localStorage.getItem(TIME_KEY));
+
+    /* ── DOM refs ─────────────────────────────────── */
+    var textEl = button.querySelector('.store-music-toggle__text');
+    var iconEl = button.querySelector('.store-music-toggle__icon');
+
+    /* ── Apply saved settings ─────────────────────── */
+    audio.volume = volume;
+
+    if (!Number.isNaN(savedTime)) {
+      audio.addEventListener('loadedmetadata', function () {
+        try {
+          audio.currentTime = Math.min(savedTime, audio.duration || savedTime);
+        } catch (e) {}
+      }, { once: true });
+    }
+
+    /* ── UI update ────────────────────────────────── */
+    function updateButton() {
+      var isPlaying = !audio.paused;
+      var label;
+
+      if (isPlaying) {
+        label = 'Music: On';
+      } else if (wantedOn) {
+        label = 'Music: Resume';
+      } else {
+        label = 'Music: Off';
+      }
+
+      if (textEl) textEl.textContent = label;
+      if (iconEl) iconEl.textContent = isPlaying ? '🎵' : '🔇';
+
+      button.setAttribute('aria-pressed', isPlaying ? 'true' : 'false');
+      button.setAttribute(
+        'aria-label',
+        isPlaying ? 'Turn background music off' : 'Turn background music on'
+      );
+      button.classList.toggle('is-on', isPlaying);
+    }
+
+    /* ── Save current playback time ───────────────── */
+    function saveTime() {
+      if (!Number.isNaN(audio.currentTime)) {
+        localStorage.setItem(TIME_KEY, String(audio.currentTime));
+      }
+    }
+
+    /* ── Play music ───────────────────────────────── */
+    function playMusic(fromUserClick) {
+      var p = audio.play();
+      if (p !== undefined) {
+        p.then(function () {
+          wantedOn = true;
+          localStorage.setItem(ENABLE_KEY, 'true');
+          updateButton();
+
+          clearInterval(saveInterval);
+          saveInterval = setInterval(saveTime, 1000);
+        }).catch(function (err) {
+          if (fromUserClick) {
+            console.warn('Music could not start:', err);
+          }
+          updateButton();
+        });
+      }
+    }
+
+    /* ── Pause music ──────────────────────────────── */
+    function pauseMusic() {
+      saveTime();
+      audio.pause();
+      wantedOn = false;
+      localStorage.setItem(ENABLE_KEY, 'false');
+      updateButton();
+      clearInterval(saveInterval);
+    }
+
+    /* ── Toggle button click ──────────────────────── */
+    button.addEventListener('click', function () {
+      if (audio.paused) {
+        playMusic(true);
+      } else {
+        pauseMusic();
+      }
+    });
+
+    /* ── Save time on page hide/unload ────────────── */
+    window.addEventListener('pagehide', saveTime);
+    window.addEventListener('beforeunload', saveTime);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) saveTime();
+    });
+
+    /* ── Init ─────────────────────────────────────── */
+    updateButton();
+
+    // Try to resume if visitor had music on before
+    if (wantedOn && autoplay) {
+      playMusic(false);
+    }
+  });
+})();
+</script>
+
+{%- endif -%}
