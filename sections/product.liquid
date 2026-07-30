@@ -212,6 +212,13 @@
             </div>
           {%- endif -%}
         </div>
+
+        {%- comment -%} USUALLY BOUGHT TOGETHER {%- endcomment -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'usually_bought_together' -%}
+            {% render 'bought-together', block: block, product: product %}
+          {%- endif -%}
+        {%- endfor -%}
       </div>
     </div>
 
@@ -1504,7 +1511,6 @@ initOptionDrag();
     }
   })();
 </script>
-
 {% schema %}
 {
   "name": "Neumorphic Product",
@@ -1567,6 +1573,44 @@ initOptionDrag();
   ],
   "blocks": [
     {
+      "type": "usually_bought_together",
+      "name": "Usually Bought Together",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Displays related products from a product-list metafield with variant dropdowns, quantity, and add-to-cart."
+        },
+        {
+          "type": "header",
+          "content": "How it works"
+        },
+        {
+          "type": "paragraph",
+          "content": "1) Go to Settings → Custom data → Products. 2) Create a metafield of type 'List of products' (e.g., namespace: custom, key: usually_bought_together). 3) On each product, assign related products. 4) Enter the same namespace.key below."
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield (namespace.key)",
+          "default": "custom.usually_bought_together",
+          "info": "Format: namespace.key"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Usually Bought Together"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Add"
+        }
+      ]
+    },
+    {
       "type": "trust_badge",
       "name": "Trust Badge",
       "settings": [
@@ -1627,6 +1671,7 @@ initOptionDrag();
     {
       "name": "Neumorphic Product",
       "blocks": [
+        { "type": "usually_bought_together", "settings": { "metafield_key": "custom.usually_bought_together", "heading": "Usually Bought Together", "button_text": "Add" } },
         { "type": "trust_badge", "settings": { "icon": "shipping", "text": "Free shipping" } },
         { "type": "trust_badge", "settings": { "icon": "returns", "text": "30-day returns" } },
         { "type": "trust_badge", "settings": { "icon": "warranty", "text": "3-year warranty" } },
@@ -1635,8 +1680,8 @@ initOptionDrag();
         { "type": "tab", "settings": { "tab_title": "Shipping", "content_source": "metafield", "metafield_namespace": "custom", "metafield_key": "shipping", "word_limit": 60 } },
         { "type": "faq_item", "settings": { "question": "What materials is it made of?", "answer": "<p>A precision-milled aluminum chassis with a soft-touch polymer shell for grip and durability.</p>" } },
         { "type": "faq_item", "settings": { "question": "How long does the battery last?", "answer": "<p>Up to 14 hours of active use on a single charge, with fast USB-C top-ups in under 45 minutes.</p>" } },
-        { "type": "faq_item", "settings": { "question": "Is it water resistant?", "answer": "<p>Yes — rated IP54 for dust and splash resistance. Not suitable for full submersion.</p>" } },
-        ]
+        { "type": "faq_item", "settings": { "question": "Is it water resistant?", "answer": "<p>Yes — rated IP54 for dust and splash resistance. Not suitable for full submersion.</p>" } }
+      ]
     }
   ]
 }
