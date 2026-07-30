@@ -38,7 +38,7 @@
 {% stylesheet %}
   .collections-section {
     padding: 50px 0px;
-    border-radius: 36px;
+    border-radius: var(--neu-radius);
   }
 
   .collections-section__title {
@@ -75,7 +75,7 @@
     width: 100%;
     min-height: 100%;
     padding: 1rem;
-    border-radius: var(--neu-radius-xl);
+    border-radius: var(--neu-radius);
     background: var(--neu-bg);
     box-shadow: var(--neu-shadow-strong);
     text-decoration: none;
@@ -100,7 +100,7 @@
 
   .collection-card__media {
     padding: 0.8rem;
-    border-radius: var(--neu-radius-lg);
+    border-radius: var(--neu-radius);
     background: linear-gradient(145deg, #edf1f5, #e6ebf0);
     box-shadow: var(--shadow-neu-in-sm);
     overflow: hidden;
@@ -112,7 +112,7 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border-radius: var(--neu-radius-md);
+    border-radius: var(--neu-radius);
     box-shadow: var(--shadow-neu-out-sm);
   }
 
@@ -121,7 +121,7 @@
     flex-direction: column;
     gap: 0.55rem;
     padding: 1rem;
-    border-radius: var(--neu-radius-lg);
+    border-radius: var(--neu-radius);
     background: linear-gradient(145deg, #edf1f5, #e8ecf1);
     box-shadow: var(--shadow-neu-in-sm);
   }
@@ -213,6 +213,16 @@
     {
       "type": "header",
       "content": "Shape"
+    },
+    {
+      "type": "range",
+      "id": "neu_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 24
     },
     {
       "type": "select",
