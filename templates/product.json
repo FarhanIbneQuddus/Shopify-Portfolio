@@ -11,7 +11,89 @@
   "sections": {
     "main": {
       "type": "product",
-      "settings": {}
+      "blocks": {
+        "faq_item_cqVp9D": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is included?",
+            "answer": "<p>Everything you need to get started.</p>"
+          }
+        },
+        "faq_item_D76BwQ": {
+          "type": "faq_item",
+          "settings": {
+            "question": "What is included?",
+            "answer": "<p>Everything you need to get started.</p>"
+          }
+        },
+        "tab_3TD7Wx": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "Product Description",
+            "content_source": "product_description",
+            "word_limit": 50,
+            "metafield_namespace": "custom",
+            "metafield_key": "",
+            "tab_content": "<p>Product info here.</p>"
+          }
+        },
+        "tab_WaJgkW": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "Overview",
+            "content_source": "product_description",
+            "word_limit": 50,
+            "metafield_namespace": "custom",
+            "metafield_key": "",
+            "tab_content": "<p>Product info here.</p>"
+          }
+        },
+        "tab_wRiKXh": {
+          "type": "tab",
+          "settings": {
+            "tab_title": "Shipping",
+            "content_source": "custom",
+            "word_limit": 50,
+            "metafield_namespace": "custom",
+            "metafield_key": "",
+            "tab_content": "<p>Shipping informations here.</p>"
+          }
+        },
+        "usually_bought_together_3RNr8V": {
+          "type": "usually_bought_together",
+          "settings": {
+            "metafield_key": "custom.usually_bought_together",
+            "heading": "Usually Bought Together",
+            "button_text": "Add"
+          }
+        }
+      },
+      "block_order": [
+        "faq_item_cqVp9D",
+        "faq_item_D76BwQ",
+        "tab_3TD7Wx",
+        "tab_WaJgkW",
+        "tab_wRiKXh",
+        "usually_bought_together_3RNr8V"
+      ],
+      "settings": {
+        "neu_bg": "#e6e9ee",
+        "neu_shadow_dark": "#4f4e4e",
+        "neu_shadow_light": "#ffffff",
+        "neu_text": "#2c3e50",
+        "neu_text_muted": "#8b95a3",
+        "neu_accent": "#7d3fbf",
+        "product": "{{ product }}",
+        "subtitle": "DESKTOP ASSISTANT",
+        "tagline": "A palm-sized companion for the desk.",
+        "rating": 5,
+        "review_count": "218",
+        "installment_count": 12,
+        "default_word_limit": 50,
+        "faq_heading": "Frequently Asked Questions",
+        "section_padding_top": 40,
+        "section_padding_bottom": 40
+      }
     }
   },
   "order": [

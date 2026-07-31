@@ -421,6 +421,66 @@
   </script>
 </div>
 
+{%- comment -%} ============================================
+   STICKY GALLERY — Ancestor Overflow Cleaner
+   Walks up the DOM and force-clears any overflow
+   that would trap the sticky positioning context.
+   Also auto-detects sticky header height.
+   ============================================ {%- endcomment -%}
+<script>
+  (function () {
+    var section = document.querySelector('[data-section-id="{{ section.id }}"]');
+    if (!section) return;
+
+    var stickyCol = section.querySelector('.neu-product-gallery');
+    if (!stickyCol) return;
+
+    // Walk up the DOM and force-clear any overflow that breaks sticky
+    var el = stickyCol.parentElement;
+    while (el && el !== document.body) {
+      var cs = window.getComputedStyle(el);
+      if (
+        cs.overflow === 'hidden' ||
+        cs.overflow === 'clip' ||
+        cs.overflow === 'auto' ||
+        cs.overflow === 'scroll' ||
+        cs.overflowY === 'hidden' ||
+        cs.overflowY === 'clip' ||
+        cs.overflowY === 'auto' ||
+        cs.overflowY === 'scroll'
+      ) {
+        el.style.setProperty('overflow', 'visible', 'important');
+        el.style.setProperty('overflow-y', 'visible', 'important');
+      }
+      el = el.parentElement;
+    }
+
+    // Auto-detect sticky header height and adjust top offset
+    function setStickyOffset() {
+      if (window.matchMedia('(max-width: 768px)').matches) return;
+
+      var offset = 24;
+      var header =
+        document.querySelector('.shopify-section-header-sticky') ||
+        document.querySelector('.header-wrapper--sticky') ||
+        document.querySelector('sticky-header') ||
+        document.querySelector('header.site-header') ||
+        document.querySelector('#shopify-section-header');
+
+      if (header) {
+        var rect = header.getBoundingClientRect();
+        if (rect.height > 0 && rect.height < window.innerHeight / 2) {
+          offset = rect.height + 16;
+        }
+      }
+      stickyCol.style.setProperty('top', offset + 'px');
+    }
+
+    setStickyOffset();
+    window.addEventListener('resize', setStickyOffset);
+  })();
+</script>
+
 <script>
   (function() {
     const sectionId = '{{ section.id }}';
@@ -510,31 +570,6 @@
       }
     }
 
-    /* ============================================
-   OPTION BUTTONS — Draggable when overflowing
-   ============================================ */
-function scrollButtonIntoView(container, button, smooth = true) {
-  if (!container || !button) return;
-
-  const containerRect = container.getBoundingClientRect();
-  const buttonRect = button.getBoundingClientRect();
-
-  const overflowLeft = containerRect.left - buttonRect.left;
-  const overflowRight = buttonRect.right - containerRect.right;
-
-  if (overflowLeft > 0) {
-    container.scrollBy({
-      left: -overflowLeft - 20,
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-  } else if (overflowRight > 0) {
-    container.scrollBy({
-      left: overflowRight + 20,
-      behavior: smooth ? 'smooth' : 'auto'
-    });
-  }
-}
-
 function initOptionDrag() {
   const containers = section.querySelectorAll('.neu-option-buttons');
 
@@ -542,14 +577,12 @@ function initOptionDrag() {
     if (container.dataset.dragBound) return;
     container.dataset.dragBound = 'true';
 
-    // Detect if slider mode is needed (content overflows)
     function checkSliderMode() {
       const overflows = container.scrollWidth > container.clientWidth + 1;
       container.classList.toggle('is-slider', overflows);
       return overflows;
     }
 
-    // Initial check + re-check on resize / font-load
     requestAnimationFrame(checkSliderMode);
     setTimeout(checkSliderMode, 100);
     setTimeout(checkSliderMode, 400);
@@ -576,9 +609,8 @@ function initOptionDrag() {
     let lastTime = 0;
     let momentumRAF = null;
 
-    const DRAG_THRESHOLD = 5; // px
+    const DRAG_THRESHOLD = 5;
 
-    // ---- Mouse drag ----
     container.addEventListener('mousedown', (e) => {
       if (e.button !== 0) return;
       if (!container.classList.contains('is-slider')) return;
@@ -630,7 +662,6 @@ function initOptionDrag() {
       container.classList.remove('is-dragging');
 
       if (hasMoved) {
-        // Keep was-dragged briefly so the click event about to fire is blocked
         setTimeout(() => container.classList.remove('was-dragged'), 100);
 
         if (Math.abs(velX) > 0.3) {
@@ -641,7 +672,6 @@ function initOptionDrag() {
       hasMoved = false;
     });
 
-    // Also block click on capture phase if a drag happened
     container.addEventListener('click', (e) => {
       if (container.classList.contains('was-dragged')) {
         e.stopPropagation();
@@ -649,7 +679,6 @@ function initOptionDrag() {
       }
     }, true);
 
-    // ---- Touch handling (native scroll handles movement) ----
     let touchStartX = 0;
     let touchDragDistance = 0;
 
@@ -669,7 +698,6 @@ function initOptionDrag() {
       }
     }, { passive: true });
 
-    // ---- Momentum ----
     function applyMomentum(el, velocity) {
       const friction = 0.92;
       const minVelocity = 0.1;
@@ -691,7 +719,6 @@ function initOptionDrag() {
       momentumRAF = requestAnimationFrame(step);
     }
 
-    // Scroll active option into view on load
     requestAnimationFrame(() => {
       const active = container.querySelector('.neu-option-btn--active');
       if (active && container.classList.contains('is-slider')) {
@@ -1447,6 +1474,13 @@ initOptionDrag();
         if (drawer && drawer.classList.contains('is-open')) closeCartDrawer();
       }
     });
+
+    /* Expose cart API globally so other snippets can trigger the drawer */
+    window.NeuCart = window.NeuCart || {};
+    window.NeuCart.updateCounts = updateCartCounts;
+    window.NeuCart.openDrawer = openCustomCartDrawer;
+    window.NeuCart.closeDrawer = closeCartDrawer;
+    window.NeuCart.refreshDrawer = refreshCartDrawer;
 
     if (form && addBtn) {
       form.addEventListener('submit', async function(e) {

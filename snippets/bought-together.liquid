@@ -1,6 +1,5 @@
 {% comment %}
   Usually Bought Together Snippet
-  
   Parameters:
     - block: The block object containing settings
     - product: The current product
@@ -17,7 +16,7 @@
 {%- if related_products != blank -%}
   <div class="ubt-wrapper" {{ block.shopify_attributes }}>
     <h3 class="ubt-title">{{ block.settings.heading }}</h3>
-    
+
     <div class="ubt-list">
       {%- for related_product in related_products -%}
         <div class="ubt-item" data-product-id="{{ related_product.id }}">
@@ -25,7 +24,7 @@
             <div class="ubt-item-inner">
               <a href="{{ related_product.url }}" class="ubt-image-wrap">
                 {%- if related_product.featured_image -%}
-                  <img 
+                  <img
                     src="{{ related_product.featured_image | image_url: width: 120 }}"
                     alt="{{ related_product.featured_image.alt | escape }}"
                     loading="lazy"
@@ -35,51 +34,72 @@
                   >
                 {%- endif -%}
               </a>
-              
+
               <div class="ubt-details">
                 <a href="{{ related_product.url }}" class="ubt-product-title">
                   {{ related_product.title }}
                 </a>
-                
+
                 {%- if related_product.has_only_default_variant -%}
-                  <input type="hidden" name="id" value="{{ related_product.selected_or_first_available_variant.id }}">
+                  <input type="hidden" name="id" value="{{ related_product.selected_or_first_available_variant.id }}" data-ubt-variant-input>
                   <span class="ubt-price" data-ubt-price>
                     {{ related_product.selected_or_first_available_variant.price | money }}
                   </span>
                 {%- else -%}
-                  <select name="id" class="ubt-variant-select" data-ubt-variant-select>
-                    {%- for variant in related_product.variants -%}
-                      <option 
-                        value="{{ variant.id }}" 
-                        data-price="{{ variant.price | money }}"
-                        {% if variant.available == false %}disabled{% endif %}
-                        {% if variant == related_product.selected_or_first_available_variant %}selected{% endif %}
-                      >
-                        {{ variant.title }}{% if variant.available == false %} - Sold out{% endif %}
-                      </option>
-                    {%- endfor -%}
-                  </select>
+                  {%- assign selected_variant = related_product.selected_or_first_available_variant -%}
+                  <input type="hidden" name="id" value="{{ selected_variant.id }}" data-ubt-variant-input>
+
+                  <div class="ubt-select" data-ubt-select>
+                    <button type="button" class="ubt-select__trigger" data-ubt-select-trigger aria-haspopup="listbox" aria-expanded="false">
+                      <span class="ubt-select__value" data-ubt-select-value>{{ selected_variant.title }}</span>
+                      <svg class="ubt-select__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </button>
+                    <ul class="ubt-select__menu" role="listbox" data-ubt-select-menu>
+                      {%- for variant in related_product.variants -%}
+                        <li
+                          class="ubt-select__option{% if variant == selected_variant %} is-selected{% endif %}{% unless variant.available %} is-unavailable{% endunless %}"
+                          role="option"
+                          aria-selected="{% if variant == selected_variant %}true{% else %}false{% endif %}"
+                          data-variant-id="{{ variant.id }}"
+                          data-variant-price="{{ variant.price | money }}"
+                          data-variant-available="{{ variant.available }}"
+                          data-variant-title="{{ variant.title | escape }}"
+                        >
+                          <span class="ubt-select__option-label">{{ variant.title }}</span>
+                          {%- unless variant.available -%}
+                            <span class="ubt-select__option-badge">Sold out</span>
+                          {%- endunless -%}
+                          <svg class="ubt-select__option-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+
                   <span class="ubt-price" data-ubt-price>
-                    {{ related_product.selected_or_first_available_variant.price | money }}
+                    {{ selected_variant.price | money }}
                   </span>
                 {%- endif -%}
               </div>
-              
+
               <div class="ubt-actions">
                 <div class="ubt-quantity">
                   <button type="button" class="ubt-qty-btn" data-ubt-qty-minus aria-label="Decrease quantity">−</button>
-                  <input 
-                    type="number" 
-                    name="quantity" 
-                    value="1" 
-                    min="1" 
+                  <input
+                    type="number"
+                    name="quantity"
+                    value="1"
+                    min="1"
                     class="ubt-qty-input"
                     data-ubt-qty-input
                     aria-label="Quantity"
                   >
                   <button type="button" class="ubt-qty-btn" data-ubt-qty-plus aria-label="Increase quantity">+</button>
                 </div>
-                
+
                 <button type="submit" class="ubt-add-btn" data-ubt-add>
                   <span class="ubt-add-text">{{ block.settings.button_text }}</span>
                 </button>
@@ -92,138 +112,273 @@
   </div>
 
   <style>
+    /* ─────────────  WRAPPER  ───────────── */
     .ubt-wrapper {
-      background: var(--neu-bg, #e6e9ee);
-      box-shadow: 8px 8px 16px var(--neu-shadow-dark, #b8bcc4), 
-              -8px -8px 16px var(--neu-shadow-light, #ffffff);
-      border-radius: 16px;
+      background: var(--neu-bg);
+      border-radius: var(--neu-radius, 16px);
       padding: 20px;
       margin: 20px 0;
+      box-shadow: var(--shadow-neu-out, 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light));
+      color: var(--neu-text);
     }
-    
+
     .ubt-title {
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 20px 0;
-      color: #000;
+      color: var(--neu-text);
     }
-    
+
     .ubt-list {
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
-    
+
     .ubt-item {
-      background: #f0f0f3;
+      background: var(--neu-bg);
       border-radius: 12px;
       padding: 14px;
-      box-shadow: inset 4px 4px 8px #d1d1d4, inset -4px -4px 8px #ffffff;
+      box-shadow: var(--shadow-neu-in-sm);
     }
-    
+
     .ubt-item-inner {
       display: grid;
       grid-template-columns: 60px 1fr auto;
       gap: 14px;
       align-items: center;
     }
-    
+
     .ubt-image-wrap {
       display: block;
       width: 60px;
       height: 60px;
       border-radius: 8px;
       overflow: hidden;
-      background: #f0f0f3;
-      box-shadow: 3px 3px 6px #d1d1d4, -3px -3px 6px #ffffff;
+      background: var(--neu-bg);
+      box-shadow: var(--shadow-neu-out-sm);
     }
-    
-    .ubt-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
+
+    .ubt-image { width: 100%; height: 100%; object-fit: cover; }
+
     .ubt-details {
       display: flex;
       flex-direction: column;
       gap: 8px;
       min-width: 0;
     }
-    
+
     .ubt-product-title {
       font-size: 14px;
       font-weight: 500;
-      color: #000;
+      color: var(--neu-text);
       text-decoration: none;
       line-height: 1.3;
     }
-    
-    .ubt-product-title:hover {
-      text-decoration: underline;
-    }
-    
+    .ubt-product-title:hover { text-decoration: underline; }
+
     .ubt-price {
       font-size: 14px;
       font-weight: 600;
-      color: #000;
+      color: var(--neu-text);
     }
-    
-    .ubt-variant-select {
-      appearance: none;
-      -webkit-appearance: none;
-      background: #f0f0f3;
+
+    /* ─────────────  CUSTOM DROPDOWN  ───────────── */
+    .ubt-select {
+      position: relative;
+      width: 100%;
+      max-width: 240px;
+      user-select: none;
+    }
+
+    .ubt-select__trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 14px;
+      background: var(--neu-bg);
+      color: var(--neu-text);
       border: none;
-      border-radius: 8px;
-      padding: 8px 28px 8px 12px;
+      border-radius: 10px;
       font-size: 13px;
-      color: #000;
+      font-weight: 500;
       cursor: pointer;
-      box-shadow: inset 2px 2px 4px #d1d1d4, inset -2px -2px 4px #ffffff;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      max-width: 100%;
+      box-shadow: var(--shadow-neu-in-xs);
+      transition: box-shadow 0.2s ease, color 0.2s ease;
+      text-align: left;
     }
-    
+
+    .ubt-select__trigger:hover {
+      color: var(--neu-accent);
+    }
+
+    .ubt-select__trigger:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-neu-in-xs), 0 0 0 2px rgba(var(--neu-accent-rgb, 125, 63, 191), 0.3);
+    }
+
+    .ubt-select__value {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ubt-select__chevron {
+      flex-shrink: 0;
+      color: var(--neu-text-muted, currentColor);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .ubt-select.is-open .ubt-select__chevron {
+      transform: rotate(180deg);
+      color: var(--neu-accent);
+    }
+
+    .ubt-select.is-open .ubt-select__trigger {
+      color: var(--neu-accent);
+    }
+
+    /* Menu panel */
+    .ubt-select__menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      z-index: 30;
+      margin: 0;
+      padding: 6px;
+      list-style: none;
+      background: var(--neu-bg);
+      border-radius: 12px;
+      box-shadow: var(--shadow-neu-out, 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light));
+      max-height: 260px;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      transform-origin: top center;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      scrollbar-width: thin;
+      scrollbar-color: var(--neu-text-muted, #b0b3b8) transparent;
+    }
+
+    .ubt-select__menu::-webkit-scrollbar { width: 6px; }
+    .ubt-select__menu::-webkit-scrollbar-track { background: transparent; }
+    .ubt-select__menu::-webkit-scrollbar-thumb {
+      background: var(--neu-text-muted, #b0b3b8);
+      border-radius: 3px;
+      opacity: 0.5;
+    }
+
+    .ubt-select.is-open .ubt-select__menu {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Options */
+    .ubt-select__option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--neu-text);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .ubt-select__option:hover:not(.is-unavailable) {
+      color: var(--neu-accent);
+      box-shadow: var(--shadow-neu-in-xs);
+    }
+
+    .ubt-select__option.is-selected {
+      color: var(--neu-accent);
+      font-weight: 600;
+      box-shadow: var(--shadow-neu-in-xs);
+    }
+
+    .ubt-select__option.is-unavailable {
+      opacity: 0.45;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .ubt-select__option-label {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ubt-select__option-badge {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--neu-bg);
+      color: var(--neu-text-muted);
+      box-shadow: var(--shadow-neu-in-xs);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .ubt-select__option-check {
+      flex-shrink: 0;
+      opacity: 0;
+      color: var(--neu-accent);
+      transition: opacity 0.15s ease;
+    }
+
+    .ubt-select__option.is-selected .ubt-select__option-check {
+      opacity: 1;
+    }
+
+    /* ─────────────  ACTIONS  ───────────── */
     .ubt-actions {
       display: flex;
       flex-direction: column;
       gap: 8px;
       align-items: flex-end;
     }
-    
+
     .ubt-quantity {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #f0f0f3;
+      background: var(--neu-bg);
       border-radius: 20px;
       padding: 4px;
-      box-shadow: inset 2px 2px 4px #d1d1d4, inset -2px -2px 4px #ffffff;
+      box-shadow: var(--shadow-neu-in-xs);
     }
-    
+
     .ubt-qty-btn {
       width: 26px;
       height: 26px;
       border: none;
       border-radius: 50%;
-      background: #f0f0f3;
-      color: #000;
+      background: var(--neu-bg);
+      color: var(--neu-text);
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 2px 2px 4px #d1d1d4, -2px -2px 4px #ffffff;
-      transition: all 0.15s ease;
+      box-shadow: var(--shadow-neu-out-sm);
+      transition: box-shadow 0.15s ease;
     }
-    
-    .ubt-qty-btn:active {
-      box-shadow: inset 2px 2px 4px #d1d1d4, inset -2px -2px 4px #ffffff;
-    }
-    
+    .ubt-qty-btn:active { box-shadow: var(--shadow-neu-in-xs); }
+
     .ubt-qty-input {
       width: 30px;
       border: none;
@@ -231,141 +386,189 @@
       text-align: center;
       font-size: 13px;
       font-weight: 600;
-      color: #000;
+      color: var(--neu-text);
       -moz-appearance: textfield;
     }
-    
     .ubt-qty-input::-webkit-outer-spin-button,
-    .ubt-qty-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    
+    .ubt-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
     .ubt-add-btn {
       border: none;
-      background: #000;
+      background: var(--neu-accent);
       color: #fff;
       padding: 8px 20px;
       border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 3px 3px 6px #d1d1d4, -3px -3px 6px #ffffff;
-      transition: all 0.15s ease;
+      box-shadow: var(--shadow-neu-out-sm);
+      transition: filter 0.15s ease, box-shadow 0.15s ease;
     }
-    
-    .ubt-add-btn:hover {
-      background: #222;
-    }
-    
-    .ubt-add-btn:active {
-      box-shadow: inset 2px 2px 4px #000000, inset -2px -2px 4px #333333;
-    }
-    
-    .ubt-add-btn.is-loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    
-    .ubt-add-btn.is-added {
-      background: #000;
-    }
-    
+    .ubt-add-btn:hover { filter: brightness(1.08); }
+    .ubt-add-btn:active { box-shadow: var(--shadow-neu-in-xs); }
+    .ubt-add-btn.is-loading { opacity: 0.7; pointer-events: none; }
+
     @media (max-width: 600px) {
-      .ubt-item-inner {
-        grid-template-columns: 60px 1fr;
-      }
-      
+      .ubt-item-inner { grid-template-columns: 60px 1fr; }
       .ubt-actions {
         grid-column: 1 / -1;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
       }
+      .ubt-select { max-width: 100%; }
     }
   </style>
 
   <script>
     (function() {
-      const wrapper = document.querySelector('.ubt-wrapper[data-block-id="{{ block.id }}"]') || document.currentScript.previousElementSibling;
+      /* Close all open custom selects when clicking outside */
+      document.addEventListener('click', (e) => {
+        document.querySelectorAll('.ubt-select.is-open').forEach(sel => {
+          if (!sel.contains(e.target)) {
+            sel.classList.remove('is-open');
+            sel.querySelector('[data-ubt-select-trigger]')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
       const forms = document.querySelectorAll('[data-ubt-form]');
-      
+
       forms.forEach(form => {
-        // Quantity buttons
+        if (form.dataset.ubtBound) return;
+        form.dataset.ubtBound = 'true';
+
+        /* ── Quantity buttons ── */
         const minusBtn = form.querySelector('[data-ubt-qty-minus]');
         const plusBtn = form.querySelector('[data-ubt-qty-plus]');
         const qtyInput = form.querySelector('[data-ubt-qty-input]');
-        
+
         minusBtn?.addEventListener('click', () => {
           const val = parseInt(qtyInput.value) || 1;
           if (val > 1) qtyInput.value = val - 1;
         });
-        
         plusBtn?.addEventListener('click', () => {
           const val = parseInt(qtyInput.value) || 1;
           qtyInput.value = val + 1;
         });
-        
-        // Variant change updates price
-        const select = form.querySelector('[data-ubt-variant-select]');
-        const priceEl = form.querySelector('[data-ubt-price]');
-        
-        select?.addEventListener('change', (e) => {
-          const selectedOption = e.target.options[e.target.selectedIndex];
-          const price = selectedOption.getAttribute('data-price');
-          if (price && priceEl) priceEl.textContent = price;
-        });
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = form.querySelector('[data-ubt-add]');
-            const btnText = btn.querySelector('.ubt-add-text');
-            const originalText = btnText.textContent;
-            
-            btn.classList.add('is-loading');
-            btnText.textContent = 'Adding...';
-            
-            try {
-                const formData = new FormData(form);
-                const routesRoot = window.Shopify?.routes?.root || '/';
-                
-                const addResponse = await fetch(`${routesRoot}cart/add.js`, {
-                method: 'POST',
-                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
-                });
-                
-                const addData = await addResponse.json();
-                if (addData.status || addData.errors) throw new Error(addData.description || 'Error');
-                
-                // Fetch full cart for drawer refresh
-                const cartResponse = await fetch(`${routesRoot}cart.js`);
-                const cartData = await cartResponse.json();
-                
-                // Trigger events your theme's main product listens to
-                if (window.PUB_SUB_EVENTS && typeof window.publish === 'function') {
-                window.publish(window.PUB_SUB_EVENTS.cartUpdate, {
-                    source: 'usually-bought-together',
-                    cartData: cartData
-                });
-                }
-                document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cartData } }));
-                
-                btn.classList.remove('is-loading');
-                btn.classList.add('is-added');
-                btnText.textContent = 'Added ✓';
-                
-                setTimeout(() => {
-                btn.classList.remove('is-added');
-                btnText.textContent = originalText;
-                }, 2000);
-            } catch (err) {
-                console.error(err);
-                btn.classList.remove('is-loading');
-                btnText.textContent = 'Error';
-                setTimeout(() => { btnText.textContent = originalText; }, 2000);
-            }
+
+        /* ── Custom dropdown ── */
+        const selectEl     = form.querySelector('[data-ubt-select]');
+        const trigger      = form.querySelector('[data-ubt-select-trigger]');
+        const menu         = form.querySelector('[data-ubt-select-menu]');
+        const valueLabel   = form.querySelector('[data-ubt-select-value]');
+        const variantInput = form.querySelector('[data-ubt-variant-input]');
+        const priceEl      = form.querySelector('[data-ubt-price]');
+        const addBtn       = form.querySelector('[data-ubt-add]');
+        const addBtnText   = addBtn?.querySelector('.ubt-add-text');
+
+        if (selectEl && trigger && menu) {
+          trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const willOpen = !selectEl.classList.contains('is-open');
+            /* Close other dropdowns */
+            document.querySelectorAll('.ubt-select.is-open').forEach(s => {
+              if (s !== selectEl) {
+                s.classList.remove('is-open');
+                s.querySelector('[data-ubt-select-trigger]')?.setAttribute('aria-expanded', 'false');
+              }
             });
+            selectEl.classList.toggle('is-open', willOpen);
+            trigger.setAttribute('aria-expanded', String(willOpen));
+          });
+
+          menu.querySelectorAll('.ubt-select__option').forEach(option => {
+            option.addEventListener('click', () => {
+              if (option.classList.contains('is-unavailable')) return;
+
+              const variantId    = option.dataset.variantId;
+              const variantPrice = option.dataset.variantPrice;
+              const variantTitle = option.dataset.variantTitle;
+
+              /* Update state */
+              menu.querySelectorAll('.ubt-select__option').forEach(o => {
+                o.classList.remove('is-selected');
+                o.setAttribute('aria-selected', 'false');
+              });
+              option.classList.add('is-selected');
+              option.setAttribute('aria-selected', 'true');
+
+              if (valueLabel)   valueLabel.textContent = variantTitle;
+              if (variantInput) variantInput.value = variantId;
+              if (priceEl && variantPrice) priceEl.textContent = variantPrice;
+
+              /* Close */
+              selectEl.classList.remove('is-open');
+              trigger.setAttribute('aria-expanded', 'false');
+            });
+          });
+
+          /* Keyboard support */
+          trigger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              trigger.click();
+            }
+          });
+        }
+
+        /* ── Submit ── */
+          form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const originalText = addBtnText?.textContent || 'Add';
+
+          addBtn.classList.add('is-loading');
+          if (addBtnText) addBtnText.textContent = 'Adding...';
+
+          try {
+            const routesRoot = window.Shopify?.routes?.root || '/';
+            const formData = new FormData(form);
+
+            const addResponse = await fetch(`${routesRoot}cart/add.js`, {
+              method: 'POST',
+              headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+              body: formData
+            });
+            const addData = await addResponse.json();
+            if (addData.status || addData.errors) throw new Error(addData.description || 'Error');
+
+            const cartResponse = await fetch(`${routesRoot}cart.js`);
+            const cartData = await cartResponse.json();
+
+            /* ── Use main section's cart drawer API ── */
+            if (window.NeuCart) {
+              if (typeof window.NeuCart.updateCounts === 'function') {
+                window.NeuCart.updateCounts(cartData.item_count);
+              }
+              if (typeof window.NeuCart.refreshDrawer === 'function') {
+                await window.NeuCart.refreshDrawer(cartData);
+              }
+              if (typeof window.NeuCart.openDrawer === 'function') {
+                window.NeuCart.openDrawer();
+              }
+            }
+
+            /* Emit theme events */
+            if (window.PUB_SUB_EVENTS && typeof window.publish === 'function') {
+              window.publish(window.PUB_SUB_EVENTS.cartUpdate, { source: 'usually-bought-together', cartData });
+            }
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cartData } }));
+
+            addBtn.classList.remove('is-loading');
+            addBtn.classList.add('is-added');
+            if (addBtnText) addBtnText.textContent = 'Added ✓';
+
+            setTimeout(() => {
+              addBtn.classList.remove('is-added');
+              if (addBtnText) addBtnText.textContent = originalText;
+            }, 2000);
+          } catch (err) {
+            console.error(err);
+            addBtn.classList.remove('is-loading');
+            if (addBtnText) addBtnText.textContent = 'Error';
+            setTimeout(() => { if (addBtnText) addBtnText.textContent = originalText; }, 2000);
+          }
+        });
       });
     })();
   </script>

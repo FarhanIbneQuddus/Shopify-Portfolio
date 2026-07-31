@@ -2,6 +2,28 @@
    NEUMORPHIC PRODUCT — PIXEL PERFECT
    ============================================ */
 
+/* ============================================
+   STICKY GALLERY — Global Overflow Fix
+   Must be at the top so Shopify theme wrappers
+   don't clip the sticky context.
+   ============================================ */
+html,
+body {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+main,
+#MainContent,
+.main-content,
+.page-width,
+.shopify-section {
+  overflow: visible !important;
+}
+
+/* ============================================
+   SECTION ROOT
+   ============================================ */
 .neu-product-section {
   --neu-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -10,7 +32,6 @@
   color: var(--neu-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
 }
 
 .neu-product-wrapper {
@@ -44,7 +65,7 @@
 
 .neu-main-image {
   background: var(--neu-bg);
-  border-radius: 36px;
+  border-radius: 24px;
   padding: 22px;
   box-shadow:
     9px 9px 22px var(--neu-shadow-dark),
@@ -74,7 +95,8 @@
 
 .neu-featured-img {
   max-width: 100%;
-  max-height: 340px;
+  max-height: 500px;
+  border-radius: 24px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -84,7 +106,7 @@
 .neu-placeholder-svg { max-width: 60%; opacity: 0.4; }
 
 /* ============================================
-   THUMBNAIL ROW — Show 5, looped navigation
+   THUMBNAIL ROW
    ============================================ */
 .neu-thumbnail-container {
   position: relative;
@@ -135,11 +157,7 @@
   scroll-snap-align: start;
 }
 
-.neu-thumbnail:hover {
-  box-shadow:
-    3px 3px 6px var(--neu-shadow-dark),
-    -3px -3px 6px var(--neu-shadow-light);
-}
+
 
 .neu-thumbnail--active {
   box-shadow:
@@ -147,9 +165,8 @@
     inset -3px -3px 6px var(--neu-shadow-light);
 }
 
-.neu-thumbnail img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.neu-thumbnail img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 24px; }
 
-/* Thumbnail Navigation Arrows */
 .neu-thumb-arrow {
   flex: 0 0 auto;
   width: 32px;
@@ -431,14 +448,12 @@
   display: none;
 }
 
-/* Default: buttons fill the pill evenly (≤4 options or non-overflowing) */
 .neu-option-buttons .neu-option-btn {
   flex: 1 1 auto;
   min-width: 0;
   scroll-snap-align: start;
 }
 
-/* Slider mode: enabled by JS when content overflows */
 .neu-option-buttons.is-slider {
   cursor: grab;
   -webkit-user-select: none;
@@ -457,7 +472,6 @@
   scroll-snap-type: none;
 }
 
-/* Block clicks on buttons only while a drag actually happened */
 .neu-option-buttons.was-dragged .neu-option-btn {
   pointer-events: none;
 }
@@ -554,7 +568,6 @@
   min-height: 44px;
 }
 
-/* Shimmer sweep */
 .neu-add-to-bag::before {
   content: '';
   position: absolute;
@@ -566,9 +579,6 @@
   transition: left 0.6s ease;
 }
 
-
-
-/* Active — press in */
 .neu-add-to-bag:active {
   transform: translateY(-1px) scale(0.98);
   box-shadow:
@@ -576,7 +586,6 @@
     inset 3px 3px 6px var(--neu-shadow-dark);
 }
 
-/* Focus visible — accent ring */
 .neu-add-to-bag:focus-visible {
   outline: none;
   box-shadow:
@@ -584,7 +593,6 @@
     0 0 0 3px var(--neu-accent);
 }
 
-/* Focus visible + active combined */
 .neu-add-to-bag:focus-visible:active {
   transform: translateY(-1px) scale(0.98);
   box-shadow:
@@ -593,7 +601,6 @@
     0 0 0 3px var(--neu-accent);
 }
 
-/* Disabled */
 .neu-add-to-bag:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -689,7 +696,7 @@
 
 .neu-bottom-panel {
   background: var(--neu-bg);
-  border-radius: 36px;
+  border-radius: 24px;
   padding: 36px 44px;
   display: grid;
   grid-template-columns: 1fr 1.15fr;
@@ -714,9 +721,9 @@
   min-width: 0;
 }
 
-/* ==========================================================
+/* ============================================
    CONTENT-EXTENDED MODE (DESKTOP ONLY)
-   ========================================================== */
+   ============================================ */
 .neu-bottom-panel--content-extended {
   grid-template-columns: 1fr;
   grid-template-areas: "content";
@@ -781,7 +788,6 @@
   text-underline-offset: 2px;
 }
 
-/* Rich Content Support */
 .neu-tab-panel h1,
 .neu-tab-panel h2,
 .neu-tab-panel h3,
@@ -1089,6 +1095,31 @@ body.overflow-hidden,
 body.no-scroll { overflow: hidden; }
 
 /* ============================================
+   STICKY GALLERY — Desktop & Tablet
+   ============================================ */
+@media (min-width: 769px) {
+  .neu-product-section,
+  .neu-product-wrapper,
+  .neu-product-top {
+    overflow: visible !important;
+  }
+
+  .neu-product-gallery {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 140px !important;
+    align-self: start;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .neu-product-gallery {
+    top: 16px;
+  }
+}
+
+/* ============================================
    RESPONSIVE — TABLET
    ============================================ */
 @media (max-width: 1024px) {
@@ -1117,6 +1148,14 @@ body.no-scroll { overflow: hidden; }
   .neu-product-top {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+
+  /* Reset sticky on mobile */
+  .neu-product-gallery {
+    position: static !important;
+    top: auto !important;
+    align-self: auto !important;
+    height: auto !important;
   }
 
   .neu-main-image {
@@ -1152,9 +1191,7 @@ body.no-scroll { overflow: hidden; }
     height: 10px;
   }
 
-  .neu-thumbnail-container {
-    gap: 6px;
-  }
+  .neu-thumbnail-container { gap: 6px; }
 
   .neu-product-title { font-size: 40px; }
   .neu-price { font-size: 34px; }
@@ -1258,14 +1295,8 @@ body.no-scroll { overflow: hidden; }
     gap: 10px;
   }
 
-  .neu-thumb-arrow {
-    width: 26px;
-    height: 26px;
-  }
-
-  .neu-thumbnail-container {
-    gap: 4px;
-  }
+  .neu-thumb-arrow { width: 26px; height: 26px; }
+  .neu-thumbnail-container { gap: 4px; }
 
   .neu-tabs-slider { padding: 4px; }
   .neu-tabs-slider__btn {
